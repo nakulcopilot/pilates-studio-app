@@ -3931,7 +3931,7 @@
 // ============================
 // DATA LAYER
 // ============================
-const DB_KEY = 'zenpilates_data_v2';
+const DB_KEY = 'zenpilates_data_v3';
 
 // Unified color constants for JS template strings
 const C = {
@@ -3999,15 +3999,15 @@ function defaultDB() {
       { id: 'neelamr', name: 'Neelam R', specialization: 'Mat & Reformer', certification: 'PMA Certified, Mat & Reformer Specialist', experience: 7, email: 'neelamr@zenpilates.com', phone: '+91 98765 43207', photo: null, password: 'rules123', loginId: 'neelamr', active: true, dateJoined: '2024-09-01', bio: 'Lead instructor with 7+ years experience. Known for energetic morning flows and mindful cueing.', availability: { mon: ['07:00','09:00'], tue: ['07:00','09:00'], wed: ['07:00','09:00'], thu: ['07:00','09:00'], fri: ['07:00','09:00'] }, permissions: { editSchedule: true, editPricing: true }, rating: 4.8 }
     ],
     students: [
-      { id: 's1', name: 'Neha Sharma', phone: '+91 98765 43210', email: 'neha@email.com', gender: 'Female', emergency: '+91 98765 43211', enrolledClasses: ['c11','c13','c14','c15','c1','c5','c6','c7','c8'], enrolledDemos: [], active: true, level: 'intermediate', levelProgress: { beginner: 12, intermediate: 5, expert: 0 } },
-      { id: 's2', name: 'Kavita Singh', phone: '+91 98765 43212', email: 'kavita@email.com', gender: 'Female', emergency: '', enrolledClasses: ['c11','c13','c15','c1','c6','c7'], enrolledDemos: [], active: true, level: 'beginner', levelProgress: { beginner: 5, intermediate: 0, expert: 0 } },
-      { id: 's3', name: 'Meera Iyer', phone: '+91 98765 43213', email: 'meera@email.com', gender: 'Female', emergency: '', enrolledClasses: ['c11','c13','c15','c1','c6','c7'], enrolledDemos: [], active: true, level: 'beginner', levelProgress: { beginner: 3, intermediate: 0, expert: 0 } },
-      { id: 's4', name: 'Rohit Joshi', phone: '+91 98765 43214', email: 'rohit@email.com', gender: 'Male', emergency: '', enrolledClasses: ['c11','c12','c13','c15','c2','c6','c7','c8'], enrolledDemos: [], active: true, level: 'intermediate', levelProgress: { beginner: 10, intermediate: 4, expert: 0 } },
-      { id: 's5', name: 'Ananya K.', phone: '+91 98765 43215', email: 'ananya@email.com', gender: 'Female', emergency: '', enrolledClasses: ['c11','c15','c6'], enrolledDemos: ['d1'], active: true, level: 'beginner', levelProgress: { beginner: 2, intermediate: 0, expert: 0 } },
-      { id: 's6', name: 'Priya Mehta', phone: '+91 98765 43216', email: 'priyam@email.com', gender: 'Female', emergency: '', enrolledClasses: ['c12','c15','c16','c2','c8'], enrolledDemos: [], active: true, level: 'beginner', levelProgress: { beginner: 4, intermediate: 0, expert: 0 } },
-      { id: 's7', name: 'Amit Patel', phone: '+91 98765 43217', email: 'amitp@email.com', gender: 'Male', emergency: '', enrolledClasses: ['c12','c14','c16','c2','c8'], enrolledDemos: [], active: true, level: 'expert', levelProgress: { beginner: 15, intermediate: 12, expert: 9 } },
+      { id: 's1', name: 'Neha Sharma', phone: '+91 98765 43210', email: 'neha@email.com', gender: 'Female', emergency: '+91 98765 43211', enrolledClasses: ['c11','c13','c14','c15','c1','c5','c6','c7','c8','c27','c29','c30'], enrolledDemos: [], active: true, level: 'intermediate', levelProgress: { beginner: 12, intermediate: 5, expert: 0 } },
+      { id: 's2', name: 'Kavita Singh', phone: '+91 98765 43212', email: 'kavita@email.com', gender: 'Female', emergency: '', enrolledClasses: ['c11','c13','c15','c1','c6','c7','c27','c29'], enrolledDemos: [], active: true, level: 'beginner', levelProgress: { beginner: 5, intermediate: 0, expert: 0 } },
+      { id: 's3', name: 'Meera Iyer', phone: '+91 98765 43213', email: 'meera@email.com', gender: 'Female', emergency: '', enrolledClasses: ['c11','c13','c15','c1','c6','c7','c27','c29'], enrolledDemos: [], active: true, level: 'beginner', levelProgress: { beginner: 3, intermediate: 0, expert: 0 } },
+      { id: 's4', name: 'Rohit Joshi', phone: '+91 98765 43214', email: 'rohit@email.com', gender: 'Male', emergency: '', enrolledClasses: ['c11','c12','c13','c15','c2','c6','c7','c8','c27','c28','c29'], enrolledDemos: [], active: true, level: 'intermediate', levelProgress: { beginner: 10, intermediate: 4, expert: 0 } },
+      { id: 's5', name: 'Ananya K.', phone: '+91 98765 43215', email: 'ananya@email.com', gender: 'Female', emergency: '', enrolledClasses: ['c11','c15','c6','c27'], enrolledDemos: ['d1'], active: true, level: 'beginner', levelProgress: { beginner: 2, intermediate: 0, expert: 0 } },
+      { id: 's6', name: 'Priya Mehta', phone: '+91 98765 43216', email: 'priyam@email.com', gender: 'Female', emergency: '', enrolledClasses: ['c12','c15','c16','c2','c8','c28'], enrolledDemos: [], active: true, level: 'beginner', levelProgress: { beginner: 4, intermediate: 0, expert: 0 } },
+      { id: 's7', name: 'Amit Patel', phone: '+91 98765 43217', email: 'amitp@email.com', gender: 'Male', emergency: '', enrolledClasses: ['c12','c14','c16','c2','c8','c28','c30'], enrolledDemos: [], active: true, level: 'expert', levelProgress: { beginner: 15, intermediate: 12, expert: 9 } },
       { id: 's8', name: 'Sneha Reddy', phone: '+91 98765 43218', email: 'sneha@email.com', gender: 'Female', emergency: '', enrolledClasses: ['c15','c22','c25','c26'], enrolledDemos: [], active: true, level: 'beginner', levelProgress: { beginner: 2, intermediate: 0, expert: 0 } },
-      { id: 's9', name: 'Neelam Varma', phone: '+91 98765 43219', email: 'neelam@email.com', gender: 'Female', emergency: '', enrolledClasses: ['c2','c8','c11','c12','c14','c16','c5','c10','c20'], enrolledDemos: [], active: true, level: 'expert', levelProgress: { beginner: 15, intermediate: 14, expert: 12 } }
+      { id: 's9', name: 'Neelam Varma', phone: '+91 98765 43219', email: 'neelam@email.com', gender: 'Female', emergency: '', enrolledClasses: ['c2','c8','c11','c12','c14','c16','c5','c10','c20','c28','c30'], enrolledDemos: [], active: true, level: 'expert', levelProgress: { beginner: 15, intermediate: 14, expert: 12 } }
     ],
     classes: [
       // June past classes (for historical performance data)
@@ -4044,9 +4044,9 @@ function defaultDB() {
       { id: 'c30', type: 'reformer', level: 'expert', date: next, time: '09:00', duration: 60, maxStudents: 10, status: 'active', instructor: 'Neelam R', enrolled: ['s1','s7','s9'], waitlist: [] }
     ],
     demoSessions: [
-      { id: 'd1', date: '2026-07-06', time: '17:00', duration: 45, maxStudents: 5, enrolled: ['s5'] },
-      { id: 'd2', date: '2026-07-07', time: '07:00', duration: 45, maxStudents: 5, enrolled: [] },
-      { id: 'd3', date: '2026-07-08', time: '09:00', duration: 45, maxStudents: 5, enrolled: [] }
+      { id: 'd1', date: today, time: '17:00', duration: 45, maxStudents: 5, enrolled: ['s5'] },
+      { id: 'd2', date: next, time: '07:00', duration: 45, maxStudents: 5, enrolled: [] },
+      { id: 'd3', date: next, time: '09:00', duration: 45, maxStudents: 5, enrolled: [] }
     ],
     attendance: {
       'c11': { 's1': 'present', 's2': 'present', 's3': 'present', 's4': 'present', 's5': 'late', 's9': 'present' },
@@ -4696,6 +4696,10 @@ function getNavItems() {
     return [
       { id: 'instructor-dashboard', label: 'Dashboard', icon: '&#9632;' },
       { id: 'instructor-classes', label: 'Classes', icon: '&#128218;' },
+      { id: 'instructor-attendance', label: 'Attendance', icon: '&#128202;', hidden: true },
+      { id: 'instructor-students', label: 'Students', icon: '&#128101;', hidden: true },
+      { id: 'instructor-demo', label: 'Demo Sessions', icon: '&#127881;', hidden: true },
+      { id: 'instructor-insights', label: 'Insights', icon: '&#128200;', hidden: true },
       { id: 'instructor-active-class', label: 'Active Class', icon: '&#9654;', hidden: true }
     ];
   } else {
@@ -6590,7 +6594,15 @@ function closeModal() {
   if (lastFocusedBeforeModal) { lastFocusedBeforeModal.focus(); lastFocusedBeforeModal = null; }
 }
 
-function showModal() {
+function showModal(html) {
+  if (typeof html === 'string' && html.trim()) {
+    const container = document.getElementById('modal-container');
+    if (container) {
+      container.innerHTML = html.trim().startsWith('<div class="modal-overlay"')
+        ? html
+        : '<div class="modal-overlay" onclick="if(event.target===this)closeModal()"><div class="modal">' + html + '</div></div>';
+    }
+  }
   lastFocusedBeforeModal = document.activeElement;
   setTimeout(() => {
     const modal = document.querySelector('.modal');
@@ -9774,7 +9786,7 @@ function renderStudentBook(target) {
 
   const pkg = db.settings.packages.find(p => p.id === student.packageId);
   const upcomingCount = student.enrolledClasses.filter(cid => { const cls = getClass(cid); return cls && new Date(cls.date) >= new Date(); }).length;
-  const limitReached = pkg && upcomingCount >= pkg.totalClasses;
+  const limitReached = pkg && upcomingCount >= pkg.classes;
 
   let html = '';
 
@@ -9908,7 +9920,7 @@ function filterStudentClasses(level, chipEl) {
 
   const pkg = db.settings.packages.find(p => p.id === student.packageId);
   const upcomingCount = student.enrolledClasses.filter(cid => { const cls = getClass(cid); return cls && new Date(cls.date) >= new Date(); }).length;
-  const limitReached = pkg && upcomingCount >= pkg.totalClasses;
+  const limitReached = pkg && upcomingCount >= pkg.classes;
 
   const container = document.getElementById('stu-available-classes');
   if (!container) return;
@@ -10159,7 +10171,7 @@ function renderStudentSchedule(target) {
             <div style="font-size:1rem;font-weight:800;line-height:1.1;">${scDate.getDate()}</div>
           </div>
           <div style="flex:1;min-width:0;">
-            <div style="font-size:0.82rem;font-weight:600;color:var(--text);">${cls ? cls.name : 'Class'}</div>
+            <div style="font-size:0.82rem;font-weight:600;color:var(--text);">${cls ? (cls.name || (cls.type === 'reformer' ? 'Reformer Pilates' : 'Mat Pilates')) : 'Class'}</div>
             <div style="font-size:0.68rem;color:var(--text-muted);">${scDate.toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'})} · ${cls ? cls.duration : 60}min · ${cls ? (cls.type === 'reformer' ? 'Reformer' : 'Mat') : ''}</div>
           </div>
           <div style="display:flex;gap:0.35rem;">
@@ -10189,7 +10201,7 @@ function renderStudentSchedule(target) {
           <div style="font-size:0.85rem;font-weight:800;color:var(--text);line-height:1.1;">${scDate.getDate()}</div>
         </div>
         <div style="flex:1;min-width:0;">
-          <div style="font-size:0.78rem;font-weight:600;color:var(--text);">${cls ? cls.name : 'Class'}</div>
+          <div style="font-size:0.78rem;font-weight:600;color:var(--text);">${cls ? (cls.name || (cls.type === 'reformer' ? 'Reformer Pilates' : 'Mat Pilates')) : 'Class'}</div>
           <div style="font-size:0.65rem;color:var(--text-muted);">${scDate.toLocaleDateString('en-US', {month:'short', day:'numeric'})}</div>
         </div>
         <div style="font-size:0.65rem;font-weight:600;color:${statusColor};">${statusLabel}</div>
@@ -10304,6 +10316,18 @@ function renderStudentPackages(target) {
   target.innerHTML = html;
 }
 
+function switchPackage(packageId) {
+  const student = db.students.find(s => s.id === currentStudentId);
+  if (!student) return;
+  const pkg = db.settings.packages.find(p => p.id === packageId);
+  if (!pkg) return;
+  student.packageId = packageId;
+  saveDB();
+  showToast('&#10003; Package switched to ' + pkg.name + '!');
+  const target = document.getElementById('app-content');
+  if (target) renderStudentPackages(target);
+}
+
 // ============================
 // CONNECTIVITY / OFFLINE BANNER
 // ============================
@@ -10340,7 +10364,7 @@ function buildOfflineBannerHTML() {
 }
 
 function showConnectionDiagnostics() {
-  showToast('Status: ' + connectionStatus.toUpperCase() + ' | Local data: ' + (localStorage.getItem('zenpilates_data') ? 'Saved' : 'None'));
+  showToast('Status: ' + connectionStatus.toUpperCase() + ' | Local data: ' + (localStorage.getItem(DB_KEY) ? 'Saved' : 'None'));
 }
 
 window.addEventListener('online', function() { updateConnectionStatus('online'); });
@@ -10416,6 +10440,8 @@ function init() {
   const pruned = pruneClasses(10);
   if (pruned > 0) console.log('Cleaned up ' + pruned + ' excess future classes (kept 10).');
   document.getElementById('login-screen').style.display = 'block';
+  const app = document.getElementById('app-screen');
+  if (app && !document.getElementById('offline-banner')) app.insertAdjacentHTML('afterbegin', buildOfflineBannerHTML());
   animateExerciseProgress();
 }
 
