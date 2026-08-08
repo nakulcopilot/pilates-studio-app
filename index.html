@@ -10916,6 +10916,8 @@ function getAccountContext() {
       phone: inst ? inst.phone : '',
       bio: inst ? inst.bio : '',
       specialization: inst ? inst.specialization : '',
+      photo: inst ? inst.photo : null,
+      social: inst ? (inst.social || {}) : {},
       initials: name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase() || 'I',
       accent: '#2563eb',
       obj: inst,
@@ -10955,7 +10957,9 @@ function renderMyAccount(target) {
   // --- PROFILE CARD ---
   html += `<div style="background:white;border:1px solid var(--border-dark);border-radius:14px;padding:1rem;margin-bottom:1rem;">
     <div style="display:flex;align-items:center;gap:0.85rem;margin-bottom:1rem;">
-      <div style="width:52px;height:52px;border-radius:14px;background:${ctx.accent};color:white;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:800;flex-shrink:0;">${ctx.initials}</div>
+      ${ctx.photo
+        ? `<img src="${ctx.photo}" style="width:52px;height:52px;border-radius:14px;object-fit:cover;flex-shrink:0;" alt="${ctx.name}">`
+        : `<div style="width:52px;height:52px;border-radius:14px;background:${ctx.accent};color:white;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:800;flex-shrink:0;">${ctx.initials}</div>`}
       <div>
         <div style="font-size:1rem;font-weight:700;color:var(--text);">${ctx.name}</div>
         <div style="font-size:0.7rem;color:var(--text-muted);">${ctx.role} · ${ctx.email || 'No email on file'}</div>
@@ -10978,7 +10982,17 @@ function renderMyAccount(target) {
       <div class="form-group">
         <label>Emergency Contact</label>
         <input class="form-control" id="ac-emergency" value="${(student && student.emergency) || ''}" placeholder="+91 ...">
-      </div>` : (currentPersona === 'instructor' && ctx.bio) ? `
+      </div>` : (currentPersona === 'instructor') ? `
+      <div class="form-group">
+        <label>Profile Photo</label>
+        <div style="display:flex;align-items:center;gap:0.75rem;">
+          <div id="ac-photo-preview" style="width:56px;height:56px;border-radius:50%;background:var(--bg-deep);border:1px solid var(--border-dark);display:flex;align-items:center;justify-content:center;font-weight:800;color:var(--text-muted);font-size:1.1rem;overflow:hidden;flex-shrink:0;">${ctx.photo ? `<img src="${ctx.photo}" style="width:100%;height:100%;object-fit:cover;">` : ctx.initials}</div>
+          <div style="flex:1;">
+            <input class="form-control" type="file" id="ac-photo" accept="image/png,image/jpeg" onchange="onAccountPhotoChange(this)" style="font-size:0.75rem;">
+            <div style="font-size:0.65rem;color:var(--text-muted);margin-top:0.3rem;">PNG or JPG, max 2MB</div>
+          </div>
+        </div>
+      </div>
       <div class="form-group">
         <label>Specialization</label>
         <input class="form-control" id="ac-spec" value="${ctx.specialization || ''}" placeholder="e.g. Mat & Reformer">
@@ -10986,6 +11000,19 @@ function renderMyAccount(target) {
       <div class="form-group">
         <label>Bio</label>
         <textarea class="form-control" id="ac-bio" rows="3" placeholder="About you">${ctx.bio || ''}</textarea>
+      </div>
+      <div style="font-size:0.78rem;font-weight:700;color:var(--text);margin:0.6rem 0;">&#127760; Social Media Links</div>
+      <div class="form-group">
+        <label>Facebook</label>
+        <input class="form-control" id="ac-social-fb" value="${ctx.social.facebook || ''}" placeholder="https://facebook.com/yourpage">
+      </div>
+      <div class="form-group">
+        <label>Instagram</label>
+        <input class="form-control" id="ac-social-ig" value="${ctx.social.instagram || ''}" placeholder="https://instagram.com/yourhandle">
+      </div>
+      <div class="form-group">
+        <label>YouTube Channel</label>
+        <input class="form-control" id="ac-social-yt" value="${ctx.social.youtube || ''}" placeholder="https://youtube.com/@yourchannel">
       </div>` : ''}
     <button class="btn btn-primary" onclick="saveAccountProfile()" style="width:100%;">Save Profile</button>
   </div>`;
@@ -11054,6 +11081,19 @@ function renderMyAccount(target) {
   target.innerHTML = html;
 }
 
+function onAccountPhotoChange(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 2 * 1024 * 1024) { showToast('File size must be under 2MB', 'error'); input.value = ''; return; }
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    input._result = ev.target.result;
+    const prev = document.getElementById('ac-photo-preview');
+    if (prev) prev.innerHTML = `<img src="${ev.target.result}" style="width:100%;height:100%;object-fit:cover;">`;
+  };
+  reader.readAsDataURL(file);
+}
+
 function saveAccountProfile() {
   const name = document.getElementById('ac-name').value.trim();
   const email = document.getElementById('ac-email').value.trim();
@@ -11071,6 +11111,17 @@ function saveAccountProfile() {
       ctx.obj.phone = phone;
       if (document.getElementById('ac-spec')) ctx.obj.specialization = document.getElementById('ac-spec').value.trim();
       if (document.getElementById('ac-bio')) ctx.obj.bio = document.getElementById('ac-bio').value.trim();
+      const photoEl = document.getElementById('ac-photo');
+      if (photoEl && photoEl._result) ctx.obj.photo = photoEl._result;
+      const fb = document.getElementById('ac-social-fb');
+      const ig = document.getElementById('ac-social-ig');
+      const yt = document.getElementById('ac-social-yt');
+      if (fb || ig || yt) {
+        if (!ctx.obj.social) ctx.obj.social = {};
+        if (fb) ctx.obj.social.facebook = fb.value.trim();
+        if (ig) ctx.obj.social.instagram = ig.value.trim();
+        if (yt) ctx.obj.social.youtube = yt.value.trim();
+      }
       if (ctx.obj.name === db.settings.instructorName || ctx.obj.id === currentInstructorId) db.settings.instructorName = ctx.obj.name;
     }
     saveDB();
@@ -11085,7 +11136,7 @@ function saveAccountProfile() {
     saveDB();
   }
   showToast('&#10003; Profile updated successfully.');
-  renderMyAccount(document.getElementById('app-content'));
+  renderApp();
 }
 
 function changeAccountPassword() {
