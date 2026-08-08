@@ -75,6 +75,155 @@
       background: #fff;
       overflow-y: auto;
     }
+
+    /* ===== AUTH / LOGIN PAGE (premium) ===== */
+    .auth-shell {
+      min-height:100vh; display:flex;
+      background:#f6f5fb;
+    }
+    .auth-brand {
+      flex:1.1; position:relative; overflow:hidden;
+      background:
+        radial-gradient(1200px 700px at -10% -10%, rgba(167,139,250,0.35), transparent 55%),
+        radial-gradient(900px 600px at 110% 110%, rgba(0,194,168,0.22), transparent 50%),
+        linear-gradient(150deg, #1a1033 0%, #231448 45%, #0f2233 100%);
+      display:flex; align-items:center; justify-content:center;
+      padding:3rem;
+    }
+    .auth-brand::before {
+      content:''; position:absolute; inset:0;
+      background-image:
+        radial-gradient(rgba(255,255,255,0.07) 1px, transparent 1px);
+      background-size:26px 26px;
+      mask-image:radial-gradient(ellipse at 30% 30%, #000 30%, transparent 70%);
+    }
+    .auth-brand-inner { position:relative; max-width:480px; color:#fff; }
+    .auth-logo {
+      width:64px; height:64px; border-radius:18px; margin-bottom:1.5rem;
+      background:linear-gradient(135deg, #a78bfa, #7c3aed);
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.9rem; box-shadow:0 12px 32px rgba(124,58,237,0.45);
+    }
+    .auth-brand-name {
+      font-weight:800; font-size:1.15rem; letter-spacing:0.3px; margin-bottom:1rem;
+    }
+    .auth-brand-name span { color:#7ce0c9; }
+    .auth-brand-inner h1 {
+      font-size:2.5rem; line-height:1.15; font-weight:800; margin:0 0 1rem;
+      letter-spacing:-0.5px;
+    }
+    .auth-brand-inner > p {
+      font-size:0.95rem; line-height:1.65; color:rgba(255,255,255,0.72); margin:0 0 2rem;
+    }
+    .auth-features { display:flex; gap:0.75rem; margin-bottom:2.5rem; }
+    .auth-feature {
+      background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.12);
+      border-radius:14px; padding:0.8rem 1rem; display:flex; align-items:center; gap:0.55rem;
+      font-size:0.8rem; font-weight:600; color:rgba(255,255,255,0.92);
+      backdrop-filter:blur(6px);
+    }
+    .auth-feature span { font-size:1.05rem; }
+    .auth-quote {
+      border-left:3px solid #7ce0c9; padding-left:1rem;
+      font-size:0.88rem; font-style:italic; color:rgba(255,255,255,0.65); line-height:1.6;
+    }
+    .auth-main {
+      flex:1; display:flex; align-items:center; justify-content:center; padding:2rem;
+    }
+    .auth-card {
+      width:100%; max-width:420px; background:#fff; border:1px solid #ece9f5;
+      border-radius:24px; padding:2.25rem; box-shadow:0 24px 60px rgba(30,20,60,0.10);
+    }
+    .auth-mobile-logo { display:none; }
+    .auth-card-head h2 { font-size:1.5rem; font-weight:800; color:#1a1a2e; margin:0 0 0.25rem; }
+    .auth-card-head p { font-size:0.85rem; color:#6b7280; margin:0 0 1.5rem; }
+    .auth-tabs {
+      display:flex; background:#f3f1fa; border-radius:12px; padding:4px; gap:4px; margin-bottom:1.5rem;
+    }
+    .auth-tab {
+      flex:1; border:none; background:transparent; cursor:pointer; font-family:inherit;
+      font-size:0.82rem; font-weight:700; color:#6b7280; padding:0.55rem 0.5rem; border-radius:9px;
+      transition:all 0.18s;
+    }
+    .auth-tab:hover { color:#1a1a2e; }
+    .auth-tab.active {
+      background:#fff; color:var(--primary); box-shadow:0 3px 12px rgba(30,20,60,0.08);
+    }
+    .auth-field { margin-bottom:1rem; }
+    .auth-field label {
+      display:block; font-size:0.72rem; font-weight:700; color:#4b5563;
+      margin-bottom:0.4rem; letter-spacing:0.3px; text-transform:uppercase;
+    }
+    .auth-field input {
+      width:100%; padding:0.8rem 0.9rem; border:1.5px solid #e5e2f0; border-radius:12px;
+      font-family:inherit; font-size:0.92rem; color:#1a1a2e; outline:none; transition:border-color 0.18s, box-shadow 0.18s;
+      background:#fcfbfe;
+    }
+    .auth-field input:focus { border-color:var(--primary); box-shadow:0 0 0 4px rgba(124,58,237,0.12); background:#fff; }
+    .auth-field input::placeholder { color:#b3aecb; }
+    .auth-pw { position:relative; }
+    .auth-pw input { padding-right:3rem; }
+    .auth-pw-toggle {
+      position:absolute; right:6px; top:6px; bottom:6px; width:2.4rem; border:none;
+      background:transparent; cursor:pointer; font-size:1rem; border-radius:10px; color:#8b85a3;
+    }
+    .auth-pw-toggle:hover { background:#f3f1fa; }
+    .auth-error {
+      background:#fef2f2; border:1px solid #fecaca; color:#b91c1c;
+      font-size:0.78rem; padding:0.65rem 0.85rem; border-radius:10px; margin-bottom:1rem;
+    }
+    .auth-submit {
+      width:100%; padding:0.9rem 1rem; margin-top:0.5rem;
+      background:linear-gradient(135deg, #8b5cf6, #7c3aed); color:#fff;
+      border:none; border-radius:12px; font-family:inherit; font-size:0.95rem; font-weight:700;
+      cursor:pointer; transition:transform 0.15s, box-shadow 0.2s; box-shadow:0 10px 24px rgba(124,58,237,0.32);
+    }
+    .auth-submit:hover { transform:translateY(-1px); box-shadow:0 14px 30px rgba(124,58,237,0.4); }
+    .auth-submit:active { transform:scale(0.985); }
+    .auth-submit span { opacity:0.85; }
+    .auth-demo {
+      margin-top:1.5rem; padding-top:1.25rem; border-top:1px dashed #e8e5f2;
+      font-size:0.75rem; color:#6b7280; line-height:1.8;
+    }
+    .auth-demo-title {
+      font-size:0.68rem; font-weight:800; letter-spacing:0.6px; text-transform:uppercase;
+      color:#9ca3af; margin-bottom:0.4rem;
+    }
+    .auth-demo code {
+      background:#f3f1fa; color:var(--primary); padding:0.1rem 0.4rem; border-radius:6px; font-size:0.72rem;
+    }
+    .auth-quick-row { display:flex; gap:0.5rem; margin-top:0.6rem; }
+    .auth-quick {
+      flex:1; border:1.5px solid #e5e2f0; background:#fff; color:#4b5563;
+      font-family:inherit; font-size:0.75rem; font-weight:600; padding:0.5rem 0.75rem;
+      border-radius:10px; cursor:pointer; transition:all 0.15s;
+    }
+    .auth-quick:hover { border-color:var(--primary); color:var(--primary); background:#faf7ff; }
+    .auth-student-pick {
+      text-align:center; padding:1rem 0;
+    }
+    .auth-student-pick p { font-size:0.82rem; color:#6b7280; margin-bottom:1rem; }
+    .auth-student-pick button {
+      width:100%; padding:0.85rem 1rem; background:#f0fdf4; color:#15803d;
+      border:1.5px solid #bbf7d0; border-radius:12px; font-family:inherit; font-size:0.9rem; font-weight:700; cursor:pointer;
+      transition:all 0.15s;
+    }
+    .auth-student-pick button:hover { background:#dcfce7; }
+    .auth-footer-note { text-align:center; margin-top:1.25rem; font-size:0.7rem; color:#9ca3af; }
+    @media (max-width: 900px) {
+      .auth-brand { display:none; }
+      .auth-main { padding:1.25rem; }
+      .auth-card { max-width:400px; padding:1.75rem; border-radius:20px; }
+      .auth-mobile-logo {
+        display:flex; align-items:center; gap:0.5rem; font-weight:800; color:#1a1a2e;
+        margin-bottom:1.5rem; font-size:0.95rem;
+      }
+      .auth-mobile-logo .abox {
+        width:34px; height:34px; border-radius:10px; background:linear-gradient(135deg,#a78bfa,#7c3aed);
+        display:flex; align-items:center; justify-content:center; color:#fff; font-size:1.1rem;
+      }
+    }
+
     .pres-header {
       text-align:center; padding:3rem 1.5rem 2rem;
       background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 50%, #ede9fe 100%);
@@ -3647,7 +3796,7 @@
       font-size: 1rem;
       color: var(--text-muted);
     }
-    .login-hero-mobile .lm-privacy {
+      .login-hero-mobile .lm-privacy {
       margin-top: 2rem;
       font-size: 0.68rem;
       color: var(--text-muted);
@@ -3655,11 +3804,8 @@
       align-items: center;
       gap: 0.4rem;
     }
-    @media (max-width: 768px) {
-      .login-hero-mobile { display: flex; }
-      #login-screen > *:not(.login-hero-mobile) { display: none !important; }
-    }
   </style>
+
 </head>
 <body>
 
@@ -3668,518 +3814,66 @@
 
 <!-- ===== PRESENTATION / LOGIN SCREEN ===== -->
 <div id="login-screen">
-  <!-- Mobile-First Login Hero -->
-  <div class="login-hero-mobile">
-    <div class="lm-logo">🧘</div>
-    <h1>AI-Enhanced<br>Pilates Studio</h1>
-    <p class="lm-sub">Movement intelligence powered by instructor observations. No cameras. No wearables.</p>
-    
-    <div class="lm-features">
-      <div class="lm-feature">
-        <div class="lm-fi">🤖</div>
-        <div class="lm-fl">AI Cues</div>
-      </div>
-      <div class="lm-feature">
-        <div class="lm-fi">📊</div>
-        <div class="lm-fl">Progress</div>
-      </div>
-      <div class="lm-feature">
-        <div class="lm-fi">🔒</div>
-        <div class="lm-fl">Private</div>
+  <div class="auth-shell">
+    <div class="auth-brand">
+      <div class="auth-brand-inner">
+        <div class="auth-logo">🧘</div>
+        <div class="auth-brand-name">Pilates<span>Studio</span></div>
+        <h1>AI-Enhanced Pilates Studio</h1>
+        <p>Movement intelligence powered by instructor observations. No cameras. No wearables. Your studio, supercharged.</p>
+        <div class="auth-features">
+          <div class="auth-feature"><span>🤖</span> AI Cues</div>
+          <div class="auth-feature"><span>📊</span> Progress</div>
+          <div class="auth-feature"><span>🔒</span> Private</div>
+        </div>
+        <div class="auth-quote">"AI reinforces your expertise — it never replaces it."</div>
       </div>
     </div>
-
-    <div class="lm-roles">
-      <button class="lm-role-btn" onclick="login('admin')">
-        <div class="lm-r-icon" style="background:#1a1a2e;color:white;">⚙</div>
-        <div class="lm-r-text">
-          <div class="lm-r-title">Studio Admin</div>
-          <div class="lm-r-desc">Manage instructors, packages & analytics</div>
+    <div class="auth-main">
+      <div class="auth-card">
+        <div class="auth-mobile-logo"><span class="abox">🧘</span> Pilates Studio</div>
+        <div class="auth-card-head">
+          <h2>Welcome back</h2>
+          <p>Sign in to continue to your workspace</p>
         </div>
-        <div class="lm-r-arrow">→</div>
-      </button>
-      <button class="lm-role-btn" onclick="showInstructorLoginModal()">
-        <div class="lm-r-icon" style="background:var(--primary-light);color:var(--primary);">🎓</div>
-        <div class="lm-r-text">
-          <div class="lm-r-title">Instructor</div>
-          <div class="lm-r-desc">Teach classes & track student progress</div>
+        <div class="auth-tabs" id="auth-tabs">
+          <button type="button" class="auth-tab active" data-role="admin" onclick="setAuthRole('admin')">Admin</button>
+          <button type="button" class="auth-tab" data-role="instructor" onclick="setAuthRole('instructor')">Instructor</button>
+          <button type="button" class="auth-tab" data-role="student" onclick="setAuthRole('student')">Student</button>
         </div>
-        <div class="lm-r-arrow">→</div>
-      </button>
-      <button class="lm-role-btn" onclick="showStudentLoginModal()">
-        <div class="lm-r-icon" style="background:#dcfce7;color:#16a34a;">🏃</div>
-        <div class="lm-r-text">
-          <div class="lm-r-title">Student</div>
-          <div class="lm-r-desc">Book classes & view your progress</div>
-        </div>
-        <div class="lm-r-arrow">→</div>
-      </button>
-    </div>
-
-    <div class="lm-privacy">🔒 No video · No sensors · Privacy first</div>
-  </div>
-
-  <!-- Hero Header -->
-  <div class="pres-header">
-    <h1>
-      AI-Enhanced Pilates Studio
-      <span class="privacy-badge">&#128274; Privacy First</span>
-    </h1>
-    <p class="pres-sub">
-      No video recording &middot; No heart-rate monitoring &middot; No intrusive sensors —<br>
-      <strong>Pure movement intelligence powered by instructor observations.</strong>
-    </p>
-  </div>
-
-  <div class="pres-container">
-    <!-- 4-Step Workflow -->
-    <div class="pres-section-title">How AI Supports Your Teaching <span class="tag">Workflow</span></div>
-    <div class="wf-steps" style="margin-bottom:2.5rem;">
-      <div class="wf-step">
-        <div class="wf-icon purple">&#128196;</div>
-        <div class="wf-title">Pre-Class</div>
-        <div class="wf-desc">AI reviews attendance history, previous notes, and movement limitations to prepare an intelligent class briefing before students arrive.</div>
-        <span class="wf-label ai">AI Prepares</span>
-      </div>
-      <div style="display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:var(--text-dim);">&#8594;</div>
-      <div class="wf-step">
-        <div class="wf-icon green">&#128131;</div>
-        <div class="wf-title">Live Session</div>
-        <div class="wf-desc">You teach normally. AI quietly collects structured movement observations through your checkpoints — no cameras, no wearables.</div>
-        <span class="wf-label human">You Teach</span>
-      </div>
-      <div style="display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:var(--text-dim);">&#8594;</div>
-      <div class="wf-step">
-        <div class="wf-icon blue">&#128172;</div>
-        <div class="wf-title">Real-Time Cueing</div>
-        <div class="wf-desc">AI transforms movement patterns into gentle verbal cue suggestions you may choose to use — reinforcing your expertise, not replacing it.</div>
-        <span class="wf-label ai">AI Suggests</span>
-      </div>
-      <div style="display:flex;align-items:center;justify-content:center;font-size:1.5rem;color:var(--text-dim);">&#8594;</div>
-      <div class="wf-step">
-        <div class="wf-icon orange">&#128200;</div>
-        <div class="wf-title">Post-Class</div>
-        <div class="wf-desc">AI automatically prepares session summaries, progress reports, and personalized home exercise recommendations for every participant.</div>
-        <span class="wf-label ai">AI Summarizes</span>
-      </div>
-    </div>
-
-    <!-- Showcase: Phone + Console -->
-    <div class="pres-section-title">Instructor Experience <span class="tag">Live Demo</span></div>
-    <div class="pres-showcase" style="margin-bottom:2.5rem;">
-      <!-- Phone Mockup -->
-      <div class="phone-mockup">
-        <div class="phone-notch"></div>
-        <div class="phone-screen">
-          <div class="ps-content">
-            <div class="ps-header">
-              <div class="ps-greeting">Good morning,<br><strong>Instructor Neelam</strong></div>
-              <div class="ps-icons"><span>&#9776;</span><span>&#128276;</span></div>
-            </div>
-            <div class="ps-class-card">
-              <div class="ps-cc-time">Today &middot; 7:00 AM &middot; 60 min</div>
-              <div class="ps-cc-title">Morning Flow — Mat</div>
-              <div class="ps-cc-meta"><span>12 participants</span><span>&#9654; Start Class</span></div>
-              <div class="ps-cc-avatars">
-                <span style="background:#f0fdf4;color:var(--success);">N</span>
-                <span style="background:var(--primary-light);color:var(--primary);">K</span>
-                <span style="background:#eff6ff;color:var(--info);">M</span>
-                <span style="background:#fff7ed;color:var(--orange);">R</span>
-                <span style="background:#f3f4f6;color:var(--text-muted);font-size:0.45rem;border-color:#f3f4f6;">+8</span>
-              </div>
-            </div>
-            <div class="ps-section-title">
-              <span>&#129302; AI Pre-Class Briefing</span>
-              <a href="#" onclick="return false">View Details &rarr;</a>
-            </div>
-            <div class="ps-brief">
-              <strong>3 clients</strong> showed lower back tightness in recent sessions.
-              <strong>2 clients</strong> have reduced thoracic mobility.
-              <strong>1 client</strong> is returning after a break.
-            </div>
-            <div class="ps-section-title">&#127919; Recommended Focus</div>
-            <div class="ps-tags">
-              <span class="purple">Thoracic Mobility</span>
-              <span class="green">Hip Flexibility</span>
-              <span class="blue">Core Control</span>
-              <span class="orange">Breathing</span>
-            </div>
-            <div class="ps-section-title">&#128101; Today's Clients <span>12 total</span></div>
-            <div class="ps-client"><div class="ps-ca">N</div><div class="ps-cn">Neha Sharma</div><div class="ps-co">&#9888; Thoracic mobility limited</div></div>
-            <div class="ps-client"><div class="ps-ca">K</div><div class="ps-cn">Kavita Singh</div><div class="ps-co">&#128200; Left shoulder elevation</div></div>
-            <div class="ps-client"><div class="ps-ca">M</div><div class="ps-cn">Meera Iyer</div><div class="ps-co">&#128170; Great progress this week</div></div>
-            <div class="ps-client"><div class="ps-ca">R</div><div class="ps-cn">Rohit Joshi</div><div class="ps-co">&#9888; Tight hamstrings</div></div>
-            <div class="ps-client"><div class="ps-ca">A</div><div class="ps-cn">Ananya K.</div><div class="ps-co">&#127793; New — demo session</div></div>
+        <form id="auth-form" onsubmit="return handleAuthLogin(event)" novalidate>
+          <div class="auth-field">
+            <label for="auth-username">Username</label>
+            <input id="auth-username" type="text" autocomplete="username" placeholder="admin" value="">
           </div>
-        </div>
-      </div>
-
-      <!-- Console Preview -->
-      <div class="console-preview">
-        <div class="console-nav">
-          <span class="cn-item active">&#9632; Overview</span>
-          <span class="cn-item">&#128101; Clients</span>
-          <span class="cn-item">&#128218; Session Plan</span>
-          <span class="cn-item">&#128221; Notes</span>
-          <span class="cn-item">&#128264; Cue History</span>
-          <span class="cn-item end">&#9632; End Session</span>
-        </div>
-        <div class="console-grid">
-          <!-- Group Movement Snapshot -->
-          <div class="console-card">
-            <div class="cc-title">&#128202; Group Movement Snapshot <span class="cc-badge">Live</span></div>
-            <div class="movement-item">
-              <span>Spine Articulation</span>
-              <span class="mi-status good">&#10003; Good</span>
-            </div>
-            <div class="movement-item">
-              <span>Hip Hinge</span>
-              <span class="mi-status needs">! Needs Attention</span>
-              <div class="mi-note">3 clients rounding lower back</div>
-            </div>
-            <div class="movement-item">
-              <span>Shoulder Stability</span>
-              <span class="mi-status good">&#10003; Good</span>
-            </div>
-            <div class="movement-item">
-              <span>Pelvic Control</span>
-              <span class="mi-status needs">! Monitor</span>
-              <div class="mi-note">2 clients with anterior tilt</div>
-            </div>
-            <div class="movement-item">
-              <span>Breathing Coordination</span>
-              <span class="mi-status good">&#10003; Good</span>
+          <div class="auth-field">
+            <label for="auth-password">Password</label>
+            <div class="auth-pw">
+              <input id="auth-password" type="password" autocomplete="current-password" placeholder="••••••••">
+              <button type="button" class="auth-pw-toggle" onclick="toggleAuthPassword(this)" title="Show password">👁</button>
             </div>
           </div>
-
-          <!-- AI Cue Suggestion -->
-          <div class="console-card">
-            <div class="cc-title">&#129302; AI Cue Suggestion <span class="cc-badge">Live</span></div>
-            <div class="cue-card">
-              <div class="cue-detect">&#128200; Pattern detected: Forward Fold</div>
-              <div class="cue-text">"Hinge from the hips first, then release the spine"</div>
-              <div class="cue-count">&#128101; 3 participants affected</div>
-              <div class="cue-mod">&#128270; View Modifications &rarr;</div>
-            </div>
-            <div class="cue-card" style="border-left-color:var(--warning);">
-              <div class="cue-detect">&#128200; Pattern detected: Roll Up</div>
-              <div class="cue-text">"Lengthen through the spine before articulating"</div>
-              <div class="cue-count">&#128101; 2 participants affected</div>
-              <div class="cue-mod">&#128270; View Modifications &rarr;</div>
-            </div>
-          </div>
-
-          <!-- Today's Goal + Progress -->
-          <div class="console-card">
-            <div class="cc-title">&#127919; Today's Goal</div>
-            <div class="goal-card">
-              <div class="gc-num">Thoracic Mobility</div>
-              <div class="gc-lbl">Primary focus area for this session</div>
-              <div>
-                <span class="gc-tag purple">Spine articulation</span>
-                <span class="gc-tag green">Hip hinge</span>
-                <span class="gc-tag blue">Core engagement</span>
-              </div>
-            </div>
-            <div style="margin-top:0.75rem;">
-              <div class="cc-title" style="margin-bottom:0.4rem;">&#9201; Exercise Progress</div>
-              <div class="ex-progress">
-                <div class="ex-name"><span>Roll Down</span><span class="ex-pct" id="pres-ex-pct-1">42%</span></div>
-                <div class="ex-bar"><div class="ex-fill" id="pres-ex-fill-1" style="width:42%"></div></div>
-              </div>
-              <div class="ex-progress">
-                <div class="ex-name"><span>Single Leg Stretch</span><span class="ex-pct" id="pres-ex-pct-2">68%</span></div>
-                <div class="ex-bar"><div class="ex-fill" id="pres-ex-fill-2" style="width:68%;background:var(--success);"></div></div>
-              </div>
-              <div class="ex-progress">
-                <div class="ex-name"><span>Spine Twist</span><span class="ex-pct" id="pres-ex-pct-3">25%</span></div>
-                <div class="ex-bar"><div class="ex-fill" id="pres-ex-fill-3" style="width:25%;background:var(--warning);"></div></div>
-              </div>
-              <div class="ex-progress">
-                <div class="ex-name"><span>Side Kick Series</span><span class="ex-pct" id="pres-ex-pct-4">15%</span></div>
-                <div class="ex-bar"><div class="ex-fill" id="pres-ex-fill-4" style="width:15%;background:var(--orange);"></div></div>
-              </div>
-            </div>
+          <div id="auth-error" class="auth-error" style="display:none;"></div>
+          <button class="auth-submit" type="submit">Sign In <span>→</span></button>
+        </form>
+        <div id="auth-student-note" class="auth-student-pick" style="display:none;">
+          <p>Choose your profile to log in.</p>
+          <button type="button" onclick="showStudentLoginModal()">Select Student Profile</button>
+        </div>
+        <div class="auth-demo">
+          <div class="auth-demo-title">Demo credentials</div>
+          <div>Admin &nbsp;·&nbsp; <code>admin</code> / <code>rules123</code></div>
+          <div>Instructor &nbsp;·&nbsp; <code>neelamr</code> / <code>rules123</code></div>
+          <div class="auth-quick-row">
+            <button type="button" class="auth-quick" onclick="quickFillAuth('admin')">Fill Admin</button>
+            <button type="button" class="auth-quick" onclick="quickFillAuth('instructor')">Fill Instructor</button>
           </div>
         </div>
-
-        <!-- Session Notes -->
-        <div class="console-card">
-          <div class="cc-title">&#128221; Session Notes <span class="cc-badge">AI-Assisted</span></div>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;">
-            <div>
-              <div style="font-size:0.68rem;font-weight:600;color:var(--text-muted);margin-bottom:0.4rem;">&#129302; AI-Generated Notes</div>
-              <div class="session-note"><span class="sn-icon">&#128100;</span><div><strong>Neha:</strong> Thoracic extension improving. Cue for rib closure during roll-up.</div></div>
-              <div class="session-note"><span class="sn-icon">&#128100;</span><div><strong>Kavita:</strong> Left shoulder elevation noted during arm series. Modified with scapular stabilization.</div></div>
-              <div class="session-note"><span class="sn-icon">&#128100;</span><div><strong>Meera:</strong> Excellent pelvic stability throughout. Progressing well to intermediate level.</div></div>
-              <div class="session-note"><span class="sn-icon">&#128100;</span><div><strong>Rohit:</strong> Hamstring flexibility limiting forward fold depth. Recommend daily stretching.</div></div>
-            </div>
-            <div>
-              <div style="font-size:0.68rem;font-weight:600;color:var(--text-muted);margin-bottom:0.4rem;">&#128221; Your Notes</div>
-              <textarea style="width:100%;padding:0.5rem;border:1.5px solid #e5e7eb;border-radius:8px;font-size:0.75rem;font-family:inherit;min-height:80px;resize:vertical;" placeholder="Add your observations here..."></textarea>
-              <button style="margin-top:0.4rem;padding:0.35rem 0.85rem;background:var(--primary);color:white;border:none;border-radius:8px;font-size:0.7rem;font-weight:600;cursor:pointer;">&#128190; Save Notes</button>
-            </div>
-          </div>
-        </div>
+        <div class="auth-footer-note">Demo build &mdash; all data is sample data stored locally in your browser.</div>
       </div>
-    </div>
-
-    <!-- Movement Intelligence Flow -->
-    <div class="pres-section-title">Movement Intelligence Engine <span class="tag">How It Works</span></div>
-    <div class="mi-flow" style="margin-bottom:2.5rem;padding:1.5rem;background:#f9fafb;border-radius:16px;">
-      <div class="mi-step">
-        <div class="mi-circle purple">&#128065;</div>
-        <div class="mi-label">Observe</div>
-        <div class="mi-desc">Instructor captures movement observations</div>
-      </div>
-      <div class="mi-arrow">&#8594;</div>
-      <div class="mi-step">
-        <div class="mi-circle blue">&#128451;</div>
-        <div class="mi-label">Capture</div>
-        <div class="mi-desc">AI organizes observations into structured data</div>
-      </div>
-      <div class="mi-arrow">&#8594;</div>
-      <div class="mi-step">
-        <div class="mi-circle green">&#129302;</div>
-        <div class="mi-label">Analyze</div>
-        <div class="mi-desc">AI identifies patterns across students & classes</div>
-      </div>
-      <div class="mi-arrow">&#8594;</div>
-      <div class="mi-step">
-        <div class="mi-circle orange">&#9989;</div>
-        <div class="mi-label">Assess</div>
-        <div class="mi-desc">Movement quality evaluated against milestones</div>
-      </div>
-      <div class="mi-arrow">&#8594;</div>
-      <div class="mi-step">
-        <div class="mi-circle cyan">&#128161;</div>
-        <div class="mi-label">Recommend</div>
-        <div class="mi-desc">Personalized cues & home exercises generated</div>
-      </div>
-    </div>
-
-    <!-- AI Studio Assistant Features -->
-    <div class="pres-section-title">AI Studio Assistant <span class="tag">Capabilities</span></div>
-    <div class="feature-grid" style="margin-bottom:2rem;">
-      <div class="feature-card">
-        <div class="fc-icon purple">&#128221;</div>
-        <div class="fc-title">AI Scribe</div>
-        <div class="fc-desc">Automatically organizes instructor notes into structured student profiles.</div>
-      </div>
-      <div class="feature-card">
-        <div class="fc-icon green">&#128200;</div>
-        <div class="fc-title">Predictive Programming</div>
-        <div class="fc-desc">Recommends future class plans based on historical progress patterns.</div>
-      </div>
-      <div class="feature-card">
-        <div class="fc-icon blue">&#128737;</div>
-        <div class="fc-title">Safety Monitoring</div>
-        <div class="fc-desc">Identifies recurring movement risks requiring instructor attention.</div>
-      </div>
-      <div class="feature-card">
-        <div class="fc-icon orange">&#128101;</div>
-        <div class="fc-title">Client Engagement</div>
-        <div class="fc-desc">Generates personalized home exercise recommendations for each client.</div>
-      </div>
-      <div class="feature-card">
-        <div class="fc-icon cyan">&#128202;</div>
-        <div class="fc-title">Progress Dashboards</div>
-        <div class="fc-desc">Visualizes long-term improvement across individuals and entire classes.</div>
-      </div>
-    </div>
-
-    <!-- Mobile Experience Carousel -->
-    <div class="mobile-section">
-      <div class="section-header">
-        <div class="pres-section-title">Mobile Experience <span class="tag">5 Screens</span></div>
-        <p style="font-size:0.8rem;color:var(--text-muted);max-width:500px;margin:0.3rem auto 0;">The AI Studio Assistant, available on your phone for every stage of the session</p>
-      </div>
-      <div class="carousel-wrap">
-        <div class="phone-mockup" style="width:280px;height:560px;">
-          <div class="phone-notch"></div>
-          <div class="phone-screen">
-            <!-- Slide 1: Pre-Class Briefing -->
-            <div class="carousel-slide active" data-slide="0">
-              <div class="ps-content" style="padding:0.65rem;">
-                <div class="ps-header">
-                  <div class="ps-greeting">Good morning,<br><strong>Neelam</strong></div>
-                  <div class="ps-icons"><span>&#9776;</span></div>
-                </div>
-                <div style="background:var(--primary);border-radius:12px;padding:0.65rem;color:white;margin-bottom:0.65rem;">
-                  <div style="font-size:0.625rem;opacity:0.8;">Today &middot; 7:00 AM &middot; 60 min</div>
-                  <div style="font-size:0.78rem;font-weight:700;margin:0.15rem 0;">Morning Flow &mdash; Mat</div>
-                  <div style="font-size:0.625rem;opacity:0.85;">Pre-Class Briefing</div>
-                </div>
-                <div class="ps-section-title">&#129302; AI Briefing</div>
-                <div class="ps-brief" style="padding:0.5rem;font-size:0.625rem;">
-                  <strong>3 clients</strong> have lower back tightness.<br>
-                  <strong>2 clients</strong> have reduced thoracic mobility.<br>
-                  <strong>1 client</strong> returning after 2-week break.
-                </div>
-                <div class="ps-section-title">&#127919; Recommended Focus</div>
-                <div class="ps-tags">
-                  <span class="purple">Thoracic Mobility</span>
-                  <span class="green">Hip Flexibility</span>
-                  <span class="blue">Core Control</span>
-                </div>
-                <div class="ps-section-title">&#128101; Today's Clients</div>
-                <div class="ps-client"><div class="ps-ca">N</div><div class="ps-cn">Neha</div><div class="ps-co">&#9888; Thoracic mobility</div></div>
-                <div class="ps-client"><div class="ps-ca">K</div><div class="ps-cn">Kavita</div><div class="ps-co">&#128200; Shoulder elevation</div></div>
-                <div class="ps-client"><div class="ps-ca">M</div><div class="ps-cn">Meera</div><div class="ps-co">&#128170; Great progress</div></div>
-                <div class="ps-client"><div class="ps-ca">R</div><div class="ps-cn">Rohit</div><div class="ps-co">&#9888; Tight hamstrings</div></div>
-              </div>
-            </div>
-            <!-- Slide 2: Session Plan -->
-            <div class="carousel-slide" data-slide="1">
-              <div class="ps-content" style="padding:0.65rem;">
-                <div class="ps-header">
-                  <div class="ps-greeting">Session Plan<br><strong>Morning Flow</strong></div>
-                  <div class="ps-icons"><span>&#128200;</span></div>
-                </div>
-                <div class="ps-section-title">&#128218; Today's Exercises <span>6 movements</span></div>
-                <div class="ps-plan-ex">
-                  <div class="ppe-icon">&#10145;</div>
-                  <div class="ppe-info"><div class="ppe-name">Roll Down</div><div class="ppe-meta">8 reps &middot; 3 sets &middot; Slow tempo</div></div>
-                  <div class="ppe-status">&#10003; Complete</div>
-                </div>
-                <div class="ps-plan-ex">
-                  <div class="ppe-icon">&#128200;</div>
-                  <div class="ppe-info"><div class="ppe-name">Spine Twist</div><div class="ppe-meta">6 reps &middot; 3 sets &middot; Control</div></div>
-                  <div class="ppe-status">&#9199; In Progress</div>
-                </div>
-                <div class="ps-plan-ex">
-                  <div class="ppe-icon">&#128166;</div>
-                  <div class="ppe-info"><div class="ppe-name">Single Leg Stretch</div><div class="ppe-meta">10 reps &middot; 2 sets &middot; Breathing</div></div>
-                  <div class="ppe-status" style="color:var(--text-dim);">&#9679; Pending</div>
-                </div>
-                <div class="ps-plan-ex">
-                  <div class="ppe-icon">&#128170;</div>
-                  <div class="ppe-info"><div class="ppe-name">Side Kick Series</div><div class="ppe-meta">6 reps &middot; 2 sets &middot; Each side</div></div>
-                  <div class="ppe-status" style="color:var(--text-dim);">&#9679; Pending</div>
-                </div>
-                <div class="ps-plan-ex">
-                  <div class="ppe-icon">&#129302;</div>
-                  <div class="ppe-info"><div class="ppe-name">Swimming</div><div class="ppe-meta">6 reps &middot; 3 sets &middot; Extension</div></div>
-                  <div class="ppe-status" style="color:var(--text-dim);">&#9679; Pending</div>
-                </div>
-                <div class="ps-plan-ex">
-                  <div class="ppe-icon">&#128161;</div>
-                  <div class="ppe-info"><div class="ppe-name">Cool Down &amp; Breathing</div><div class="ppe-meta">3 min &middot; Deep breathing</div></div>
-                  <div class="ppe-status" style="color:var(--text-dim);">&#9679; Pending</div>
-                </div>
-              </div>
-            </div>
-            <!-- Slide 3: Real-Time Cueing -->
-            <div class="carousel-slide" data-slide="2">
-              <div class="ps-content" style="padding:0.65rem;">
-                <div class="ps-header">
-                  <div class="ps-greeting">Live Session<br><strong>00:42 elapsed</strong></div>
-                  <div class="ps-icons"><span style="color:var(--danger);">&#9679; LIVE</span></div>
-                </div>
-                <div class="ps-section-title">&#129302; AI Cue Suggestions</div>
-                <div class="ps-cue-item">
-                  <div class="psc-label">&#128200; Detected: Forward Fold</div>
-                  <div class="psc-text">"Hinge from the hips first"</div>
-                  <div class="psc-meta"><span class="psc-tag orange">3 clients</span> Affected</div>
-                </div>
-                <div class="ps-cue-item" style="border-left-color:var(--warning);">
-                  <div class="psc-label">&#128200; Detected: Roll Up</div>
-                  <div class="psc-text">"Lengthen through the spine"</div>
-                  <div class="psc-meta"><span class="psc-tag orange">2 clients</span> Affected</div>
-                </div>
-                <div class="ps-cue-item" style="border-left-color:var(--success);">
-                  <div class="psc-label">&#9989; Neha &mdash; Spine Twist</div>
-                  <div class="psc-text">Great thoracic rotation today!</div>
-                  <div class="psc-meta"><span class="psc-tag green">Positive</span> Cue delivered</div>
-                </div>
-                <div class="ps-section-title" style="margin-top:0.4rem;">&#128101; Class Roster <span>5 present</span></div>
-                <div class="ps-client"><div class="ps-ca">N</div><div class="ps-cn">Neha</div><div class="ps-co" style="color:var(--success);">&#10003; Marked present</div></div>
-                <div class="ps-client"><div class="ps-ca">K</div><div class="ps-cn">Kavita</div><div class="ps-co" style="color:var(--success);">&#10003; Marked present</div></div>
-                <div class="ps-client"><div class="ps-ca">M</div><div class="ps-cn">Meera</div><div class="ps-co" style="color:var(--success);">&#10003; Marked present</div></div>
-              </div>
-            </div>
-            <!-- Slide 4: Post-Class Summary -->
-            <div class="carousel-slide" data-slide="3">
-              <div class="ps-content" style="padding:0.65rem;">
-                <div class="ps-header">
-                  <div class="ps-greeting">Session Complete<br><strong>Morning Flow</strong></div>
-                  <div class="ps-icons"><span>&#9989;</span></div>
-                </div>
-                <div style="background:var(--primary);border-radius:12px;padding:0.65rem;color:white;margin-bottom:0.65rem;text-align:center;">
-                  <div style="font-size:0.625rem;opacity:0.8;">7:00 &ndash; 8:00 AM &middot; 60 min</div>
-                  <div style="font-size:1.2rem;font-weight:800;margin:0.2rem 0;">Great Session!</div>
-                  <div style="font-size:0.625rem;opacity:0.85;">5 clients attended &middot; 100% completion</div>
-                </div>
-                <div class="ps-section-title">&#128202; Session Summary</div>
-                <div class="ps-stat-row"><span class="psr-lbl">Attendance</span><span class="psr-val">5 / 5 present</span></div>
-                <div class="ps-stat-row"><span class="psr-lbl">Exercises Completed</span><span class="psr-val">4 / 6</span></div>
-                <div class="ps-stat-row"><span class="psr-lbl">AI Cues Delivered</span><span class="psr-val">8</span></div>
-                <div class="ps-stat-row"><span class="psr-lbl">Notes Taken</span><span class="psr-val">12</span></div>
-                <div class="ps-stat-row"><span class="psr-lbl">Flagged Items</span><span class="psr-val" style="color:var(--orange);">2</span></div>
-                <div class="ps-insight">&#129302; <strong>AI Insight:</strong> Thoracic mobility improved 15% across class. Recommend continuing focus next session.</div>
-              </div>
-            </div>
-            <!-- Slide 5: Home Exercise -->
-            <div class="carousel-slide" data-slide="4">
-              <div class="ps-content" style="padding:0.65rem;">
-                <div class="ps-header">
-                  <div class="ps-greeting">Home Exercise<br><strong>Follow Along</strong></div>
-                  <div class="ps-icons"><span>&#128276;</span></div>
-                </div>
-                <div style="background:#f9fafb;border-radius:12px;padding:0.5rem;text-align:center;margin-bottom:0.5rem;">
-                  <div style="font-size:0.72rem;font-weight:700;color:var(--primary);">Cat-Cow Stretch</div>
-                  <div style="font-size:0.625rem;color:var(--text-dim);">Hold for 30s &middot; 3 rounds</div>
-                </div>
-                <div class="ps-ex-ring">
-                  <svg style="position:absolute;top:0;left:0;width:80px;height:80px;transform:rotate(-90deg);" viewBox="0 0 80 80">
-                    <circle cx="40" cy="40" r="36" fill="none" stroke="#f0f0f0" stroke-width="4"/>
-                    <circle cx="40" cy="40" r="36" fill="none" stroke="var(--primary)" stroke-width="4" stroke-dasharray="226" stroke-dashoffset="56" stroke-linecap="round"/>
-                  </svg>
-                  <div class="ps-ring-inner">
-                    <div class="ps-ring-num">18s</div>
-                    <div class="ps-ring-lbl">remaining</div>
-                  </div>
-                </div>
-                <div style="display:flex;justify-content:center;gap:0.75rem;margin:0.5rem 0;">
-                  <div style="text-align:center;"><div style="font-size:1rem;font-weight:800;color:var(--text);">2</div><div style="font-size:0.625rem;color:var(--text-dim);">Round</div></div>
-                  <div style="text-align:center;"><div style="font-size:1rem;font-weight:800;color:var(--text);">6</div><div style="font-size:0.625rem;color:var(--text-dim);">Reps</div></div>
-                  <div style="text-align:center;"><div style="font-size:1rem;font-weight:800;color:var(--text);">3</div><div style="font-size:0.625rem;color:var(--text-dim);">Complete</div></div>
-                </div>
-                <button class="ps-ex-btn primary">&#9654; Continue Exercise</button>
-                <button class="ps-ex-btn outline">&#128259; Next Exercise</button>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="carousel-controls">
-          <button class="carousel-arrow" onclick="prevSlide()">&#8249;</button>
-          <div class="carousel-dots">
-            <button class="carousel-dot active" onclick="goToSlide(0)" aria-label="Pre-Class Briefing"></button>
-            <button class="carousel-dot" onclick="goToSlide(1)" aria-label="Session Plan"></button>
-            <button class="carousel-dot" onclick="goToSlide(2)" aria-label="Real-Time Cueing"></button>
-            <button class="carousel-dot" onclick="goToSlide(3)" aria-label="Post-Class Summary"></button>
-            <button class="carousel-dot" onclick="goToSlide(4)" aria-label="Home Exercise"></button>
-          </div>
-          <button class="carousel-arrow" onclick="nextSlide()">&#8250;</button>
-        </div>
-        <div class="carousel-step-label" id="carousel-label">&#128196; Pre-Class Briefing</div>
-      </div>
-    </div>
-
-    <!-- Persona Access -->
-    <div class="pres-access">
-      <h3>Explore the Demo</h3>
-      <p>Choose your role to experience the platform from different perspectives</p>
-      <div class="access-btns">
-        <button class="login-btn admin" onclick="login('admin')"><span>&#9881;</span> Login as Admin</button>
-        <button class="login-btn instructor" onclick="showInstructorLoginModal()"><span>&#127891;</span> Login as Instructor</button>
-        <button class="login-btn student" onclick="showStudentLoginModal()"><span>&#127939;</span> Login as Student</button>
-      </div>
-      <div style="margin-top:1.25rem;font-size:0.72rem;color:var(--text-dim);">Demo prototype &mdash; all data is mock data. Nothing is stored permanently.</div>
     </div>
   </div>
 </div>
-
 <!-- ===== APP SCREEN ===== -->
 <div id="app-screen">
   <!-- Student Mobile Header (replaces topbar on mobile) -->
@@ -4237,7 +3931,7 @@
 // ============================
 // DATA LAYER
 // ============================
-const DB_KEY = 'zenpilates_data';
+const DB_KEY = 'zenpilates_data_v2';
 
 // Unified color constants for JS template strings
 const C = {
@@ -4265,12 +3959,14 @@ const C = {
 let db = loadDB();
 
 function defaultDB() {
+  const today = new Date().toISOString().split('T')[0];
+  const next = new Date(Date.now() + 86400000).toISOString().split('T')[0];
   return {
     settings: {
       studioName: 'Pilates Studio',
       logoData: null,
       colorTheme: '#7c3aed',
-      numInstructors: 6,
+      numInstructors: 7,
       classTypes: { mat: true, reformer: true },
       defaultDuration: 60,
       timeSlots: ['Morning', 'Afternoon', 'Evening'],
@@ -4299,7 +3995,8 @@ function defaultDB() {
       { id: 'i3', name: 'Sneha Kapoor', specialization: 'Mat Pilates, Pre/Postnatal', certification: 'NASM-CPT, Pilates Mat Specialist', experience: 5, email: 'sneha@zenpilates.com', phone: '+91 98765 43203', photo: null, password: 'instructor123', active: true, dateJoined: '2026-04-10', bio: 'Expert mat instructor. Focus on core strength, flexibility, and mindful movement.', availability: { mon: ['07:00','17:00'], wed: ['07:00','17:00'], fri: ['07:00','17:00'] }, permissions: { editSchedule: true, editPricing: false }, rating: 4.8 },
       { id: 'i4', name: 'Vikram Raj', specialization: 'Mat, Hatha Yoga', certification: 'E-RYT 500, Yoga Alliance', experience: 4, email: 'vikram@zenpilates.com', phone: '+91 98765 43204', photo: null, password: 'instructor123', active: false, dateJoined: '2026-02-20', bio: 'Hatha Yoga and Mat Pilates fusion instructor on sabbatical.', availability: { mon: ['07:00'], wed: ['07:00'], fri: ['07:00'] }, permissions: { editSchedule: false, editPricing: false }, rating: 4.1 },
       { id: 'i5', name: 'Ritu Agarwal', specialization: 'Reformer, Pilates Sculpt', certification: 'ACE, Balanced Body Reformer Certified', experience: 3, email: 'ritu@zenpilates.com', phone: '+91 98765 43205', photo: null, password: 'instructor123', active: true, dateJoined: '2026-05-01', bio: 'Energetic reformer instructor who loves high-intensity Pilates sculpt classes.', availability: { mon: ['17:00','18:00'], tue: ['17:00'], wed: ['17:00','18:00'], thu: ['17:00'], fri: ['17:00','18:00'] }, permissions: { editSchedule: true, editPricing: true }, rating: 4.0 },
-      { id: 'i6', name: 'Deepa Menon', specialization: 'Pre/Postnatal, Mat, Restorative', certification: 'Polestar Pilates, Prenatal Specialist', experience: 7, email: 'deepa@zenpilates.com', phone: '+91 98765 43206', photo: null, password: 'instructor123', active: true, dateJoined: '2025-11-01', bio: 'Gentle restorative and prenatal Pilates specialist. Creates a safe space for all bodies.', availability: { mon: ['07:00','08:00','09:00'], tue: ['07:00','08:00'], wed: ['07:00','08:00','09:00'], thu: ['07:00','08:00'], fri: ['07:00','08:00','09:00'] }, permissions: { editSchedule: true, editPricing: false }, rating: 4.9 }
+      { id: 'i6', name: 'Deepa Menon', specialization: 'Pre/Postnatal, Mat, Restorative', certification: 'Polestar Pilates, Prenatal Specialist', experience: 7, email: 'deepa@zenpilates.com', phone: '+91 98765 43206', photo: null, password: 'instructor123', active: true, dateJoined: '2025-11-01', bio: 'Gentle restorative and prenatal Pilates specialist. Creates a safe space for all bodies.', availability: { mon: ['07:00','08:00','09:00'], tue: ['07:00','08:00'], wed: ['07:00','08:00','09:00'], thu: ['07:00','08:00'], fri: ['07:00','08:00','09:00'] }, permissions: { editSchedule: true, editPricing: false }, rating: 4.9 },
+      { id: 'neelamr', name: 'Neelam R', specialization: 'Mat & Reformer', certification: 'PMA Certified, Mat & Reformer Specialist', experience: 7, email: 'neelamr@zenpilates.com', phone: '+91 98765 43207', photo: null, password: 'rules123', loginId: 'neelamr', active: true, dateJoined: '2024-09-01', bio: 'Lead instructor with 7+ years experience. Known for energetic morning flows and mindful cueing.', availability: { mon: ['07:00','09:00'], tue: ['07:00','09:00'], wed: ['07:00','09:00'], thu: ['07:00','09:00'], fri: ['07:00','09:00'] }, permissions: { editSchedule: true, editPricing: true }, rating: 4.8 }
     ],
     students: [
       { id: 's1', name: 'Neha Sharma', phone: '+91 98765 43210', email: 'neha@email.com', gender: 'Female', emergency: '+91 98765 43211', enrolledClasses: ['c11','c13','c14','c15','c1','c5','c6','c7','c8'], enrolledDemos: [], active: true, level: 'intermediate', levelProgress: { beginner: 12, intermediate: 5, expert: 0 } },
@@ -4340,7 +4037,11 @@ function defaultDB() {
       { id: 'c23', type: 'reformer', level: 'beginner', date: '2026-07-06', time: '17:00', duration: 60, maxStudents: 8, status: 'active', instructor: 'Ritu Agarwal', enrolled: ['s5','s6'], waitlist: [] },
       { id: 'c24', type: 'reformer', level: 'intermediate', date: '2026-07-14', time: '17:00', duration: 60, maxStudents: 8, status: 'active', instructor: 'Ritu Agarwal', enrolled: ['s4'], waitlist: [] },
       { id: 'c25', type: 'mat', level: 'beginner', date: '2026-07-06', time: '07:00', duration: 60, maxStudents: 10, status: 'active', instructor: 'Deepa Menon', enrolled: ['s1','s3','s8'], waitlist: [] },
-      { id: 'c26', type: 'mat', level: 'beginner', date: '2026-07-13', time: '07:00', duration: 60, maxStudents: 10, status: 'active', instructor: 'Deepa Menon', enrolled: ['s2','s5','s6','s8'], waitlist: [] }
+      { id: 'c26', type: 'mat', level: 'beginner', date: '2026-07-13', time: '07:00', duration: 60, maxStudents: 10, status: 'active', instructor: 'Deepa Menon', enrolled: ['s2','s5','s6','s8'], waitlist: [] },
+      { id: 'c27', type: 'mat', level: 'beginner', date: today, time: '07:00', duration: 60, maxStudents: 15, status: 'active', instructor: 'Neelam R', enrolled: ['s1','s2','s3','s4','s5'], waitlist: [] },
+      { id: 'c28', type: 'reformer', level: 'intermediate', date: today, time: '09:00', duration: 60, maxStudents: 10, status: 'active', instructor: 'Neelam R', enrolled: ['s4','s6','s7','s9'], waitlist: [] },
+      { id: 'c29', type: 'mat', level: 'beginner', date: next, time: '07:00', duration: 60, maxStudents: 15, status: 'active', instructor: 'Neelam R', enrolled: ['s1','s2','s3','s4'], waitlist: [] },
+      { id: 'c30', type: 'reformer', level: 'expert', date: next, time: '09:00', duration: 60, maxStudents: 10, status: 'active', instructor: 'Neelam R', enrolled: ['s1','s7','s9'], waitlist: [] }
     ],
     demoSessions: [
       { id: 'd1', date: '2026-07-06', time: '17:00', duration: 45, maxStudents: 5, enrolled: ['s5'] },
@@ -4693,6 +4394,90 @@ function applyTheme() {
   document.documentElement.style.setProperty('--primary-light', s.colorTheme + '20');
   document.documentElement.style.setProperty('--cyan', s.colorTheme);
   document.documentElement.style.setProperty('--cyan-glow', s.colorTheme + '33');
+}
+
+// ============================
+// AUTH PAGE (username + password)
+// ============================
+let authRole = 'admin';
+
+function setAuthRole(role) {
+  authRole = role;
+  document.querySelectorAll('.auth-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.role === role);
+  });
+  const isStudent = role === 'student';
+  const form = document.getElementById('auth-form');
+  const studentNote = document.getElementById('auth-student-note');
+  const uname = document.getElementById('auth-username');
+  const pwd = document.getElementById('auth-password');
+  if (form) form.style.display = isStudent ? 'none' : 'block';
+  if (studentNote) studentNote.style.display = isStudent ? 'block' : 'none';
+  if (uname) {
+    uname.placeholder = role === 'admin' ? 'admin' : role === 'instructor' ? 'neelamr' : '';
+    uname.value = '';
+  }
+  if (pwd) pwd.value = '';
+  const err = document.getElementById('auth-error');
+  if (err) err.style.display = 'none';
+}
+
+function quickFillAuth(role) {
+  setAuthRole(role);
+  const uname = document.getElementById('auth-username');
+  const pwd = document.getElementById('auth-password');
+  if (role === 'admin') { uname.value = 'admin'; pwd.value = 'rules123'; }
+  else if (role === 'instructor') { uname.value = 'neelamr'; pwd.value = 'rules123'; }
+}
+
+function toggleAuthPassword(btn) {
+  const input = btn.parentElement.querySelector('input');
+  const isHidden = input.type === 'password';
+  input.type = isHidden ? 'text' : 'password';
+  btn.textContent = isHidden ? '🙈' : '👁';
+}
+
+function instructorPasswordOk(inst, given) {
+  const ok = String(inst.password || '').trim().toLowerCase();
+  const g = String(given || '').trim().toLowerCase();
+  if (!ok || !g) return false;
+  if (ok === g) return true;
+  if (ok === 'rules123' && (g === 'rule123' || g === 'rule 123')) return true;
+  return false;
+}
+
+function handleAuthLogin(e) {
+  if (e && e.preventDefault) e.preventDefault();
+  const err = document.getElementById('auth-error');
+  const uname = document.getElementById('auth-username');
+  const pwd = document.getElementById('auth-password');
+  if (err) err.style.display = 'none';
+  const u = uname ? uname.value.trim() : '';
+  const p = pwd ? pwd.value : '';
+  if (authRole === 'admin') {
+    if (u === 'admin' && p === 'rules123') {
+      login('admin');
+      return false;
+    }
+  } else if (authRole === 'instructor') {
+    const lu = u.toLowerCase();
+    const inst = (db.instructors || []).find(i => i.active &&
+      (String(i.loginId || '').toLowerCase() === lu || String(i.email || '').toLowerCase() === lu));
+    if (inst && instructorPasswordOk(inst, p)) {
+      db.settings.instructorName = inst.name;
+      db.settings.instructorSpecialization = inst.specialization || '';
+      db.settings.instructorPhoto = inst.photo || null;
+      saveDB();
+      login('instructor', inst.id);
+      return false;
+    }
+  }
+  if (err) {
+    err.textContent = 'Invalid username or password. Use the demo credentials below.';
+    err.style.display = 'block';
+  }
+  if (typeof triggerHaptic === 'function') triggerHaptic();
+  return false;
 }
 
 function showInstructorLoginModal() {
@@ -8050,7 +7835,15 @@ function endClass() {
   `);
 }
 
+function endClassAndSave() {
+  var lsOv = document.querySelector('.ls-end-modal-overlay');
+  if (lsOv) lsOv.remove();
+  confirmEndClass();
+}
+
 function confirmEndClass() {
+  var lsOv = document.querySelector('.ls-end-modal-overlay');
+  if (lsOv) lsOv.remove();
   stopClassVoiceRecognition();
   if (timerInterval) clearInterval(timerInterval);
   timerInterval = null;
@@ -9530,7 +9323,7 @@ function showEndClassModal() {
     '</div>' +
     '<div class="ls-em-actions">' +
       '<button class="ls-em-btn ls-em-cancel" onclick="this.closest(\'.ls-end-modal-overlay\').remove()">Cancel</button>' +
-      '<button class="ls-em-btn ls-em-confirm" onclick="endClass()">End & Save</button>' +
+      '<button class="ls-em-btn ls-em-confirm" onclick="endClassAndSave()">End & Save</button>' +
     '</div>' +
   '</div>';
   document.body.appendChild(overlay);
