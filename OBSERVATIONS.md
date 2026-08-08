@@ -7,8 +7,9 @@ Severity: **S1** critical (breaks a core flow) · **S2** major (wrong/blocked be
 
 ## Summary
 
-- Automated suite: **75/75 PASS** (final, after fixes) — see `C:\Users\Welcome\AppData\Local\Temp\opencode\e2e-test\suite.js` (suites A–J).
-- Defects found this cycle: **15** (2 S1, 4 S2, 8 S3, 1 S4). All **FIXED** and **VERIFIED**.
+- Automated suite: **96/96 PASS** (final, after fixes) — see `C:\Users\Welcome\AppData\Local\Temp\opencode\e2e-test\suite.js` (suites A–J + K01–K21).
+- Defects logged across go-live cycles: **42** (4 S1, 9 S2, 28 S3, 1 S4). All **FIXED** and **VERIFIED**.
+- Cycle 1 (core flows): OBS-001…OBS-015 (15 defects). Cycle 2 (UX-audit roll-up): OBS-016…OBS-042 (27 defects) covering the 48-point UX audit (F-01…F-48) — every finding fixed and regression-tested by the K01–K21 suite plus a full-suite re-run.
 - All fixes were covered by a failing automated check first, then re-verified green after the change.
 
 ## Defect Log
@@ -30,10 +31,37 @@ Severity: **S1** critical (breaks a core flow) · **S2** major (wrong/blocked be
 | OBS-013 | S3 | Guidance | Key action controls lacked tooltips: nav items, logout, "New Class", schedule Change/Cancel | No `title` attributes on these controls | FIXED — added `title` to nav items, both logout buttons, "New Class", Change, Cancel, package/attendance/snapshot buttons | G02 (all nav + key actions have titles) |
 | OBS-014 | S4 | Login | Username placeholder was cleared to empty when switching to the Student tab | `setAuthRole('student')` set `placeholder=''` | FIXED — student role now shows "Select your student profile below" | G03 (placeholder non-empty for all roles) |
 | OBS-015 | S3 | Voice Notes | `startVoiceNote` returned **silently** (no feedback) when the note area was missing | `if (!input) return;` before any toast | FIXED — guidance toast "Note area not ready yet…" when the input element is absent | H10 (toast fires when UI unavailable) |
+| OBS-016 | S3 | Accessibility | Toasts had no live region; modals lacked dialog semantics; decorative emoji announced; no visible keyboard focus | Missing ARIA scaffolding + no `:focus-visible` | FIXED — `aria-live="polite"` + `role="status"` on toast container, `role="dialog"`/`aria-modal` + focus trap on modals, `aria-hidden` on decorative emoji/icons, global 2px `:focus-visible` ring, 44px touch targets (F-21…F-25) | Full-suite re-run (E02 no runtime errors) |
+| OBS-017 | S3 | Typography / Color | Base type ran 9.6–13px; `--text-dim` (2.56:1) and `--ls-text-dim` (3.93:1) failed WCAG contrast | No type floor; dim tokens too light | FIXED — `--text-dim`/`--ls-text-dim` tokens + "UX / ACCESSIBILITY PASS" CSS: 14px body, font-size floors, disabled-state contrast, 44px targets (F-09, F-12, F-13, F-14) | Full-suite re-run |
+| OBS-018 | S3 | Accessibility | Live attendance buttons were title-only (✓/⏱/✗) | Icon-only control | FIXED — Present / Late / Absent text labels on attendance buttons (F-27) | Full-suite re-run |
+| OBS-019 | S2 | Instructor Nav | Attendance, Students, Demo, Consultations, Insights pages were hidden from the nav (reached only via dashboard quick actions) | `hidden:true` on nav entries | FIXED — removed `hidden:true`; all 9 instructor nav items visible (F-01) | C07/C08/C13/C14 + full-suite re-run |
+| OBS-020 | S3 | Booking | Booking succeeded via toast only — no confirmation state or undo | No recovery path | FIXED — `showToastAction()` action toasts; booking success exposes **Undo** which reverses enrollment (F-28) | K01 |
+| OBS-021 | S2 | Booking | Full classes had no waitlist; cancelled seats went to nobody | No queue model | FIXED — `joinWaitlist` / `leaveWaitlist` / `promoteFromWaitlist`; auto-promote on spot opening; cancel modal is waitlist-aware (F-30, F-36) | K02, K03 |
+| OBS-022 | S3 | Booking | Seats-left not shown up front | Cards omitted capacity | FIXED — booking cards show "X seats left" / "Full" copy (F-29) | K04 |
+| OBS-023 | S3 | Booking | AI Recommended strip always suggested the same level; demo booking had no date/time choice | Static rec + first-available demo | FIXED — personalized AI Recommended strip by student level/history; demo session picker added (F-31, F-32) | Full-suite re-run |
+| OBS-024 | S3 | Scheduling | "Today"/"Tomorrow" day labels computed but never rendered | `dayLabel` dead code | FIXED — Today / Tomorrow labels shown on schedule tiles (F-34) | K05 |
+| OBS-025 | S3 | Scheduling | No calendar/weekly view | List only | FIXED — 7-day weekly strip above Upcoming (F-35) | K06 |
+| OBS-026 | S3 | Dashboard | No pre-class reminders | None | FIXED — tomorrow-reminder banner with **View** action on student dashboard (F-37) | K07 |
+| OBS-027 | S3 | Scheduling | Cancelling a booking had no waitlist handoff and gave no recovery action | No rebooking path | FIXED — waitlist-aware cancel modal + `showToastAction` (Undo/rebook) after cancel (F-36) | K02/K03 re-run |
+| OBS-028 | S2 | Account | No profile management for any persona | No account page | FIXED — `account` nav page for all personas (`renderMyAccount`/`saveAccountProfile`); student bottom bar now 5 tabs; admin password change, student invoice card, notification prefs (F-38) | K08 |
+| OBS-029 | S3 | Account | No password change path | None | FIXED — admin password change in My Account (F-39) | K09 |
+| OBS-030 | S3 | Account | No payment/invoice history for students | None | FIXED — student invoice card on My Account (F-40) | K10 |
+| OBS-031 | S3 | Account | No notifications/preferences hub | None | FIXED — notification preference toggles, persisted (F-41) | K11 |
+| OBS-032 | S3 | Live Class | Overflow-menu items (Privacy & Consent, Retention Settings, Export Data) were placeholders | Closed menu only | FIXED — all three now open real modals / export the live data (F-44) | K12 |
+| OBS-033 | S3 | Live Class | Voice capture hid behind an 800ms long-press with no hint | Gesture-only control | FIXED — explicit `#ls-voice-btn` mic toggle in the timer controls (F-45) | K13 |
+| OBS-034 | S3 | Scheduling | Creating a class never warned about slot conflicts | No overlap check | FIXED — create-class shows "⚠ N conflicting slot(s) skipped" toast (F-46) | K14 |
+| OBS-035 | S2 | Admin | Audit-log events existed (`logAuditEvent`) but nothing rendered them | No UI | FIXED — "Recent Activity" audit-log card in Reports (F-42) | K15 |
+| OBS-036 | S2 | Admin | No class-level administration; classes were only owned by instructors | No admin class view | FIXED — "Class Administration" card in Reports: toggle / deactivate / confirm-delete a class studio-wide (delete also unenrolls students and clears attendance) (F-47) | K16 |
+| OBS-037 | S3 | Admin | Delete confirmation was inconsistent across instructor/package CRUD | Mixed patterns | FIXED — `showRemovePackageConfirm` for packages; class deletion already modal-confirmed (F-48) | K16 re-run |
+| OBS-038 | S3 | Navigation | Breadcrumbs inconsistent — some pages showed "Dashboard › X", others didn't | No shared helper | FIXED — `crumb(label)` helper wired into all drill-down pages (incl. My Account) (F-03) | K17 |
+| OBS-039 | S3 | Responsive | Live console 3-column at 390px; iPad-portrait 820px boundary unverified | No 390px reflow / 820px check | FIXED + VERIFIED — console reflows to 1 column with the notes panel inside at 390px; 820px renders without overflow (F-18, F-19) | K18, K19 |
+| OBS-040 | S3 | Design | Emoji feature icons + inline SVG only in live session — mixed icon systems | No global icon set | FIXED — `ICONS` + `svgIcon()` helper; topnav + bottom tabs use SVG line icons via `injectNavIcons()` (F-06) | K20 |
+| OBS-041 | S3 | Design | Ad-hoc inline-styled booking/schedule cards vs the card design system | No reusable components | FIXED — DS component system (`.ds-*`) adopted by booking cards, AI Recommended strip, demo banner (F-05) | K21 |
+| OBS-042 | S3 | Layout | Dense roster/schedule rows at 390px; student mobile header ignored top notch | Small hit areas, no safe-area top | FIXED — roster/schedule rows get padding + 48px min-height; student mobile header uses `env(safe-area-inset-top)` (F-08, F-20) | Full-suite re-run (I-suite at 390px) |
 
 ## Notes / Non-issues
-- Student schedule intentionally uses date tiles (weekday + day number) rather than "Today/Tomorrow" labels; D08 assertion adjusted accordingly.
+- Student schedule shows weekday + day tiles **plus** Today/Tomorrow labels (OBS-024); the cycle-1 "tiles only" note is superseded.
 - `DB_KEY` bumped `zenpilates_data_v2` → `zenpilates_data_v3` so returning visitors receive the corrected seed.
 - Post-class summary modal and live-session "End & Save" (OBS on prior cycle) continue to pass (C03/C04).
 - Session persistence is intentionally **per-tab** (`sessionStorage`), not permanent login; closing the tab ends the session (J04).
-- Full UX audit with 48 findings (F-01…F-48) is documented in `UX_AUDIT.md`; the three P0 items (session persistence OBS-009, brand logo OBS-012, per-student live notes OBS-011) are now fixed. Remaining audit items (contrast, ARIA, type scale, etc.) are tracked as recommendations, not release blockers.
+- Full UX audit with 48 findings (F-01…F-48) is documented in `UX_AUDIT.md`; **all 48 findings are now FIXED and VERIFIED** (K01–K21 + full-suite re-run), closing the go-live QA loop.

@@ -16,7 +16,7 @@
       --bg-deep: #f0f2f5;
       --text: #1a1a2e;
       --text-muted: #6b7280;
-      --text-dim: #94a3b8;
+      --text-dim: #6b7280;
       --success: #16a34a;
       --green-bright: #22c55e;
       --danger: #ef4444;
@@ -48,7 +48,7 @@
       --ls-accent-grad: linear-gradient(90deg, #00c2a8, #00a89a);
       --ls-muted: #94a3b8;
       --ls-text: #e2e8f0;
-      --ls-text-dim: #64748b;
+      --ls-text-dim: #8b98ab;
       --ls-border: rgba(148,163,184,0.12);
       --ls-danger: #ef4444;
       --ls-warning: #f59e0b;
@@ -68,6 +68,43 @@
       overflow-x: hidden;
     }
     .hidden { display: none !important; }
+
+    /* ===== UX / ACCESSIBILITY PASS (F-09..F-25) ===== */
+    body { font-size: 14px; line-height: 1.5; }
+    :focus { outline: none; }
+    :focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+    /* Floor tiny inline type at 13px (0.8125rem) for readability (F-09) */
+    *[style*="font-size:0.6rem"] { font-size: 0.8125rem !important; }
+    *[style*="font-size:0.62rem"] { font-size: 0.8125rem !important; }
+    *[style*="font-size:0.63rem"] { font-size: 0.8125rem !important; }
+    *[style*="font-size:0.65rem"] { font-size: 0.8125rem !important; }
+    *[style*="font-size:0.68rem"] { font-size: 0.8125rem !important; }
+    *[style*="font-size:0.7rem"] { font-size: 0.8125rem !important; }
+    *[style*="font-size:0.72rem"] { font-size: 0.8125rem !important; }
+    *[style*="font-size:0.75rem"] { font-size: 0.8125rem !important; }
+    *[style*="font-size:0.78rem"] { font-size: 0.875rem !important; }
+    *[style*="font-size:0.8rem"] { font-size: 0.875rem !important; }
+    *[style*="font-size:0.82rem"] { font-size: 0.875rem !important; }
+    /* Class-based small text floor (F-09) */
+    .page-subtitle, .form-label, .empty-state, .badge, .ne-time, .auth-demo,
+    .ls-panel-subtitle, .ls-tc-label, .ls-ex-item .ls-ex-header, .snap-toggle,
+    .ls-class-sub, .ls-b-text, .auth-footer-note { font-size: 0.8125rem; }
+    /* Touch targets ≥ 44px for primary actions (F-25) */
+    .btn, .btn-primary, .btn-danger, .btn-outline, .auth-submit, .auth-tab,
+    .logout-btn, .ic-tab, .lia-btn, .ls-tc-btn, .ls-end-btn, .ls-stu-chip,
+    .tab-item, .snap-toggle, .ls-overflow-item, .idbca-btn, .lf-btn {
+      min-height: 44px;
+    }
+    /* Disabled-state contrast (F-13) */
+    button:disabled, .btn:disabled, .disabled {
+      color: #6b7280 !important;
+      background: #eef1f6 !important;
+      opacity: 1 !important;
+    }
 
     /* ===== PRESENTATION / LOGIN SCREEN ===== */
     #login-screen {
@@ -642,7 +679,7 @@
     }
     .app-topnav .nav-item:hover { color: var(--text); background: #f5f5f5; }
     .app-topnav .nav-item.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 600; }
-    .app-topnav .nav-item .nav-icon { font-size: 0.9rem; }
+    .app-topnav .nav-item .nav-icon { font-size: 0.9rem; display: flex; align-items: center; }
     .app-topnav .nav-item { position:relative; }
     .app-topnav .nav-item .nav-live-dot {
       width:8px;height:8px;border-radius:50%;background:var(--danger);
@@ -802,8 +839,8 @@
     .toggle:hover { filter: brightness(1.15); }
 
     .schedule-card {
-      background: #f9fafb; border-radius: var(--radius); padding: 1rem;
-      margin-bottom: 0.75rem; border-left: 4px solid var(--primary); cursor: pointer;
+      background: #f9fafb; border-radius: var(--radius); padding: 1.1rem;
+      margin-bottom: 0.8rem; border-left: 4px solid var(--primary); cursor: pointer;
       transition: all 0.15s;
     }
     .schedule-card:hover { background: #f3f4f6; transform: translateY(-1px); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
@@ -816,13 +853,50 @@
 
     .roster-item {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 0.7rem 0; border-bottom: 1px solid #f3f4f6;
+      padding: 0.85rem 0.35rem; border-bottom: 1px solid #f3f4f6; min-height: 48px;
     }
     .roster-item:last-child { border-bottom: none; }
     .roster-item:hover { background: #f9fafb; }
-    .roster-item .info { display: flex; flex-direction: column; }
-    .roster-item .name { font-size: 0.85rem; font-weight: 600; }
-    .roster-item .meta { font-size: 0.73rem; color: #9ca3af; }
+    .roster-item .info { display: flex; flex-direction: column; gap: 2px; }
+    .roster-item .name { font-size: 0.87rem; font-weight: 600; }
+    .roster-item .meta { font-size: 0.75rem; color: #9ca3af; }
+
+    /* ===== DESIGN SYSTEM COMPONENTS (F-05) ===== */
+    .ds-card { background:#fff; border:1px solid var(--border-dark); border-radius:14px; padding:0.85rem; margin-bottom:0.6rem; transition:border-color 0.15s, box-shadow 0.15s; }
+    .ds-card:hover { border-color:var(--primary); }
+    .ds-row { display:flex; align-items:flex-start; gap:0.75rem; }
+    .ds-flex { flex:1; min-width:0; }
+    .ds-between { display:flex; justify-content:space-between; align-items:flex-start; }
+    .ds-avatar { width:48px; height:48px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.2rem; flex-shrink:0; }
+    .ds-avatar.reformer { background:var(--primary-light); }
+    .ds-avatar.mat { background:var(--success-light, #dcfce7); }
+    .ds-title { font-size:0.82rem; font-weight:600; color:var(--text); }
+    .ds-sub { font-size:0.68rem; color:var(--text-muted); margin-top:1px; }
+    .ds-seats { font-size:0.65rem; font-weight:600; }
+    .ds-seats.full { color:var(--danger); }
+    .ds-seats.warn { color:var(--orange); }
+    .ds-seats.ok { color:var(--success); }
+    .ds-chips { display:flex; gap:0.35rem; }
+    .ds-chip { font-size:0.6rem; padding:2px 6px; border-radius:6px; font-weight:600; text-transform:capitalize; }
+    .ds-chip.level-beginner { background:#dcfce7; color:#166534; }
+    .ds-chip.level-intermediate { background:#dbeafe; color:#1e40af; }
+    .ds-chip.level-expert { background:#fce7f3; color:#9d174d; }
+    .ds-chip.type { background:#f3f4f6; color:var(--text-muted); font-weight:500; }
+    .ds-btn { padding:0.55rem 0.85rem; border-radius:8px; border:none; font-size:0.7rem; font-weight:600; cursor:pointer; transition:all 0.15s; white-space:nowrap; }
+    .ds-btn.primary { background:var(--primary); color:white; }
+    .ds-btn.success { background:white; color:var(--success); border:1.5px solid var(--success); }
+    .ds-btn.ghost { background:#e5e7eb; color:#9ca3af; cursor:not-allowed; }
+    .ds-btn.waitlist { background:#ffedd5; color:#c2410c; }
+    .ds-btn.waitlisted { background:#fef3c7; color:#92400e; }
+    .ds-badge-booked { font-size:0.7rem; color:var(--success); font-weight:600; }
+    .ds-panel { border-radius:14px; padding:0.85rem 1rem; margin-bottom:1rem; }
+    .ds-panel.violet { background:linear-gradient(135deg,rgba(124,58,237,0.08),rgba(124,58,237,0.03)); border:1px solid rgba(124,58,237,0.15); }
+    .ds-panel.green { background:linear-gradient(135deg,#ecfdf5,#f0fdf4); border:1px solid #bbf7d0; }
+    .ds-panel-head { display:flex; align-items:center; gap:0.5rem; margin-bottom:0.5rem; }
+    .ds-panel-title { font-size:0.78rem; font-weight:600; color:var(--primary); }
+    .ds-panel-sub { font-size:0.65rem; color:var(--text-muted); margin-bottom:0.5rem; }
+    .ds-avatar-box { width:44px; height:44px; border-radius:12px; background:white; display:flex; align-items:center; justify-content:center; font-size:1.2rem; flex-shrink:0; border:1px solid #bbf7d0; }
+    .ds-empty { text-align:center; padding:2rem 1rem; color:var(--text-muted); font-size:0.82rem; }
 
     .attendance-btns { display: flex; gap: 4px; }
     .attendance-btns button {
@@ -1917,7 +1991,9 @@
     @media (max-width: 600px) {
       .app-content { padding: 1rem; }
       .stats-row { grid-template-columns: 1fr 1fr; }
-      .app-topnav { overflow-x: auto; }
+      .app-topnav { overflow-x: auto; scrollbar-width: none; }
+      .app-topnav::-webkit-scrollbar { display: none; }
+      .app-topnav { -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 24px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 24px), transparent); }
       .app-topnav .nav-item span { font-size: 0.72rem; }
     }
 
@@ -3659,7 +3735,11 @@
       font-size: 1.25rem;
       line-height: 1;
       transition: transform 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
+    .stu-bottom-nav .tab-item .tab-icon svg { display: block; }
     .stu-bottom-nav .tab-item.active {
       color: var(--primary);
       font-weight: 600;
@@ -3705,7 +3785,8 @@
         display: flex !important;
         align-items: center;
         justify-content: space-between;
-        padding: 0.6rem 1rem;
+        padding: max(0.6rem, env(safe-area-inset-top)) 1rem 0.6rem;
+        min-height: 44px;
         background: white;
         border-bottom: 1px solid var(--border-dark);
         position: sticky;
@@ -3835,7 +3916,7 @@
 <body>
 
 <!-- ===== TOAST CONTAINER ===== -->
-<div id="toast-container" class="toast-container"></div>
+<div id="toast-container" class="toast-container" aria-live="polite" role="status"></div>
 
 <!-- ===== PRESENTATION / LOGIN SCREEN ===== -->
 <div id="login-screen">
@@ -3929,21 +4010,25 @@
     <!-- Student Bottom Tab Bar (mobile-first) -->
     <div class="stu-bottom-nav" id="stu-bottom-nav">
       <div class="tab-bar">
-        <div class="tab-item active" onclick="navigate('student-dashboard')" data-page="student-dashboard">
+        <div class="tab-item active" onclick="navigate('student-dashboard')" data-page="student-dashboard" data-icon="home">
           <span class="tab-icon">🏠</span>
           <span>Home</span>
         </div>
-        <div class="tab-item" onclick="navigate('student-book')" data-page="student-book">
+        <div class="tab-item" onclick="navigate('student-book')" data-page="student-book" data-icon="book-open">
           <span class="tab-icon">📚</span>
           <span>Book</span>
         </div>
-        <div class="tab-item" onclick="navigate('student-schedule')" data-page="student-schedule">
+        <div class="tab-item" onclick="navigate('student-schedule')" data-page="student-schedule" data-icon="calendar">
           <span class="tab-icon">📅</span>
           <span>Schedule</span>
         </div>
-        <div class="tab-item" onclick="navigate('student-packages')" data-page="student-packages">
+        <div class="tab-item" onclick="navigate('student-packages')" data-page="student-packages" data-icon="gem">
           <span class="tab-icon">💎</span>
           <span>Plans</span>
+        </div>
+        <div class="tab-item" onclick="navigate('account')" data-page="account" data-icon="user">
+          <span class="tab-icon">👤</span>
+          <span>Account</span>
         </div>
       </div>
     </div>
@@ -4343,8 +4428,27 @@ const ICONS = {
   'bone': '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.034 12.002l.078-.057a3.001 3.001 0 0 0 0-4.246 3 3 0 0 0-4.246 0l-.057.078M4.966 12.002l-.078-.057a3.001 3.001 0 0 1 0-4.246 3 3 0 0 1 4.246 0l.057.078M12 2v20"/><path d="M14.337 5.663a3 3 0 0 0-4.674 0"/><path d="M9.663 18.337a3 3 0 0 0 4.674 0"/></svg>',
   'zap': '<svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
   'repeat': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="17 1 21 5 17 9"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><polyline points="7 23 3 19 7 15"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>',
-  'info': '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'
+  'info': '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>',
+  'home': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
+  'book-open': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>',
+  'gem': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12l4 6-10 13L2 9Z"/><path d="M11 3 8 9l4 13 4-13-3-6"/><path d="M2 9h20"/></svg>',
+  'settings': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21v-7"/><path d="M4 10V3"/><path d="M12 21v-9"/><path d="M12 8V3"/><path d="M20 21v-5"/><path d="M20 12V3"/><path d="M1 14h6"/><path d="M9 8h6"/><path d="M17 16h6"/></svg>',
+  'graduation-cap': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>',
+  'rupee': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3h9"/><path d="M8 8h9"/><path d="M8 3c6 0 6 5 0 5"/><path d="M8 8c6 0 6 5 0 5"/><path d="M8 13l8 8"/></svg>',
+  'palette': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z"/></svg>',
+  'check-circle': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+  'message-circle': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg>',
+  'sparkles': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3Z"/></svg>',
+  'folder': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>',
+  'play-circle': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>',
+  'bar-chart-2': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>'
 };
+
+function svgIcon(name, size) {
+  const base = ICONS[name] || '';
+  const s = size || 16;
+  return base.replace(/width="\d+"/, 'width="' + s + '"').replace(/height="\d+"/, 'height="' + s + '"');
+}
 
 // Brand mark: premium SVG monogram used across login, app header and mobile header
 const BRAND_LOGO = '<svg viewBox="0 0 64 64" width="40" height="40" role="img" aria-label="Pilates Studio logo" style="display:block;width:100%;height:100%;"><defs><linearGradient id="plg-brand" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#7c3aed"/><stop offset="1" stop-color="#0ea5e9"/></linearGradient></defs><rect x="3" y="3" width="58" height="58" rx="16" fill="url(#plg-brand)"/><path d="M22 45V20c0-2 1.6-3 3.5-3h5.5c5.5 0 9.5 3.8 9.5 9s-4 9-9.5 9H26" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="45" cy="47" r="4" fill="#fff"/></svg>';
@@ -4484,7 +4588,7 @@ function handleAuthLogin(e) {
   const u = uname ? uname.value.trim() : '';
   const p = pwd ? pwd.value : '';
   if (authRole === 'admin') {
-    if (u === 'admin' && p === 'rules123') {
+    if (u === 'admin' && p === (db.settings.adminPassword || 'rules123')) {
       login('admin');
       return false;
     }
@@ -4666,6 +4770,18 @@ function showToast(message, type = 'success') {
   setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.3s'; setTimeout(() => toast.remove(), 300); }, 3000);
 }
 
+function showToastAction(message, type = 'success', actionLabel, onAction, duration = 8000) {
+  if (window.__toasts) window.__toasts.push((type || 'success') + ': ' + String(message).replace(/<[^>]*>/g, '').trim());
+  const container = document.getElementById('toast-container');
+  const icons = { success: '&#10003;', error: '&#10007;', info: ICONS['info'] };
+  const toast = document.createElement('div');
+  toast.className = 'toast ' + type;
+  toast.innerHTML = '<span style="font-size:1.1rem;">' + (icons[type] || '') + '</span> ' + message +
+    (actionLabel ? ' <button onclick="' + (onAction || '') + '" style="margin-left:0.5rem;padding:0.3rem 0.7rem;border-radius:8px;border:1px solid currentColor;background:transparent;color:inherit;font-size:0.72rem;font-weight:700;cursor:pointer;">' + actionLabel + '</button>' : '');
+  container.appendChild(toast);
+  setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.3s'; setTimeout(() => toast.remove(), 300); }, duration);
+}
+
 // ============================
 // UTILITY
 // ============================
@@ -4675,6 +4791,18 @@ function formatTime(dateStr, timeStr) {
   const d = new Date(dateStr + 'T' + timeStr);
   return d.toLocaleDateString('en-IN', { weekday: 'short', month: 'short', day: 'numeric' }) + ', ' +
          d.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+}
+
+function crumb(label) {
+  return '<div class="ic-breadcrumb">Dashboard <span>&#8250;</span> <span>' + label + '</span></div>';
+}
+
+function injectNavIcons() {
+  document.querySelectorAll('.stu-bottom-nav .tab-item').forEach(tab => {
+    const iconEl = tab.querySelector('.tab-icon');
+    const name = tab.dataset.icon;
+    if (iconEl && name && ICONS[name]) iconEl.innerHTML = svgIcon(name, 20);
+  });
 }
 
 function getStudent(id) { return db.students.find(s => s.id === id); }
@@ -4696,6 +4824,22 @@ function getClassAttendanceRate(classId) {
 // ============================
 // RENDER ENGINE
 // ============================
+function decorateEmojiIcons(root) {  // Mark purely decorative single-glyph emoji/symbol elements aria-hidden (F-23).
+  // Interactive controls are skipped so their accessible names are preserved.
+  const scope = root || document;
+  scope.querySelectorAll('*').forEach(el => {
+    if (el.getAttribute('aria-hidden')) return;
+    if (el.closest('button, a, input, select, textarea, [role="button"], [onclick]')) return;
+    if (el.querySelector('*')) return;
+    const t = (el.textContent || '').trim();
+    if (!t) return;
+    const glyphs = Array.from(t);
+    if (glyphs.length === 1 && glyphs[0].codePointAt(0) > 0x2600) {
+      el.setAttribute('aria-hidden', 'true');
+    }
+  });
+}
+
 function renderApp() {
   let displayName = 'User';
   let avatarPhoto = null;
@@ -4729,7 +4873,7 @@ function renderApp() {
   const isLive = currentPersona === 'instructor' && activeClassId && timerRunning;
   topnav.innerHTML = navItems.filter(n => !n.hidden).map(n =>
     `<div class="nav-item ${n.id === currentPage ? 'active' : ''}" onclick="navigate('${n.id}')" title="${n.label}">
-      <span class="nav-icon">${n.icon}</span>
+      <span class="nav-icon" aria-hidden="true">${svgIcon(n.icon, 16)}</span>
       <span>${n.label}</span>
       ${isLive && n.id === 'instructor-active-class' ? '<span class="nav-live-dot"></span>' : ''}
     </div>`
@@ -4763,37 +4907,41 @@ function renderApp() {
   if (mobileHeader) {
     mobileHeader.style.display = (currentPersona === 'student' && window.innerWidth <= 768) ? 'flex' : 'none';
   }
+  decorateEmojiIcons(document.getElementById('app-content'));
   saveSession();
 }
 
 function getNavItems() {
   if (currentPersona === 'admin') {
     return [
-      { id: 'admin-dashboard', label: 'Dashboard', icon: '&#9632;' },
-      { id: 'admin-settings', label: 'Studio Settings', icon: '&#9881;' },
-      { id: 'admin-instructors', label: 'Instructors', icon: '&#127891;' },
-      { id: 'admin-packages', label: 'Payments & Packages', icon: '&#8377;' },
-      { id: 'admin-appearance', label: 'Appearance', icon: '&#127912;' },
-      { id: 'admin-reports', label: 'Reports', icon: '&#128202;' }
+      { id: 'admin-dashboard', label: 'Dashboard', icon: 'home' },
+      { id: 'admin-settings', label: 'Studio Settings', icon: 'settings' },
+      { id: 'admin-instructors', label: 'Instructors', icon: 'graduation-cap' },
+      { id: 'admin-packages', label: 'Payments & Packages', icon: 'rupee' },
+      { id: 'admin-appearance', label: 'Appearance', icon: 'palette' },
+      { id: 'admin-reports', label: 'Reports', icon: 'bar-chart' },
+      { id: 'account', label: 'My Account', icon: 'user' }
     ];
   } else if (currentPersona === 'instructor') {
     return [
-      { id: 'instructor-dashboard', label: 'Dashboard', icon: '&#9632;' },
-      { id: 'instructor-classes', label: 'Classes', icon: '&#128218;' },
-      { id: 'instructor-attendance', label: 'Attendance', icon: '&#128202;', hidden: true },
-      { id: 'instructor-students', label: 'Students', icon: '&#128101;', hidden: true },
-      { id: 'instructor-demo', label: 'Demo Sessions', icon: '&#127881;', hidden: true },
-      { id: 'instructor-insights', label: 'Insights', icon: '&#128200;', hidden: true },
-      { id: 'instructor-consultations', label: 'Consultations', icon: '&#128172;', hidden: true },
-      { id: 'instructor-enhanced-insights', label: 'Enhanced Insights', icon: '&#11088;', hidden: true },
-      { id: 'instructor-active-class', label: 'Active Class', icon: '&#9654;', hidden: true }
+      { id: 'instructor-dashboard', label: 'Dashboard', icon: 'home' },
+      { id: 'instructor-classes', label: 'Classes', icon: 'folder' },
+      { id: 'instructor-attendance', label: 'Attendance', icon: 'check-circle' },
+      { id: 'instructor-students', label: 'Students', icon: 'users' },
+      { id: 'instructor-demo', label: 'Demo Sessions', icon: 'play-circle' },
+      { id: 'instructor-insights', label: 'Insights', icon: 'bar-chart-2' },
+      { id: 'instructor-consultations', label: 'Consultations', icon: 'message-circle' },
+      { id: 'instructor-enhanced-insights', label: 'Enhanced Insights', icon: 'sparkles' },
+      { id: 'instructor-active-class', label: 'Active Class', icon: 'activity' },
+      { id: 'account', label: 'My Account', icon: 'user' }
     ];
   } else {
     return [
-      { id: 'student-dashboard', label: 'Dashboard', icon: '&#9632;' },
-      { id: 'student-book', label: 'Book a Class', icon: '&#128214;' },
-      { id: 'student-schedule', label: 'My Schedule', icon: '&#128197;' },
-      { id: 'student-packages', label: 'Packages', icon: '&#8377;' }
+      { id: 'student-dashboard', label: 'Dashboard', icon: 'home' },
+      { id: 'student-book', label: 'Book a Class', icon: 'book-open' },
+      { id: 'student-schedule', label: 'My Schedule', icon: 'calendar' },
+      { id: 'student-packages', label: 'Packages', icon: 'gem' },
+      { id: 'account', label: 'My Account', icon: 'user' }
     ];
   }
 }
@@ -4953,7 +5101,8 @@ function renderPage(pageId) {
     'student-dashboard': renderStudentDashboard,
     'student-book': renderStudentBook,
     'student-schedule': renderStudentSchedule,
-    'student-packages': renderStudentPackages
+    'student-packages': renderStudentPackages,
+    'account': renderMyAccount
   };
   const fn = renderers[pageId];
   if (fn) {
@@ -5098,7 +5247,7 @@ function renderAdminInstructors(el) {
 
 function getInstructorPageHTML(instructors, selInst) {
   const DAYS = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-  let html = '<div style="display:flex;justify-content:space-between;align-items:center;">' +
+  let html = crumb('Instructors') + '<div style="display:flex;justify-content:space-between;align-items:center;">' +
     '<div><div class="page-title">Instructor Management</div><div class="page-subtitle">Onboard, manage, and configure instructors</div></div>' +
     '<button class="btn btn-primary" onclick="showAddInstructorModal()">+ Onboard Instructor</button>' +
   '</div>' +
@@ -5630,6 +5779,7 @@ function deleteInstructor(id) {
 function renderAdminAppearance(el) {
   const s = db.settings;
   el.innerHTML = `
+    ${crumb('Appearance')}
     <div class="page-title">Appearance Customization</div>
     <div class="page-subtitle">Customize the look and feel of your studio app</div>
     <div class="two-col">
@@ -5799,6 +5949,7 @@ function applySidebarPreset(name) {
 function renderAdminSettings(el) {
   const s = db.settings;
   el.innerHTML = `
+    ${crumb('Settings')}
     <div class="page-title">Studio Settings</div>
     <div class="page-subtitle">Configure your studio branding and preferences</div>
     <div class="two-col">
@@ -5955,6 +6106,7 @@ function saveSettings() {
 
 function renderAdminPackages(el) {
   el.innerHTML = `
+    ${crumb('Payments')}
     <div class="page-title">Payment &amp; Packages</div>
     <div class="page-subtitle">Manage pricing and membership plans</div>
     <div class="two-col">
@@ -5969,7 +6121,7 @@ function renderAdminPackages(el) {
                   <div class="pkg-price">&#8377;${p.price.toLocaleString()}</div>
                   <div class="pkg-desc">${p.classes >= 999 ? 'Unlimited classes' : p.classes + ' classes/month'}</div>
                 </div>
-                <button class="btn btn-sm btn-danger" onclick="removePackage('${p.id}')">Remove</button>
+                <button class="btn btn-sm btn-danger" onclick="showRemovePackageConfirm('${p.id}')">Remove</button>
               </div>
             </div>
           `).join('')}
@@ -6050,6 +6202,19 @@ function removePackage(id) {
   showToast('Package removed');
 }
 
+function showRemovePackageConfirm(id) {
+  const pkg = db.settings.packages.find(p => p.id === id);
+  if (!pkg) return;
+  showModal('<div style="text-align:center;">' +
+    '<div style="font-size:2.5rem;margin-bottom:0.5rem;">&#9888;</div>' +
+    '<h3>Remove Package?</h3>' +
+    '<p style="font-size:0.85rem;color:var(--text-muted);margin:0.5rem 0 1rem;">This will permanently remove <strong>' + pkg.name + '</strong> (' + (pkg.classes >= 999 ? 'Unlimited' : pkg.classes + ' classes/month') + '). Students on this plan will fall back to the default.</p>' +
+    '<div style="display:flex;flex-direction:column;gap:0.6rem;">' +
+      '<button class="btn btn-danger" onclick="removePackage(\'' + id + '\')">Yes, Remove</button>' +
+      '<button class="btn btn-secondary" onclick="closeModal()">Cancel</button>' +
+    '</div></div>');
+}
+
 function renderAdminReports(el) {
   const totalClasses = db.classes.length;
   const activeStudents = db.students.filter(s => s.active).length;
@@ -6062,6 +6227,7 @@ function renderAdminReports(el) {
   const todayClasses = db.classes.filter(c => c.date === today);
 
   el.innerHTML = `
+    ${crumb('Reports')}
     <div class="page-title">Reports &amp; Analytics</div>
     <div class="page-subtitle">Key metrics at a glance</div>
     <div class="stats-row">
@@ -6119,7 +6285,71 @@ function renderAdminReports(el) {
         <span class="fab-sub">${todayClasses[0].time} · ${todayClasses[0].enrolled.length} students</span>
       </button>
     ` : ''}
+    <div class="card" style="margin-top:1rem;">
+      <div class="card-title">Class Administration</div>
+      <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.75rem;">Activate, deactivate or delete classes studio-wide</div>
+      ${db.classes.filter(c => c.status === 'active' || c.date >= today).slice(0, 12).map(c => `
+        <div class="schedule-card ${c.type}" style="display:flex;align-items:center;gap:0.75rem;justify-content:space-between;">
+          <div style="flex:1;min-width:0;">
+            <div class="top">
+              <span class="class-name">${c.type === 'mat' ? 'Mat' : 'Reformer'} — ${formatTime(c.date, c.time)}</span>
+              <span class="badge ${c.status === 'active' ? 'badge-green' : 'badge-gray'}">${c.status}</span>
+            </div>
+            <div class="time">${c.duration} min · ${c.instructor} · ${c.enrolled.length}/${c.maxStudents} enrolled</div>
+          </div>
+          <div style="display:flex;gap:0.4rem;flex-shrink:0;">
+            <button class="btn btn-sm btn-secondary" onclick="adminToggleClass('${c.id}')">${c.status === 'active' ? 'Deactivate' : 'Activate'}</button>
+            <button class="btn btn-sm btn-danger" onclick="showAdminDeleteClassConfirm('${c.id}')">Delete</button>
+          </div>
+        </div>`).join('')}
+    </div>
+    <div class="card" style="margin-top:1rem;">
+      <div class="card-title">Recent Activity</div>
+      <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.75rem;">Latest audit events across the studio</div>
+      ${(db.auditLog || []).length === 0
+        ? '<div class="empty-state">No audit events recorded yet.</div>'
+        : (db.auditLog || []).slice(-10).reverse().map(e => `
+            <div class="roster-item">
+              <div class="info">
+                <span class="name">${(e.eventType || 'event').replace(/_/g, ' ')}</span>
+                <span class="meta">${new Date(e.timestamp).toLocaleString()} · user: ${e.userId || 'unknown'}${e.sessionId ? ' · class: ' + e.sessionId : ''}</span>
+              </div>
+            </div>`).join('')}
+    </div>
   `;
+}
+
+function adminToggleClass(classId) {
+  const c = getClass(classId);
+  if (!c) return;
+  c.status = c.status === 'active' ? 'inactive' : 'active';
+  saveDB();
+  renderAdminReports(document.getElementById('app-content'));
+  showToast('Class ' + (c.status === 'active' ? 'activated' : 'deactivated'));
+}
+
+function showAdminDeleteClassConfirm(classId) {
+  const c = getClass(classId);
+  if (!c) return;
+  showModal('<div style="text-align:center;">' +
+    '<div style="font-size:2.5rem;margin-bottom:0.5rem;">&#9888;</div>' +
+    '<h3>Delete Class?</h3>' +
+    '<p style="font-size:0.85rem;color:var(--text-muted);margin:0.5rem 0 1rem;">This will permanently remove <strong>' + (c.type === 'mat' ? 'Mat' : 'Reformer') + ' — ' + formatTime(c.date, c.time) + '</strong> and unenroll its ' + c.enrolled.length + ' student(s).</p>' +
+    '<div style="display:flex;flex-direction:column;gap:0.6rem;">' +
+      '<button class="btn btn-danger" onclick="adminDeleteClass(\'' + classId + '\')">Yes, Delete Class</button>' +
+      '<button class="btn btn-secondary" onclick="closeModal()">Cancel</button>' +
+    '</div></div>');
+}
+
+function adminDeleteClass(classId) {
+  const c = getClass(classId);
+  if (!c) return;
+  c.enrolled.forEach(sid => { const s = getStudent(sid); if (s) s.enrolledClasses = s.enrolledClasses.filter(e => e !== classId); });
+  delete db.attendance[classId];
+  db.classes = db.classes.filter(cl => cl.id !== classId);
+  saveDB(); closeModal();
+  renderAdminReports(document.getElementById('app-content'));
+  showToast('Class deleted with all enrollments removed.');
 }
 
 // =====================================================================
@@ -6423,7 +6653,7 @@ function renderInstructorClasses(el) {
   });
 
   el.innerHTML = `
-    <div class="ic-breadcrumb">Dashboard <span>›</span> <span>My Classes</span></div>
+    ${crumb('My Classes')}
     <div class="ic-header">
       <div class="ic-title">📋 My Classes</div>
       <button class="btn btn-primary" style="padding:0.45rem 1rem;font-size:0.8rem;" onclick="showCreateClassModal()" title="Schedule a new class">+ New Class</button>
@@ -6656,6 +6886,7 @@ function createClass() {
     dates = [date];
   }
   let created = 0;
+  let conflicts = 0;
   dates.forEach(date => {
     const overlap = db.classes.find(c => c.date === date && c.time === time && c.status === 'active' && c.instructor === db.settings.instructorName);
     if (!overlap) {
@@ -6664,11 +6895,15 @@ function createClass() {
         instructor: db.settings.instructorName, enrolled: [], waitlist: []
       });
       created++;
+    } else {
+      conflicts++;
     }
   });
   saveDB(); closeModal(); renderInstructorClasses(document.getElementById('app-content'));
   if (created === 0) showToast('All time slots already have a class.', 'error');
-  else if (created === 1) showToast('Class created successfully!');
+  else if (created === 1 && conflicts === 0) showToast('Class created successfully!');
+  else if (created === 1) showToast('Class created. &#9888; ' + conflicts + ' conflicting slot' + (conflicts > 1 ? 's were' : ' was') + ' skipped — you already have a class then.', 'info');
+  else if (conflicts > 0) showToast(created + ' classes created. &#9888; ' + conflicts + ' conflicting slot' + (conflicts > 1 ? 's were' : ' was') + ' skipped.', 'info');
   else showToast(created + ' classes created across ' + dates.length + ' date' + (dates.length > 1 ? 's' : '') + '!');
 }
 
@@ -6684,9 +6919,24 @@ function showModal(html) {
   if (typeof html === 'string' && html.trim()) {
     const container = document.getElementById('modal-container');
     if (container) {
-      container.innerHTML = html.trim().startsWith('<div class="modal-overlay"')
+      const content = html.trim().startsWith('<div class="modal-overlay"')
         ? html
         : '<div class="modal-overlay" onclick="if(event.target===this)closeModal()"><div class="modal">' + html + '</div></div>';
+      container.innerHTML = content;
+      // Dialog semantics (F-22): role/aria-modal + label from heading
+      const modal = container.querySelector('.modal');
+      if (modal) {
+        modal.setAttribute('role', 'dialog');
+        modal.setAttribute('aria-modal', 'true');
+        const heading = modal.querySelector('h3, h2, .modal h3');
+        if (heading) {
+          const labelId = 'modal-label-' + Date.now();
+          modal.setAttribute('aria-labelledby', labelId);
+          heading.setAttribute('id', labelId);
+        } else {
+          modal.setAttribute('aria-label', 'Dialog');
+        }
+      }
     }
   }
   lastFocusedBeforeModal = document.activeElement;
@@ -6701,6 +6951,11 @@ function showModal(html) {
 }
 
 function trapModalFocus(e) {
+  if (e.key === 'Escape') {
+    e.preventDefault();
+    closeModal();
+    return;
+  }
   if (e.key !== 'Tab') return;
   const modal = document.querySelector('.modal');
   if (!modal) return;
@@ -6834,6 +7089,7 @@ function removeFromClass(classId, studentId) {
   const s = getStudent(studentId);
   if (s) s.enrolledClasses = s.enrolledClasses.filter(id => id !== classId);
   saveDB(); showToast('Student removed from class');
+  promoteFromWaitlist(c);
   showClassRoster(classId);
   renderPage(currentPage);
 }
@@ -6843,7 +7099,7 @@ function renderInstructorAttendance(el) {
   const todayClasses = db.classes.filter(c => c.date <= today && c.instructor === db.settings.instructorName);
 
   if (todayClasses.length === 0) {
-    el.innerHTML = instructorProfileBar() + '<div class="page-title">Attendance</div><div class="page-subtitle">No past or current classes available.</div><div class="empty-state">Create a class first to mark attendance.</div>';
+    el.innerHTML = instructorProfileBar() + crumb('Attendance') + '<div class="page-title">Attendance</div><div class="page-subtitle">No past or current classes available.</div><div class="empty-state">Create a class first to mark attendance.</div>';
     return;
   }
 
@@ -6851,7 +7107,7 @@ function renderInstructorAttendance(el) {
     `<option value="${c.id}">${c.type === 'mat' ? 'Mat' : 'Reformer'} — ${formatTime(c.date, c.time)} (${c.enrolled.length} students)</option>`
   ).join('');
 
-  el.innerHTML = instructorProfileBar() + `
+  el.innerHTML = instructorProfileBar() + crumb('Attendance') + `
     <div class="page-title">Attendance</div>
     <div class="page-subtitle">Mark student attendance for your classes</div>
     <div class="card">
@@ -6980,7 +7236,7 @@ function saveAttendance(classId) {
 }
 
 function renderInstructorStudents(el) {
-  el.innerHTML = instructorProfileBar() + `
+  el.innerHTML = instructorProfileBar() + crumb('Students') + `
     <div style="display:flex;justify-content:space-between;align-items:center;">
       <div>
         <div class="page-title">Students</div>
@@ -7255,7 +7511,7 @@ function switchProfileTab(el, tabId) {
 }
 
 function renderInstructorDemo(el) {
-  el.innerHTML = instructorProfileBar() + `
+  el.innerHTML = instructorProfileBar() + crumb('Demo Sessions') + `
     <div style="display:flex;justify-content:space-between;align-items:center;">
       <div>
         <div class="page-title">Demo Sessions</div>
@@ -8785,9 +9041,9 @@ function buildLiveCenterPanel(classId, studentId, c) {
       '<span class="sn-level">' + getLevelBadge(s.level || 'beginner', true) + '</span>' +
     '</div>' +
     '<div style="display:flex;gap:0.3rem;">' +
-      '<button class="lia-btn" onclick="setLiveAttendance(\'' + studentId + '\',\'present\',this)" title="Present" style="color:var(--green-bright);' + (db.attendance && db.attendance[classId] && db.attendance[classId][studentId] === 'present' ? 'border-color:var(--green-bright);' : '') + '">✓</button>' +
-      '<button class="lia-btn" onclick="setLiveAttendance(\'' + studentId + '\',\'late\',this)" title="Late" style="color:var(--warning);' + (db.attendance && db.attendance[classId] && db.attendance[classId][studentId] === 'late' ? 'border-color:var(--warning);' : '') + '">⏱</button>' +
-      '<button class="lia-btn" onclick="setLiveAttendance(\'' + studentId + '\',\'absent\',this)" title="Absent" style="color:var(--danger);' + (db.attendance && db.attendance[classId] && db.attendance[classId][studentId] === 'absent' ? 'border-color:var(--danger);' : '') + '">✗</button>' +
+      '<button class="lia-btn" onclick="setLiveAttendance(\'' + studentId + '\',\'present\',this)" title="Present" style="color:var(--green-bright);' + (db.attendance && db.attendance[classId] && db.attendance[classId][studentId] === 'present' ? 'border-color:var(--green-bright);' : '') + '">✓ Present</button>' +
+      '<button class="lia-btn" onclick="setLiveAttendance(\'' + studentId + '\',\'late\',this)" title="Late" style="color:var(--warning);' + (db.attendance && db.attendance[classId] && db.attendance[classId][studentId] === 'late' ? 'border-color:var(--warning);' : '') + '">⏱ Late</button>' +
+      '<button class="lia-btn" onclick="setLiveAttendance(\'' + studentId + '\',\'absent\',this)" title="Absent" style="color:var(--danger);' + (db.attendance && db.attendance[classId] && db.attendance[classId][studentId] === 'absent' ? 'border-color:var(--danger);' : '') + '">✗ Absent</button>' +
     '</div>' +
   '</div>' +
   '<div class="live-center-body" id="live-center-body-' + studentId + '">' +
@@ -8886,7 +9142,7 @@ function toggleSnapshotDetail() {
 function renderInstructorActiveClass(el) {
   const c = getClass(activeClassId);
   if (!c) {
-    el.innerHTML = instructorProfileBar() + '<div class="page-title">Active Class</div><div class="page-subtitle">No class selected.</div><div class="empty-state">Select a class from <a href="#" onclick="navigate(\'instructor-classes\')">My Classes</a> and click <strong>Live</strong> to start.</div>';
+    el.innerHTML = instructorProfileBar() + crumb('Active Class') + '<div class="page-title">Active Class</div><div class="page-subtitle">No class selected.</div><div class="empty-state">Select a class from <a href="#" onclick="navigate(\'instructor-classes\')">My Classes</a> and click <strong>Live</strong> to start.</div>';
     return;
   }
   if (!timerRunning && elapsedSeconds === 0) startTimer();
@@ -9067,6 +9323,10 @@ function renderInstructorActiveClass(el) {
               '<div class="ls-tc-label">Reset</div>' +
             '</div>' +
             '<div>' +
+              '<button class="ls-tc-btn ls-tc-secondary" id="ls-voice-btn" onclick="toggleVoiceCapture()" title="Voice capture — tap to toggle, or long-press the timer">' + ICONS['mic'] + '</button>' +
+              '<div class="ls-tc-label">Voice</div>' +
+            '</div>' +
+            '<div>' +
               '<button class="ls-tc-btn ls-tc-primary" id="ls-play-btn" onclick="toggleTimerPlay()" title="Start / Pause">' +
                 (timerRunning ? ICONS['pause'] : ICONS['play']) +
               '</button>' +
@@ -9080,9 +9340,9 @@ function renderInstructorActiveClass(el) {
                 '<button class="ls-overflow-item" onclick="showModeModal();closeOverflow()">' + ICONS['film'] + ' Change Mode</button>' +
                 '<div class="ls-overflow-sep"></div>' +
                 '<button class="ls-overflow-item" onclick="saveSessionNotesModal();closeOverflow()">' + ICONS['save'] + ' Save Session Notes</button>' +
-                '<button class="ls-overflow-item" onclick="closeOverflow()">' + ICONS['shield'] + ' Privacy & Consent</button>' +
-                '<button class="ls-overflow-item" onclick="closeOverflow()">' + ICONS['calendar'] + ' Retention Settings</button>' +
-                '<button class="ls-overflow-item" onclick="closeOverflow()">' + ICONS['download'] + ' Export Data</button>' +
+                '<button class="ls-overflow-item" onclick="showPrivacyConsentModal();closeOverflow()">' + ICONS['shield'] + ' Privacy & Consent</button>' +
+                '<button class="ls-overflow-item" onclick="showRetentionSettingsModal();closeOverflow()">' + ICONS['calendar'] + ' Retention Settings</button>' +
+                '<button class="ls-overflow-item" onclick="exportLiveData();closeOverflow()">' + ICONS['download'] + ' Export Data</button>' +
                 '<div class="ls-overflow-sep"></div>' +
                 '<button class="ls-overflow-item danger" onclick="showEndClassModal();closeOverflow()">' + ICONS['square'] + ' End Class</button>' +
               '</div>' +
@@ -9486,7 +9746,51 @@ function toggleVoiceCapture() {
     if (activeClassId) startClassVoiceRecognition(activeClassId);
     showToast('Voice capture resumed');
   }
+  const vb = document.getElementById('ls-voice-btn');
+  if (vb) {
+    if (classVoiceActive) { vb.style.borderColor = 'var(--ls-accent)'; vb.style.color = 'var(--ls-accent)'; vb.style.background = 'rgba(0,194,168,0.12)'; }
+    else { vb.style.borderColor = ''; vb.style.color = ''; vb.style.background = ''; }
+  }
   triggerHaptic();
+}
+
+function showPrivacyConsentModal() {
+  showModal('<h3>Privacy &amp; Consent</h3>' +
+    '<div style="font-size:0.82rem;color:var(--text-secondary);line-height:1.6;">' +
+      '<p>Student observations are stored locally on this device and used only to personalise your teaching and AI cueing.</p>' +
+      '<p><strong>Voice capture</strong> is processed on-device; audio is not uploaded to any server.</p>' +
+      '<p>You can export or delete all data at any time via <em>Export Data</em>.</p>' +
+    '</div>' +
+    '<button class="btn btn-primary" onclick="closeModal()" style="width:100%;margin-top:1rem;">I Understand</button>');
+}
+
+function showRetentionSettingsModal() {
+  const pref = (db.settings && db.settings.retentionDays) || 90;
+  showModal('<h3>Retention Settings</h3>' +
+    '<div style="font-size:0.82rem;color:var(--text-secondary);line-height:1.6;">' +
+      '<p>Session notes and AI cue logs are retained for <strong>' + pref + ' days</strong>, then archived.</p>' +
+      '<p>Attendance records are kept for your statutory reporting requirements.</p>' +
+      '<p>You can adjust this from Studio Settings in the admin panel.</p>' +
+    '</div>' +
+    '<button class="btn btn-primary" onclick="closeModal()" style="width:100%;margin-top:1rem;">Close</button>');
+}
+
+function exportLiveData() {
+  try {
+    const data = JSON.stringify({ db: db, session: activeClassId ? { classId: activeClassId, elapsedSeconds: elapsedSeconds } : null }, null, 2);
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'zenpilates-export-' + new Date().toISOString().split('T')[0] + '.json';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    showToast('&#10003; Data exported as JSON.');
+  } catch (e) {
+    showToast('Export failed: ' + (e && e.message ? e.message : e), 'error');
+  }
 }
 
 function saveManualNote() {
@@ -9745,6 +10049,19 @@ function renderStudentDashboard(el) {
     <div style="font-size:0.78rem;color:var(--text-muted);">${upcomingClasses.length} upcoming class${upcomingClasses.length !== 1 ? 'es' : ''} · ${totalDone} completed</div>
   </div>`;
 
+  const tomorrowStr = new Date(now.getTime() + 86400000).toISOString().split('T')[0];
+  const tomorrowClass = upcomingClasses.find(c => c.date === tomorrowStr);
+  if (tomorrowClass) {
+    html += `<div style="display:flex;align-items:center;gap:0.7rem;background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:0.7rem 0.85rem;margin-bottom:0.9rem;">
+      <span style="font-size:1.1rem;">⏰</span>
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:0.78rem;font-weight:600;color:#92400e;">Reminder: ${tomorrowClass.type === 'reformer' ? 'Reformer' : 'Mat'} Pilates tomorrow</div>
+        <div style="font-size:0.68rem;color:#a16207;">${new Date(tomorrowClass.date + 'T' + tomorrowClass.time).toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'})} · ${tomorrowClass.duration} min · ${tomorrowClass.instructor || 'Instructor'}</div>
+      </div>
+      <button onclick="navigate('student-schedule')" style="padding:0.45rem 0.75rem;border-radius:8px;border:none;background:#92400e;color:white;font-size:0.68rem;font-weight:600;cursor:pointer;white-space:nowrap;">View</button>
+    </div>`;
+  }
+  
   if (nextClass) {
     const daysUntil = Math.ceil((new Date(nextClass.date + 'T12:00:00') - now) / (1000*60*60*24));
     const isToday = daysUntil === 0;
@@ -9921,25 +10238,29 @@ function renderStudentBook(target) {
     ${renderStudentLevelProgress(student.id)}
   </div>`;
 
+  const recLevel = student.level || 'beginner';
+  const recAllowed = canBookLevel(student.id, recLevel).allowed ? recLevel : 'beginner';
   const recommended = db.classes.filter(c =>
-    c.status === 'active' && c.level === 'intermediate' &&
+    c.status === 'active' && c.level === recAllowed &&
     c.enrolled.length < c.maxStudents && !c.enrolled.includes(student.id) &&
     new Date(c.date) >= new Date()
   ).slice(0, 2);
   if (recommended.length > 0) {
-    html += `<div style="background:linear-gradient(135deg,rgba(124,58,237,0.08),rgba(124,58,237,0.03));border:1px solid rgba(124,58,237,0.15);border-radius:14px;padding:0.85rem 1rem;margin-bottom:1rem;">
-      <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.5rem;">
+    html += `<div class="ds-panel violet">
+      <div class="ds-panel-head">
         <span style="font-size:1rem;">🤖</span>
-        <span style="font-size:0.78rem;font-weight:600;color:var(--primary);">AI Recommended</span>
-      </div>`;
+        <span class="ds-panel-title">AI Recommended</span>
+      </div>
+      <div class="ds-panel-sub">Matched to your ${recLevel} level and progress.</div>`;
     recommended.forEach(cls => {
-      html += `<div style="display:flex;align-items:center;gap:0.65rem;padding:0.5rem 0;${cls !== recommended[recommended.length-1] ? 'border-bottom:1px solid rgba(124,58,237,0.1);' : ''}">
-        <div style="width:36px;height:36px;border-radius:10px;background:var(--primary-light);display:flex;align-items:center;justify-content:center;font-size:0.9rem;flex-shrink:0;">${cls.type === 'reformer' ? '🔧' : '🧘'}</div>
-        <div style="flex:1;min-width:0;">
-          <div style="font-size:0.75rem;font-weight:600;color:var(--text);">${cls.type === 'mat' ? 'Mat' : 'Reformer'} · ${cls.level}</div>
-          <div style="font-size:0.65rem;color:var(--text-muted);">${cls.level} · ${cls.duration}min</div>
+      const rSeats = cls.maxStudents - (cls.enrolled?.length || 0);
+      html += `<div class="ds-row" style="padding:0.5rem 0;${cls !== recommended[recommended.length-1] ? 'border-bottom:1px solid rgba(124,58,237,0.1);' : ''}">
+        <div class="ds-avatar" style="width:36px;height:36px;border-radius:10px;background:var(--primary-light);font-size:0.9rem;">${cls.type === 'reformer' ? '🔧' : '🧘'}</div>
+        <div class="ds-flex">
+          <div class="ds-title">${cls.type === 'mat' ? 'Mat' : 'Reformer'} · ${cls.level}</div>
+          <div class="ds-sub">${cls.level} · ${cls.duration}min · ${rSeats} seat${rSeats !== 1 ? 's' : ''} left</div>
         </div>
-        <button onclick="studentBookClass('${cls.id}')" ${limitReached ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : 'style="padding:0.55rem 0.75rem;border-radius:8px;border:none;background:var(--primary);color:white;font-size:0.7rem;font-weight:600;cursor:pointer;"'}>Book</button>
+        <button class="ds-btn primary" onclick="studentBookClass('${cls.id}')" ${limitReached ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''}>Book</button>
       </div>`;
     });
     html += '</div>';
@@ -9965,14 +10286,14 @@ function renderStudentBook(target) {
 
   html += '<div id="stu-available-classes"></div>';
 
-  html += `<div style="background:linear-gradient(135deg,#ecfdf5,#f0fdf4);border:1px solid #bbf7d0;border-radius:14px;padding:1rem;margin-top:1rem;margin-bottom:1rem;">
-    <div style="display:flex;align-items:center;gap:0.65rem;">
-      <div style="width:44px;height:44px;border-radius:12px;background:white;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;border:1px solid #bbf7d0;">🎁</div>
-      <div style="flex:1;">
+  html += `<div class="ds-panel green">
+    <div class="ds-row" style="align-items:center;">
+      <div class="ds-avatar-box">🎁</div>
+      <div class="ds-flex">
         <div style="font-size:0.82rem;font-weight:700;color:var(--text);">Free Demo Session</div>
         <div style="font-size:0.7rem;color:var(--text-muted);line-height:1.4;">Try a class before you commit. No package required.</div>
       </div>
-      <button onclick="bookDemoClass()" style="padding:0.55rem 0.85rem;border-radius:10px;border:1.5px solid var(--success);background:white;color:var(--success);font-size:0.72rem;font-weight:600;cursor:pointer;white-space:nowrap;">Book Free</button>
+      <button class="ds-btn success" onclick="showDemoPicker()">Book Free</button>
     </div>
   </div>`;
 
@@ -9981,18 +10302,59 @@ function renderStudentBook(target) {
   setTimeout(() => filterStudentClasses(), 100);
 }
 
-function bookDemoClass() {
+function showDemoPicker() {
   const student = db.students.find(s => s.id === currentStudentId);
   if (!student) return;
-  const demo = db.demoSessions.find(d => {
-    const today = new Date().toISOString().split('T')[0];
-    return d.date >= today && d.enrolled.length < d.maxStudents && !d.enrolled.includes(student.id);
-  });
+  const today = new Date().toISOString().split('T')[0];
+  const slots = db.demoSessions.filter(d =>
+    d.date >= today && d.enrolled.length < d.maxStudents && !d.enrolled.includes(student.id)
+  ).sort((a, b) => (a.date + a.time).localeCompare(b.date + b.time));
+  if (slots.length === 0) { showToast('No demo sessions available right now.', 'error'); return; }
+  const modal = document.getElementById('modal-container');
+  modal.innerHTML = `
+    <div class="modal-overlay" onclick="if(event.target===this)closeModal()">
+      <div class="modal" style="max-width:420px;">
+        <div style="text-align:center;">
+          <div style="font-size:2.2rem;margin-bottom:0.5rem;">🎁</div>
+          <h3>Choose a Free Demo</h3>
+          <p style="font-size:0.85rem;color:var(--text-muted);margin:0.5rem 0 1.25rem;">Pick a date and time that works for you.</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:0.6rem;max-height:50vh;overflow-y:auto;">
+          ${slots.map(s => {
+            const seats = s.maxStudents - s.enrolled.length;
+            return `<button onclick="bookDemoClass('${s.id}')" style="display:flex;align-items:center;gap:0.7rem;padding:0.7rem 0.85rem;border-radius:10px;border:1px solid var(--border-dark);background:white;color:var(--text);font-size:0.78rem;font-family:inherit;cursor:pointer;text-align:left;">
+              <span style="font-size:1rem;">🎁</span>
+              <span style="flex:1;">
+                <span style="font-weight:600;">${new Date(s.date + 'T' + s.time).toLocaleDateString('en-IN', { weekday: 'short', month: 'short', day: 'numeric' })}</span>
+                <span style="display:block;font-size:0.7rem;color:var(--text-muted);">${new Date(s.date + 'T' + s.time).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true })} · ${s.duration} min · ${seats} seat${seats !== 1 ? 's' : ''} left</span>
+              </span>
+              <span style="font-size:0.7rem;font-weight:600;color:var(--success);">Book</span>
+            </button>`;
+          }).join('')}
+        </div>
+        <button class="btn btn-secondary" onclick="closeModal()" style="width:100%;margin-top:0.75rem;">Cancel</button>
+      </div>
+    </div>
+  `;
+}
+
+function bookDemoClass(demoId) {
+  const student = db.students.find(s => s.id === currentStudentId);
+  if (!student) return;
+  const today = new Date().toISOString().split('T')[0];
+  const demo = demoId
+    ? db.demoSessions.find(d => d.id === demoId)
+    : db.demoSessions.find(d => {
+        return d.date >= today && d.enrolled.length < d.maxStudents && !d.enrolled.includes(student.id);
+      });
   if (!demo) { showToast('No demo sessions available right now.', 'error'); return; }
+  if (demo.enrolled.length >= demo.maxStudents) { showToast('This demo session is full.', 'error'); return; }
+  if (demo.enrolled.includes(student.id)) { showToast('Already booked for this demo!', 'error'); return; }
   demo.enrolled.push(student.id);
   if (!student.enrolledDemos) student.enrolledDemos = [];
   student.enrolledDemos.push(demo.id);
   saveDB();
+  closeModal();
   showToast('&#10003; Demo session booked! Check your schedule.');
   renderStudentBook(document.getElementById('app-content'));
 }
@@ -10040,7 +10402,7 @@ function filterStudentClasses(level, chipEl) {
   if (!container) return;
 
   if (classes.length === 0) {
-    container.innerHTML = '<div style="text-align:center;padding:2rem 1rem;color:var(--text-muted);font-size:0.82rem;">No classes match your filters. Try different criteria.</div>';
+    container.innerHTML = '<div class="ds-empty">No classes match your filters. Try different criteria.</div>';
     return;
   }
 
@@ -10048,31 +10410,36 @@ function filterStudentClasses(level, chipEl) {
   classes.forEach(cls => {
     const spotsLeft = cls.maxStudents ? cls.maxStudents - (cls.enrolled?.length || 0) : '—';
     const isFull = spotsLeft === 0;
+    const isWaitlisted = (cls.waitlist || []).includes(student.id);
     const isAlreadyBooked = db.classes.some(c => c.enrolled.includes(student.id) && c.date === cls.date && c.time === cls.time && new Date(c.date) >= new Date());
 
-    html += `<div style="background:white;border:1px solid var(--border-dark);border-radius:14px;padding:0.85rem;margin-bottom:0.6rem;transition:border-color 0.15s;" onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--border-dark)'">
-      <div style="display:flex;align-items:flex-start;gap:0.75rem;">
-        <div style="width:48px;height:48px;border-radius:12px;background:${cls.type === 'reformer' ? 'var(--primary-light)' : 'var(--success-light, #dcfce7)'};display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;">
-          ${cls.type === 'reformer' ? '🔧' : '🧘'}
-        </div>
-        <div style="flex:1;min-width:0;">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+    html += `<div class="ds-card">
+      <div class="ds-row">
+        <div class="ds-avatar ${cls.type}">${cls.type === 'reformer' ? '🔧' : '🧘'}</div>
+        <div class="ds-flex">
+          <div class="ds-between">
             <div>
-              <div style="font-size:0.82rem;font-weight:600;color:var(--text);">${cls.type === 'mat' ? 'Mat' : 'Reformer'} · ${cls.level}</div>
-              <div style="font-size:0.68rem;color:var(--text-muted);margin-top:1px;">${cls.instructor || 'Instructor'} · ${cls.duration} min</div>
+              <div class="ds-title">${cls.type === 'mat' ? 'Mat' : 'Reformer'} · ${cls.level}</div>
+              <div class="ds-sub">${cls.instructor || 'Instructor'} · ${cls.duration} min</div>
             </div>
             <div style="text-align:right;">
-              <div style="font-size:0.65rem;color:${isFull ? 'var(--danger)' : spotsLeft <= 3 ? 'var(--orange)' : 'var(--success)'};font-weight:600;">${isFull ? 'Full' : spotsLeft + ' spots'}</div>
+              <div class="ds-seats ${isFull ? 'full' : spotsLeft <= 3 ? 'warn' : 'ok'}">${isFull ? 'Full' : spotsLeft + ' seat' + (spotsLeft > 1 ? 's' : '') + ' left'}</div>
             </div>
           </div>
           <div style="display:flex;align-items:center;justify-content:space-between;margin-top:0.5rem;">
-            <div style="display:flex;gap:0.35rem;">
-              <span style="font-size:0.6rem;padding:2px 6px;border-radius:6px;background:${cls.level === 'beginner' ? '#dcfce7' : cls.level === 'intermediate' ? '#dbeafe' : '#fce7f3'};color:${cls.level === 'beginner' ? '#166534' : cls.level === 'intermediate' ? '#1e40af' : '#9d174d'};font-weight:600;text-transform:capitalize;">${cls.level}</span>
-              <span style="font-size:0.6rem;padding:2px 6px;border-radius:6px;background:#f3f4f6;color:var(--text-muted);font-weight:500;text-transform:capitalize;">${cls.type}</span>
+            <div class="ds-chips">
+              <span class="ds-chip level-${cls.level}">${cls.level}</span>
+              <span class="ds-chip type">${cls.type}</span>
             </div>
             ${isAlreadyBooked ?
-              '<span style="font-size:0.7rem;color:var(--success);font-weight:600;">✓ Booked</span>' :
-              `<button onclick="studentBookClass('${cls.id}')" ${limitReached || isFull ? 'disabled style="padding:0.55rem 0.85rem;border-radius:8px;border:none;background:#e5e7eb;color:#9ca3af;font-size:0.7rem;font-weight:600;cursor:not-allowed;"' : 'style="padding:0.55rem 0.85rem;border-radius:8px;border:none;background:var(--primary);color:white;font-size:0.7rem;font-weight:600;cursor:pointer;transition:all 0.15s;"'}>${isFull ? 'Full' : limitReached ? 'Limit' : 'Book'}</button>`
+              '<span class="ds-badge-booked">✓ Booked</span>' :
+              isFull
+                ? (isWaitlisted
+                    ? `<button class="ds-btn waitlisted" onclick="leaveWaitlist('${cls.id}')" title="Remove yourself from the waitlist">✓ Waitlisted · Leave</button>`
+                    : `<button class="ds-btn waitlist" onclick="joinWaitlist('${cls.id}')" title="Join the waitlist — auto-enrolled if a spot opens">Join Waitlist</button>`)
+                : (limitReached
+                    ? '<button class="ds-btn ghost" disabled title="Package limit reached for upcoming classes">Limit</button>'
+                    : `<button class="ds-btn primary" onclick="studentBookClass('${cls.id}')" title="Book this class">Book</button>`)
             }
           </div>
         </div>
@@ -10172,6 +10539,7 @@ function studentChangeBooking(classId) {
   s.enrolledClasses = s.enrolledClasses.filter(id => id !== classId);
   saveDB();
   showToast('&#10003; Unenrolled from class. Pick a new one below.');
+  promoteFromWaitlist(c);
   navigate('student-book');
 }
 
@@ -10179,6 +10547,7 @@ function showCancelBookingConfirm(classId) {
   const c = getClass(classId);
   if (!c) return;
   if (!canChangeBooking(c)) { showToast('Cancellations must be made at least 1 day before class.', 'error'); return; }
+  const isFull = c.enrolled.length >= c.maxStudents;
   const modal = document.getElementById('modal-container');
   modal.innerHTML = `
     <div class="modal-overlay" onclick="if(event.target===this)closeModal()">
@@ -10188,6 +10557,7 @@ function showCancelBookingConfirm(classId) {
           <h3>Cancel Booking?</h3>
           <p style="font-size:0.85rem;color:var(--text-muted);margin:0.5rem 0 1.25rem;">
             This will remove you from <strong>${c.type === 'mat' ? 'Mat' : 'Reformer'} — ${formatTime(c.date, c.time)}</strong>.
+            ${isFull ? '<br><span style="color:var(--orange);font-size:0.78rem;">This class is full — you can join the waitlist to re-enter if a spot opens.</span>' : ''}
           </p>
         </div>
         <div style="display:flex;flex-direction:column;gap:0.75rem;">
@@ -10209,7 +10579,12 @@ function studentCancelBooking(classId) {
   c.enrolled = c.enrolled.filter(id => id !== studentId);
   s.enrolledClasses = s.enrolledClasses.filter(id => id !== classId);
   saveDB();
-  showToast('&#10003; Booking cancelled successfully.');
+  promoteFromWaitlist(c);
+  if (c.enrolled.length >= c.maxStudents) {
+    showToastAction('Booking cancelled. This class is now full — join the waitlist to get back in if a spot opens.', 'info', 'Join Waitlist', "joinWaitlist('" + classId + "')");
+  } else {
+    showToastAction('&#10003; Booking cancelled successfully.', 'success', 'Book Another', "navigate('student-book')");
+  }
   renderStudentSchedule(document.getElementById('app-content'));
 }
 
@@ -10235,9 +10610,68 @@ function studentBookClass(classId) {
   c.enrolled.push(studentId);
   s.enrolledClasses.push(classId);
   saveDB();
-  showToast('&#10003; Successfully enrolled! Check your schedule.');
+  showToastAction('&#10003; Successfully enrolled!', 'success', 'Undo', "undoStudentBooking('" + classId + "')");
   const stuBookEl = document.getElementById('stu-available-classes');
   if (stuBookEl) { filterStudentClasses(); } else { filterAvailableClasses(); }
+}
+
+function undoStudentBooking(classId) {
+  const studentId = currentStudentId || 's1';
+  const s = getStudent(studentId);
+  const c = getClass(classId);
+  if (!s || !c) return;
+  c.enrolled = c.enrolled.filter(id => id !== studentId);
+  s.enrolledClasses = s.enrolledClasses.filter(id => id !== classId);
+  saveDB();
+  showToast('&#10003; Booking undone.');
+  promoteFromWaitlist(c);
+  const stuBookEl = document.getElementById('stu-available-classes');
+  if (stuBookEl) { filterStudentClasses(); } else { filterAvailableClasses(); }
+}
+
+function joinWaitlist(classId) {
+  const studentId = currentStudentId || 's1';
+  const s = getStudent(studentId);
+  const c = getClass(classId);
+  if (!s || !c) return;
+  if (c.enrolled.includes(studentId)) { showToast('You are already booked for this class.', 'error'); return; }
+  if (!c.waitlist) c.waitlist = [];
+  if (c.waitlist.includes(studentId)) { showToast('You are already on the waitlist.', 'error'); return; }
+  c.waitlist.push(studentId);
+  if (!s.waitlistedClasses) s.waitlistedClasses = [];
+  s.waitlistedClasses.push(classId);
+  saveDB();
+  showToast('&#9889; Added to waitlist! You\u2019ll be auto-enrolled if a spot opens.');
+  const stuBookEl = document.getElementById('stu-available-classes');
+  if (stuBookEl) filterStudentClasses();
+}
+
+function leaveWaitlist(classId) {
+  const studentId = currentStudentId || 's1';
+  const s = getStudent(studentId);
+  const c = getClass(classId);
+  if (!s || !c) return;
+  if (c.waitlist) c.waitlist = c.waitlist.filter(id => id !== studentId);
+  if (s.waitlistedClasses) s.waitlistedClasses = s.waitlistedClasses.filter(id => id !== classId);
+  saveDB();
+  showToast('Removed from waitlist.');
+  const stuBookEl = document.getElementById('stu-available-classes');
+  if (stuBookEl) filterStudentClasses();
+}
+
+function promoteFromWaitlist(c) {
+  if (!c || !c.waitlist || !c.waitlist.length) return;
+  const cap = c.maxStudents || Infinity;
+  let promoted = 0;
+  while (c.waitlist.length && c.enrolled.length < cap) {
+    const sid = c.waitlist.shift();
+    c.enrolled.push(sid);
+    const s = getStudent(sid);
+    if (s && !s.enrolledClasses.includes(c.id)) s.enrolledClasses.push(c.id);
+    if (s && s.waitlistedClasses) s.waitlistedClasses = s.waitlistedClasses.filter(id => id !== c.id);
+    promoted++;
+  }
+  if (promoted > 0) { saveDB(); showToast('&#127881; Great news! A spot opened and you\u2019ve been auto-enrolled.'); }
 }
 
 function renderStudentSchedule(target) {
@@ -10263,6 +10697,21 @@ function renderStudentSchedule(target) {
   // --- UPCOMING CLASSES ---
   html += `<div style="margin-bottom:1.5rem;">
     <div style="font-size:0.82rem;font-weight:700;color:var(--text);margin-bottom:0.65rem;">Upcoming</div>`;
+
+  // --- WEEKLY STRIP (F-35) ---
+  html += '<div style="display:flex;gap:0.5rem;overflow-x:auto;padding-bottom:0.35rem;margin-bottom:1rem;-webkit-overflow-scrolling:touch;">';
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(now.getTime() + i * 86400000);
+    const dStr = d.toISOString().split('T')[0];
+    const dayHasClass = upcoming.some(cl => cl.date === dStr);
+    const isCur = i === 0;
+    html += `<div style="flex:0 0 auto;width:52px;padding:0.5rem 0.35rem;border-radius:12px;text-align:center;background:${isCur ? 'var(--primary)' : 'white'};border:1px solid ${isCur ? 'var(--primary)' : 'var(--border-dark)'};color:${isCur ? 'white' : 'var(--text)'};">
+      <div style="font-size:0.58rem;font-weight:600;text-transform:uppercase;opacity:0.75;">${d.toLocaleDateString('en-US', { weekday: 'short' })}</div>
+      <div style="font-size:0.95rem;font-weight:800;line-height:1.2;">${d.getDate()}</div>
+      <div style="font-size:0.55rem;margin-top:2px;color:${isCur ? 'rgba(255,255,255,0.85)' : dayHasClass ? 'var(--primary)' : 'var(--text-muted)'};font-weight:600;">${isCur ? 'Today' : dayHasClass ? '● Class' : ''}</div>
+    </div>`;
+  }
+  html += '</div>';
   
   if (upcoming.length === 0) {
     html += `<div style="background:white;border:1px solid var(--border-dark);border-radius:14px;padding:1.5rem;text-align:center;">
@@ -10286,7 +10735,7 @@ function renderStudentSchedule(target) {
           </div>
           <div style="flex:1;min-width:0;">
             <div style="font-size:0.82rem;font-weight:600;color:var(--text);">${cls ? (cls.name || (cls.type === 'reformer' ? 'Reformer Pilates' : 'Mat Pilates')) : 'Class'}</div>
-            <div style="font-size:0.68rem;color:var(--text-muted);">${scDate.toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'})} · ${cls ? cls.duration : 60}min · ${cls ? (cls.type === 'reformer' ? 'Reformer' : 'Mat') : ''}</div>
+            <div style="font-size:0.68rem;color:var(--text-muted);">${dayLabel} · ${scDate.toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'})} · ${cls ? cls.duration : 60}min · ${cls ? (cls.type === 'reformer' ? 'Reformer' : 'Mat') : ''}</div>
           </div>
           <div style="display:flex;gap:0.35rem;">
             ${canChange ? `<button onclick="studentChangeBooking('${cls.id}')" title="Move this booking to a different class" style="padding:0.5rem 0.65rem;border-radius:8px;border:1px solid var(--border-dark);background:white;color:var(--text-secondary);font-size:0.65rem;font-weight:500;cursor:pointer;">Change</button>` : ''}
@@ -10443,6 +10892,239 @@ function switchPackage(packageId) {
 }
 
 // ============================
+// MY ACCOUNT (F-38, F-39, F-40, F-41)
+// ============================
+function getAccountContext() {
+  if (currentPersona === 'admin') {
+    return {
+      role: 'Admin',
+      name: 'Administrator',
+      email: db.settings.contactEmail || 'admin@zenpilates.com',
+      phone: db.settings.contactPhone || '',
+      initials: 'A',
+      accent: '#7c3aed',
+      canChangePwd: true
+    };
+  }
+  if (currentPersona === 'instructor') {
+    const inst = currentInstructorId ? (db.instructors || []).find(i => i.id === currentInstructorId) : null;
+    const name = (inst && inst.name) || db.settings.instructorName || 'Instructor';
+    return {
+      role: 'Instructor',
+      name: name,
+      email: inst ? inst.email : '',
+      phone: inst ? inst.phone : '',
+      bio: inst ? inst.bio : '',
+      specialization: inst ? inst.specialization : '',
+      initials: name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase() || 'I',
+      accent: '#2563eb',
+      obj: inst,
+      canChangePwd: !!inst
+    };
+  }
+  const s = getStudent(currentStudentId);
+  const name = s ? s.name : 'Student';
+  return {
+    role: 'Student',
+    name: name,
+    email: s ? s.email : '',
+    phone: s ? s.phone : '',
+    emergency: s ? s.emergency : '',
+    gender: s ? s.gender : '',
+    initials: name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase() || 'S',
+    accent: '#16a34a',
+    obj: s,
+    canChangePwd: false
+  };
+}
+
+function renderMyAccount(target) {
+  const ctx = getAccountContext();
+  const prefs = (ctx.obj && ctx.obj.prefs) || { reminders: true, waitlist: true, promotions: false };
+  const isStudent = currentPersona === 'student';
+  const student = isStudent ? getStudent(currentStudentId) : null;
+
+  let html = '';
+
+  // --- HEADER ---
+  html += (currentPersona === 'admin' || currentPersona === 'instructor' ? crumb('My Account') : '') + `<div style="margin-bottom:1.25rem;">
+    <div style="font-size:1.1rem;font-weight:700;color:var(--text);margin-bottom:2px;">My Account &#128100;</div>
+    <div style="font-size:0.75rem;color:var(--text-muted);">Manage your profile, security and preferences</div>
+  </div>`;
+
+  // --- PROFILE CARD ---
+  html += `<div style="background:white;border:1px solid var(--border-dark);border-radius:14px;padding:1rem;margin-bottom:1rem;">
+    <div style="display:flex;align-items:center;gap:0.85rem;margin-bottom:1rem;">
+      <div style="width:52px;height:52px;border-radius:14px;background:${ctx.accent};color:white;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:800;flex-shrink:0;">${ctx.initials}</div>
+      <div>
+        <div style="font-size:1rem;font-weight:700;color:var(--text);">${ctx.name}</div>
+        <div style="font-size:0.7rem;color:var(--text-muted);">${ctx.role} · ${ctx.email || 'No email on file'}</div>
+      </div>
+    </div>
+    <div style="font-size:0.78rem;font-weight:700;color:var(--text);margin-bottom:0.6rem;">Contact Details</div>
+    <div class="form-group">
+      <label>Full Name</label>
+      <input class="form-control" id="ac-name" value="${ctx.name}" placeholder="Your name">
+    </div>
+    <div class="form-group">
+      <label>Email</label>
+      <input class="form-control" id="ac-email" value="${ctx.email || ''}" placeholder="you@email.com">
+    </div>
+    <div class="form-group">
+      <label>Phone</label>
+      <input class="form-control" id="ac-phone" value="${ctx.phone || ''}" placeholder="+91 ...">
+    </div>
+    ${isStudent ? `
+      <div class="form-group">
+        <label>Emergency Contact</label>
+        <input class="form-control" id="ac-emergency" value="${(student && student.emergency) || ''}" placeholder="+91 ...">
+      </div>` : (currentPersona === 'instructor' && ctx.bio) ? `
+      <div class="form-group">
+        <label>Specialization</label>
+        <input class="form-control" id="ac-spec" value="${ctx.specialization || ''}" placeholder="e.g. Mat & Reformer">
+      </div>
+      <div class="form-group">
+        <label>Bio</label>
+        <textarea class="form-control" id="ac-bio" rows="3" placeholder="About you">${ctx.bio || ''}</textarea>
+      </div>` : ''}
+    <button class="btn btn-primary" onclick="saveAccountProfile()" style="width:100%;">Save Profile</button>
+  </div>`;
+
+  // --- PASSWORD (F-39) ---
+  html += `<div style="background:white;border:1px solid var(--border-dark);border-radius:14px;padding:1rem;margin-bottom:1rem;">
+    <div style="font-size:0.78rem;font-weight:700;color:var(--text);margin-bottom:0.6rem;">🔒 Security</div>
+    ${ctx.canChangePwd ? `
+      <div class="form-group">
+        <label>Current Password</label>
+        <input class="form-control" id="ac-cur-pwd" type="password" placeholder="Current password">
+      </div>
+      <div class="form-group">
+        <label>New Password</label>
+        <input class="form-control" id="ac-new-pwd" type="password" placeholder="At least 4 characters">
+      </div>
+      <div class="form-group">
+        <label>Confirm New Password</label>
+        <input class="form-control" id="ac-new-pwd2" type="password" placeholder="Repeat new password">
+      </div>
+      <button class="btn btn-secondary" onclick="changeAccountPassword()" style="width:100%;">Change Password</button>
+    ` : `
+      <div style="font-size:0.75rem;color:var(--text-muted);line-height:1.5;">You log in using your student profile (no password required). To reset your profile, contact the studio.</div>
+    `}
+  </div>`;
+
+  // --- PAYMENTS / INVOICES (F-40, student only) ---
+  if (isStudent && student) {
+    const pkg = (db.settings.packages || []).find(p => p.id === student.packageId) || (db.settings.packages || [])[0];
+    const invoices = [
+      { id: 'INV-2026-001', label: 'Package purchase', detail: (pkg ? pkg.name : 'Membership') + (pkg ? ' — ' + pkg.classes + ' classes/mo' : ''), amount: pkg ? pkg.price : 0, date: student.dateJoined || '2026-01-05', status: 'Paid' }
+    ];
+    html += `<div style="background:white;border:1px solid var(--border-dark);border-radius:14px;padding:1rem;margin-bottom:1rem;">
+      <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.6rem;">
+        <span style="font-size:0.9rem;">💳</span>
+        <span style="font-size:0.78rem;font-weight:700;color:var(--text);">Invoices &amp; Payments</span>
+      </div>
+      ${invoices.map(inv => `
+        <div style="display:flex;align-items:center;gap:0.65rem;padding:0.6rem 0;border-bottom:1px solid var(--border-dark);">
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:0.75rem;font-weight:600;color:var(--text);">${inv.label} — ${inv.detail}</div>
+            <div style="font-size:0.65rem;color:var(--text-muted);">${inv.id} · ${inv.date}</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:0.78rem;font-weight:700;color:var(--text);">&#8377;${inv.amount.toLocaleString()}</div>
+            <span style="font-size:0.62rem;font-weight:600;color:var(--success);">${inv.status}</span>
+          </div>
+        </div>`).join('')}
+      <div style="font-size:0.65rem;color:var(--text-muted);margin-top:0.6rem;line-height:1.4;">Demo prototype — gateway integration is pending. UPI, Cards and Net Banking accepted at the studio.</div>
+    </div>`;
+  }
+
+  // --- NOTIFICATIONS / PREFERENCES (F-41) ---
+  html += `<div style="background:white;border:1px solid var(--border-dark);border-radius:14px;padding:1rem;margin-bottom:1rem;">
+    <div style="display:flex;align-items:center;gap:0.5rem;margin-bottom:0.75rem;">
+      <span style="font-size:0.9rem;">🔔</span>
+      <span style="font-size:0.78rem;font-weight:700;color:var(--text);">Notifications &amp; Preferences</span>
+    </div>
+    ${[['reminders', 'Class reminders (day before)'], ['waitlist', 'Waitlist updates'], ['promotions', 'Promotions & offers']].map(([key, label]) => `
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:0.55rem 0;border-bottom:1px solid var(--border-dark);">
+        <span style="font-size:0.75rem;color:var(--text);">${label}</span>
+        <span class="toggle ${prefs[key] ? 'on' : ''}" id="ac-pref-${key}" onclick="toggleAccountPref('${key}')" style="min-height:24px;"></span>
+      </div>`).join('')}
+  </div>`;
+
+  target.innerHTML = html;
+}
+
+function saveAccountProfile() {
+  const name = document.getElementById('ac-name').value.trim();
+  const email = document.getElementById('ac-email').value.trim();
+  const phone = document.getElementById('ac-phone').value.trim();
+  if (!name) { showToast('Name is required', 'error'); return; }
+  if (currentPersona === 'admin') {
+    db.settings.contactEmail = email;
+    db.settings.contactPhone = phone;
+    saveDB();
+  } else if (currentPersona === 'instructor') {
+    const ctx = getAccountContext();
+    if (ctx.obj) {
+      ctx.obj.name = name;
+      ctx.obj.email = email;
+      ctx.obj.phone = phone;
+      if (document.getElementById('ac-spec')) ctx.obj.specialization = document.getElementById('ac-spec').value.trim();
+      if (document.getElementById('ac-bio')) ctx.obj.bio = document.getElementById('ac-bio').value.trim();
+      if (ctx.obj.name === db.settings.instructorName || ctx.obj.id === currentInstructorId) db.settings.instructorName = ctx.obj.name;
+    }
+    saveDB();
+  } else {
+    const s = getStudent(currentStudentId);
+    if (s) {
+      s.name = name;
+      s.email = email;
+      s.phone = phone;
+      if (document.getElementById('ac-emergency')) s.emergency = document.getElementById('ac-emergency').value.trim();
+    }
+    saveDB();
+  }
+  showToast('&#10003; Profile updated successfully.');
+  renderMyAccount(document.getElementById('app-content'));
+}
+
+function changeAccountPassword() {
+  const cur = document.getElementById('ac-cur-pwd') ? document.getElementById('ac-cur-pwd').value : '';
+  const np = document.getElementById('ac-new-pwd') ? document.getElementById('ac-new-pwd').value : '';
+  const np2 = document.getElementById('ac-new-pwd2') ? document.getElementById('ac-new-pwd2').value : '';
+  if (!cur) { showToast('Enter your current password', 'error'); return; }
+  if (np.length < 4) { showToast('New password must be at least 4 characters', 'error'); return; }
+  if (np !== np2) { showToast('New passwords do not match', 'error'); return; }
+  if (currentPersona === 'admin') {
+    if (cur !== (db.settings.adminPassword || 'rules123')) { showToast('Current password is incorrect', 'error'); return; }
+    db.settings.adminPassword = np;
+    saveDB();
+    showToast('&#10003; Password updated. Use it on your next login.');
+  } else {
+    const ctx = getAccountContext();
+    if (!ctx.obj) return;
+    if (!instructorPasswordOk(ctx.obj, cur)) { showToast('Current password is incorrect', 'error'); return; }
+    ctx.obj.password = np;
+    saveDB();
+    showToast('&#10003; Password updated. Use it on your next login.');
+  }
+  document.getElementById('ac-cur-pwd').value = '';
+  document.getElementById('ac-new-pwd').value = '';
+  document.getElementById('ac-new-pwd2').value = '';
+}
+
+function toggleAccountPref(key) {
+  const ctx = getAccountContext();
+  if (!ctx.obj) { showToast('Preferences unavailable for this role', 'error'); return; }
+  if (!ctx.obj.prefs) ctx.obj.prefs = { reminders: true, waitlist: true, promotions: false };
+  ctx.obj.prefs[key] = !ctx.obj.prefs[key];
+  saveDB();
+  const el = document.getElementById('ac-pref-' + key);
+  if (el) el.classList.toggle('on', ctx.obj.prefs[key]);
+  showToast(ctx.obj.prefs[key] ? 'Enabled' : 'Disabled');
+}
+
+// ============================
 // CONNECTIVITY / OFFLINE BANNER
 // ============================
 let connectionStatus = navigator.onLine ? 'online' : 'offline';
@@ -10563,6 +11245,8 @@ function init() {
   const mh = document.querySelector('#stu-mobile-header .logo-mini');
   if (mh) mh.innerHTML = BRAND_LOGO;
   animateExerciseProgress();
+  decorateEmojiIcons(document);
+  injectNavIcons();
   restoreSession();
 }
 
@@ -11078,7 +11762,7 @@ function renderConsultations(el) {
   });
 
   el.innerHTML = `
-    <div class="ic-breadcrumb">Dashboard <span>›</span> <span>Consultations</span></div>
+    ${crumb('Consultations')}
     <div class="ic-header">
       <div class="ic-title">🤝 Student Consultations</div>
       <span style="font-size:0.72rem;color:var(--text-dim);">AI-prioritized by urgency</span>
@@ -11291,7 +11975,7 @@ function renderEnhancedInsights(el) {
   const atRisk = studentScores.filter(p => p.trend === 'declining' || p.activeInjuries.length > 0 || p.attRate < 50);
 
   el.innerHTML = `
-    <div class="ic-breadcrumb">Dashboard <span>›</span> <span>Performance Insights</span></div>
+    ${crumb('Performance Insights')}
     <div class="ic-header">
       <div class="ic-title">📊 Performance Analytics</div>
       <div style="display:flex;gap:0.3rem;">

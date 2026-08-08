@@ -42,7 +42,7 @@
 | --- | --- |
 | App build | `reference/PilatesStudioApp.html` (local) + live GitHub Pages URL |
 | Browsers | Chrome (headless automation), responsive widths 1440/768/390 |
-| Test data | Fresh seed via DB key `zenpilates_data_v2`; deterministic reset before each suite |
+| Test data | Fresh seed via DB key `zenpilates_data_v3`; deterministic reset before each suite |
 | Automation | Puppeteer-core + Chrome, Node.js 24 |
 
 ## 4. Test approach
@@ -186,6 +186,31 @@ Severity: **S1** blocks go-live (crash, dead primary flow). **S2** major functio
 | --- | --- | --- |
 | J-01/02/03 | Refresh Admin/Instructor/Student | Persona + page restored; not logged out |
 | J-04 | Logout then refresh | Session cleared; login screen shown |
+
+### K — UX-audit fixes (added cycle 2; verifies F-01…F-48)
+| ID | Scenario | Expected |
+| --- | --- | --- |
+| K01 | Undo booking | Action toast shows **Undo**; undo reverses enrollment (F-28) |
+| K02 | Waitlist join | Join on full class persists on class + student (F-30) |
+| K03 | Waitlist auto-promote | Opening a spot promotes the next waitlisted student (F-30) |
+| K04 | Seats-left copy | Booking cards show "X seats left" / "Full" (F-29) |
+| K05 | Today/Tomorrow labels | Schedule tiles show Today / Tomorrow (F-34) |
+| K06 | Weekly strip | 7-day strip above Upcoming (F-35) |
+| K07 | Reminder banner | Dashboard tomorrow reminder with View (F-37) |
+| K08 | Profile save | My Account save updates the student record (F-38) |
+| K09 | Admin password change | New password takes effect in settings (F-39) |
+| K10 | Invoice card | Student account shows invoice card (F-40) |
+| K11 | Notification prefs | Toggles persist (F-41) |
+| K12 | Live overflow items | Privacy/Retention modals open; Export downloads JSON (F-44) |
+| K13 | Explicit mic control | `#ls-voice-btn` present in live timer controls (F-45) |
+| K14 | Conflict-skip toast | Creating a class warns when conflicting slots are skipped (F-46) |
+| K15 | Audit-log UI | Admin Reports shows Recent Activity from `db.auditLog` (F-42) |
+| K16 | Admin class admin | Toggle / confirm-delete / delete a class studio-wide (F-47) |
+| K17 | Breadcrumbs | Instructor + admin drill-down pages render the breadcrumb (F-03) |
+| K18 | 390px live console | Reflows to one column with notes panel inside (F-18) |
+| K19 | 820px spot-check | iPad-portrait pages render without overflow (F-19) |
+| K20 | SVG nav icons | Topnav + bottom tabs use SVG line icons (F-06) |
+| K21 | DS booking cards | Booking cards use consolidated `.ds-*` components (F-05) |
 
 ---
 
