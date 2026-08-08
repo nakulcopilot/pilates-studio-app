@@ -38,16 +38,17 @@ movement quality and give better cues, with a strong **privacy-first** stance:
 
 ---
 
-## Demo roles (as designed in the mockup)
+## Demo roles
 
 | Role | Login |
 | --- | --- |
-| Admin | `admin` |
-| Instructor | Pick from 6 seeded instructors (e.g., Priya Sharma — `instructor123`) |
+| Admin | `admin` / `rules123` |
+| Instructor | `neelamr` / `rules123` (Neelam R — lead instructor with today's classes) |
 | Student | Pick from 9 seeded students (e.g., Neha Sharma) |
 
-Sample data matches the mockup: 6 instructors, 9 students, ~26 classes across June–July,
-packages (Starter / Regular / Unlimited), attendance records, class notes, milestones and injuries.
+Sample data matches the mockup: 7 instructors, 9 students, classes across June–July
+(plus fresh classes for today/tomorrow for Neelam R), packages (Starter / Regular / Unlimited),
+attendance records, class notes, milestones and injuries.
 
 ---
 
