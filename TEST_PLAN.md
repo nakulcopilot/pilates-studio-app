@@ -211,6 +211,7 @@ Severity: **S1** blocks go-live (crash, dead primary flow). **S2** major functio
 | K19 | 820px spot-check | iPad-portrait pages render without overflow (F-19) |
 | K20 | SVG nav icons | Topnav + bottom tabs use SVG line icons (F-06) |
 | K21 | DS booking cards | Booking cards use consolidated `.ds-*` components (F-05) |
+| K22 | Instructor account extras | Photo upload + social links (FB/IG/YT) save, refresh header avatar, survive reload |
 
 ---
 

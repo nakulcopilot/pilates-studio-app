@@ -7,9 +7,9 @@ Severity: **S1** critical (breaks a core flow) · **S2** major (wrong/blocked be
 
 ## Summary
 
-- Automated suite: **96/96 PASS** (final, after fixes) — see `C:\Users\Welcome\AppData\Local\Temp\opencode\e2e-test\suite.js` (suites A–J + K01–K21).
-- Defects logged across go-live cycles: **42** (4 S1, 9 S2, 28 S3, 1 S4). All **FIXED** and **VERIFIED**.
-- Cycle 1 (core flows): OBS-001…OBS-015 (15 defects). Cycle 2 (UX-audit roll-up): OBS-016…OBS-042 (27 defects) covering the 48-point UX audit (F-01…F-48) — every finding fixed and regression-tested by the K01–K21 suite plus a full-suite re-run.
+- Automated suite: **97/97 PASS** (final, after fixes) — see `C:\Users\Welcome\AppData\Local\Temp\opencode\e2e-test\suite.js` (suites A–J + K01–K22).
+- Defects logged across go-live cycles: **43** (4 S1, 9 S2, 29 S3, 1 S4). All **FIXED** and **VERIFIED**.
+- Cycle 1 (core flows): OBS-001…OBS-015 (15 defects). Cycle 2 (UX-audit roll-up): OBS-016…OBS-042 (27 defects) covering the 48-point UX audit (F-01…F-48) — every finding fixed and regression-tested by the K01–K22 suite plus a full-suite re-run. Cycle 3 (feature): OBS-043 — instructor account photo + social links (K22).
 - All fixes were covered by a failing automated check first, then re-verified green after the change.
 
 ## Defect Log
@@ -58,6 +58,7 @@ Severity: **S1** critical (breaks a core flow) · **S2** major (wrong/blocked be
 | OBS-040 | S3 | Design | Emoji feature icons + inline SVG only in live session — mixed icon systems | No global icon set | FIXED — `ICONS` + `svgIcon()` helper; topnav + bottom tabs use SVG line icons via `injectNavIcons()` (F-06) | K20 |
 | OBS-041 | S3 | Design | Ad-hoc inline-styled booking/schedule cards vs the card design system | No reusable components | FIXED — DS component system (`.ds-*`) adopted by booking cards, AI Recommended strip, demo banner (F-05) | K21 |
 | OBS-042 | S3 | Layout | Dense roster/schedule rows at 390px; student mobile header ignored top notch | Small hit areas, no safe-area top | FIXED — roster/schedule rows get padding + 48px min-height; student mobile header uses `env(safe-area-inset-top)` (F-08, F-20) | Full-suite re-run (I-suite at 390px) |
+| OBS-043 | S3 | Feature — Instructor Account | My Account exposed no photo or social media links | Profile card only had contact/spec/bio fields | FIXED — Profile Photo upload (preview + 2MB guard, base64 persisted, header avatar refreshes on save) and Social Media Links (Facebook / Instagram / YouTube channel) added to the instructor profile card; saved via `saveAccountProfile` into `inst.photo`/`inst.social` | K22 (fields present, save persists, header avatar updates, survives reload) |
 
 ## Notes / Non-issues
 - Student schedule shows weekday + day tiles **plus** Today/Tomorrow labels (OBS-024); the cycle-1 "tiles only" note is superseded.

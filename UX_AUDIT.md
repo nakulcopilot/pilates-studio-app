@@ -5,7 +5,7 @@
 **Scope:** Navigation, layout, visual hierarchy, typography, color, responsiveness, accessibility, and end-to-end flow friction (booking, scheduling, account management).
 
 > **Status (2026-08-08, final):** all 48 findings (F-01…F-48) are now **FIXED and VERIFIED** by the automated suite
-> (`suite.js`, 96/96 PASS — suites A–J + K01–K21). Two findings are intentionally **ACCEPTED / DEFERRED**
+> (`suite.js`, 97/97 PASS — suites A–J + K01–K22). Two findings are intentionally **ACCEPTED / DEFERRED**
 > with rationale rather than fixed: F-15 (internal duplicate CSS tokens — cosmetic only, not churned to avoid regression)
 > and F-16 (full light/dark themes — out of scope for the prototype; primary-theme switching retained). See §9.
 
@@ -261,4 +261,4 @@ Breakpoints observed: 480, 500, 600, 700, 768, 900, 1024, 1100px + a `viewport` 
 
 ## 11. Conclusion
 
-The prototype is **functionally strong and visually coherent in intent**; the login experience, live-session console, and data-dense dashboards demonstrate real product thinking. Since this audit, the full QA fix pass (cycles 1–2) closed **all 48 findings (F-01…F-48)** and the automated suite runs **96/96 PASS** (A–J + K01–K21). The P0 items shipped first (per-student live notes F-43, session persistence, SVG brand logo F-07), then the accessibility scaffolding (F-21–F-26), type/contrast floors (F-09, F-12–F-14), full instructor nav (F-01), and the booking/scheduling/account experience lifts (F-28–F-41, F-44–F-48) landed with regression tests. The only deliberately unaddressed items are cosmetic or out of prototype scope: F-15 (internal duplicate CSS tokens) and F-16 (full light/dark themes) — both documented as accepted/deferred in §9. The go-live QA loop is complete.
+The prototype is **functionally strong and visually coherent in intent**; the login experience, live-session console, and data-dense dashboards demonstrate real product thinking. Since this audit, the full QA fix pass (cycles 1–2) closed **all 48 findings (F-01…F-48)** and the automated suite runs **97/97 PASS** (A–J + K01–K22). The P0 items shipped first (per-student live notes F-43, session persistence, SVG brand logo F-07), then the accessibility scaffolding (F-21–F-26), type/contrast floors (F-09, F-12–F-14), full instructor nav (F-01), and the booking/scheduling/account experience lifts (F-28–F-41, F-44–F-48) landed with regression tests. A post-audit feature added instructor profile photo upload + social links in My Account (K22). The only deliberately unaddressed items are cosmetic or out of prototype scope: F-15 (internal duplicate CSS tokens) and F-16 (full light/dark themes) — both documented as accepted/deferred in §9. The go-live QA loop is complete.
