@@ -1,0 +1,239 @@
+# UX Audit — Pilates Studio App (Prototype)
+
+**Date:** 2026-08-08 · **Audited artifact:** `reference/PilatesStudioApp.html` (single-file client-side prototype, live on GitHub Pages)
+**Method:** Static code analysis (markup/CSS/JS), computed accessibility metrics, automated layout checks at 390/768/1024/1280px, and review of the primary user flows for the three personas (Admin, Instructor, Student).
+**Scope:** Navigation, layout, visual hierarchy, typography, color, responsiveness, accessibility, and end-to-end flow friction (booking, scheduling, account management).
+
+---
+
+## 1. Executive Summary
+
+The app is functionally rich for a prototype — all core studio workflows (class management, booking, attendance, live-session timer, AI briefings/cues, insights, admin CRUD) are present and stable. The design system is modern in intent (Inter font, violet-primary palette, 12px radii, card-based surfaces, a purpose-built dark "console" for live sessions) and the login screen is genuinely premium.
+
+The biggest gaps are **discoverability and finish**, not core function:
+
+1. **Navigation is under-exposed.** Instructors only see 2 nav items (Dashboard, Classes); Attendance, Students, Demo, and Insights exist only as dashboard quick-actions. Admin has 6 nav items squeezed into a horizontal strip. There is no "current section" persistence problem now, but there is a strong wayfinding problem.
+2. **Text is too small and low-contrast in places.** Much of the UI runs at 10–13px; `--text-dim` (#94a3b8) on white is 2.56:1 (WCAG fails). This is the single biggest "premium" detractor.
+3. **Accessibility scaffolding is absent:** no `aria-live` on toasts, no `role="dialog"`/`aria-modal` on modals, no `aria-hidden` on decorative emoji/icons, no `:focus-visible` styling, and most touch targets are below the 44px guideline.
+4. **The live-class experience has dead UI.** Per-student note-taking (the `.live-center` panel, AI suggestions, voice notes) was orphaned when the new console layout replaced it — the functions exist but there is **no UI to take per-student observations** during a live class. Several overflow-menu items (Privacy & Consent, Retention Settings, Export Data) do nothing.
+5. **Friction points in booking/scheduling:** no waitlist, no class conflict/duplicate hint at creation, no confirmation screens (only toasts), no calendar/availability for instructors, and no account/profile management for any persona.
+
+**Scorecard (1–5):**
+
+| Area | Score | One-line reason |
+|---|---|---|
+| Visual hierarchy & layout | 3.5 | Clean cards, but heavy emoji reliance and inconsistent inline styles |
+| Typography | 2.5 | Inter is great; sizes (9.6–13.6px) and muted weights are too small |
+| Color palette | 3.0 | Cohesive violet system; several contrast failures |
+| Responsiveness | 3.5 | Good breakpoints; a few dense pages need audit at 390px |
+| Accessibility | 2.0 | No ARIA semantics, weak focus, small targets, contrast gaps |
+| Navigation / IA | 2.5 | Instructor sub-pages hidden; no breadcrumb consistency |
+| Flow friction (booking/scheduling/account) | 2.5 | Core flows work; recovery/edge paths missing |
+| **Overall** | **2.8** | Functionally strong; polish and a11y needed for "premium" |
+
+---
+
+## 2. Navigation & Information Architecture
+
+**What's good**
+- Role-based nav sets are clean and correct (`getNavItems()`).
+- Student experience is mobile-first: bottom tab bar (Home/Book/Schedule/Packages) + a dedicated mobile header with Logout. This is the best mobile pattern in the app.
+- `renderApp()` has a safety reset so an unknown route falls back to the first page.
+
+**Findings**
+- **F-01 (High) — Instructor sub-pages are undiscoverable.** The instructor nav renders only *Dashboard* and *Classes*. Attendance, Students, Demo Sessions, and Insights are registered as `hidden:true` and are reachable *only* via quick-action cards on the dashboard. A user who lands mid-session cannot find them. Recommendation: show all six items in the nav (drop the `hidden` flags), using a compact horizontal nav or an overflow "More" menu on mobile.
+- **F-02 (Med) — Admin nav is crowded on mobile.** Six items in a horizontally scrolling strip (`overflow-x:auto`) with no visual overflow cue. Consider a two-row layout or a "More" menu at ≤768px.
+- **F-03 (Low) — Breadcrumbs are inconsistent.** Some pages render "Dashboard › X" breadcrumbs, others don't. Standardize the component.
+- **F-04 (Low) — No persistent wayfinding state.** The active nav highlight resets to the first item on reload (previously fixed to keep session page); with session restore (see QA), the page is preserved but the nav highlight relies on `currentPage` which is fine — verify the active tab matches the restored page.
+
+---
+
+## 3. Layout & Visual Hierarchy
+
+**What's good**
+- Clear card/surface system (`--bg-card`, 12px radius, subtle borders), consistent page titles + subtitles.
+- The live session is a genuinely different, immersive layout (dark 3-column console) — a strong differentiator.
+- Stat cards, gradient callouts ("AI Studio Intelligence"), and empty states are consistently structured.
+
+**Findings**
+- **F-05 (Med) — Mixed design languages.** The app oscillates between a refined card system and hundreds of ad-hoc inline-styled divs (booking page, schedule, packages). This creates visual noise and inconsistent spacing/radii (8–14px). Consolidate into reusable components (`.class-card`, `.chip`, `.btn-sm`, `.panel`).
+- **F-06 (Med) — Icon inconsistency.** Login/headers use emoji (🧘, P letters), feature icons are emoji everywhere, but the live session uses a proper SVG icon set (`ICONS`). Pick one system (SVG line icons) and use it globally; emoji render differently per OS and read as text to screen readers.
+- **F-07 (Low) — Emoji-only visual identity.** The "logo" is an emoji and a letter. An actual brand mark (SVG monogram) would materially lift perceived quality (a QA fix is already planned).
+- **F-08 (Low) — Dense inline lists.** Student schedule/past-class rows pack 0.55–0.85rem type with multiple nested spans; at 390px they feel cramped. Give rows breathing room and consistent hit areas.
+
+---
+
+## 4. Typography
+
+- Font: **Inter** (300–800) — excellent choice, loads from Google Fonts with `display=swap`.
+- **F-09 (High) — Base type is too small.** Common sizes: 0.6rem (9.6px), 0.65rem (10.4px), 0.68rem, 0.7rem (11.2px), 0.72rem, 0.75rem (12px), 0.78–0.85rem (12.5–13.6px). Body text at 12px or below harms readability on desktop and is below accessible minimums. Recommendation: floor at 13px for captions, 14px for body, 16px for titles, 18–24px for page titles.
+- **F-10 (Low) — Weight/color used alone for hierarchy.** "Meta" lines are both smaller *and* muted (`--text-dim`) — fine for labels, but avoid relying on size-only differentiation for actionable info.
+- **F-11 (Low) — Missing line-height/spacing scale.** Many inline elements set no `line-height`; text-heavy cards rely on browser defaults. Define a type scale (12/13/14/16/20/28) with fixed line-heights.
+
+---
+
+## 5. Color Palette & Contrast
+
+Palette is cohesive: violet primary (`#7c3aed`), slate neutrals, green/amber/red semantic set, plus a dark navy/teal "live" palette. **Computed contrast ratios:**
+
+| Pair | Ratio | WCAG AA (4.5:1) |
+|---|---|---|
+| `--text` #1a1a2e on white | 17.06:1 | ✅ |
+| `--text-muted` #6b7280 on white | 4.83:1 | ✅ |
+| `--text-muted` on `--bg-deep` #f0f2f5 | 4.31:1 | ❌ (borderline) |
+| `--text-dim` #94a3b8 on white | 2.56:1 | ❌ |
+| Disabled grey #9ca3af on white | 2.54:1 | ❌ |
+| Primary #7c3aed on white / white on primary | 5.70:1 | ✅ |
+| `--ls-text-dim` #64748b on `--ls-panel` #0b1220 | 3.93:1 | ❌ |
+| `--ls-muted` #94a3b8 on `--ls-bg` #071827 | 7.01:1 | ✅ |
+
+**Findings**
+- **F-12 (High) — `--text-dim` fails contrast** and is used heavily for meta/empty/helper text. Bump to ≈#6b7280 (≥4.5:1) or reserve it for non-essential decoration only.
+- **F-13 (Med) — Disabled states fail contrast.** Disabled "Book"/"Limit" buttons use `#e5e7eb` bg + `#9ca3af` text (2.54:1). Disabled text still needs ~4.5:1.
+- **F-14 (Med) — Live-session muted text fails** on panels. Raise `--ls-text-dim` to ≈#8b98ab.
+- **F-15 (Low) — Semantic duplicates.** `--success`/`--green-bright`, `--text`/`--text-dark`, `--primary`/`--cyan` are duplicated aliases (legacy merge). Clean up to one canonical token each.
+- **F-16 (Low) — Theme switching** (Appearance) adjusts only `--primary`; it does not re-theme the neutrals or live palette. Consider full light/dark themes for a more premium feel.
+
+---
+
+## 6. Responsiveness
+
+Breakpoints observed: 480, 500, 600, 700, 768, 900, 1024, 1100px + a `viewport` meta tag. Automated checks (390/768/1024/1280) show **no horizontal overflow** on the main pages for all three personas (E05/I01–I04).
+
+**Findings**
+- **F-17 (Med) — Instructor/admin horizontal nav on mobile** has no overflow affordance (no fade/chevron), so items 5–6 are effectively invisible until scrolled.
+- **F-18 (Med) — The live console at 390px** is a 3-column layout (left/center/right, 220px/320px fixed columns) that must reflow to one column — confirm the `ls-layout` stacks and the per-student notes panel (once restored) fits.
+- **F-19 (Low) — iPad portrait (768px)** sits at the admin desktop→mobile boundary; some dense grids collapse just above 768 (e.g., stats-row → wrap). Spot-check 820px.
+- **F-20 (Low) — `env(safe-area-inset-bottom)`** is used for the bottom nav (good); ensure the student mobile header respects the top notch inset too.
+
+---
+
+## 7. Accessibility
+
+**Automated inventory:** 0 `aria-live`, 0 `role="dialog"`, 0 `aria-label`, 0 `aria-hidden`, 1 `alt`, 0 `:focus-visible`, 6 `:focus` rules, 13 controls with `min-height:44px` out of ~165 buttons.
+
+**Findings**
+- **F-21 (High) — No live-region for toasts/errors.** `showToast` appends to `#toast-container` with no `aria-live="polite"`; screen-reader users miss all feedback (booking success, errors, package switch). Add `aria-live="polite"` and `role="status"` to the container.
+- **F-22 (High) — Modals lack dialog semantics.** `showModal` traps focus (good) but emits no `role="dialog"`/`aria-modal="true"`/`aria-labelledby`; no Escape-key handler; focus is not returned to the trigger. Add these; bind `Escape` to `closeModal()`.
+- **F-23 (High) — Decorative emoji/icons are announced.** Hundreds of emoji in headings/buttons are read aloud by screen readers. Mark decorative icons `aria-hidden="true"` (or use an SVG icon set).
+- **F-24 (Med) — No visible keyboard focus.** Only 6 `:focus` rules; no `:focus-visible` outlines. Add a clear 2px focus ring for keyboard users.
+- **F-25 (Med) — Touch targets too small.** Many buttons are ~26–32px tall (0.5rem padding, 0.65rem type). Standardize interactive controls to ≥44px (13 already are).
+- **F-26 (Med) — Forms rely on placeholders + ids without labels.** Create-class, settings, and add-student modals use ids but not `<label>` elements. Add visible labels or `aria-label`.
+- **F-27 (Low) — Color not the only signal is mostly respected** (level chips use icons+text; attendance uses ✓/✗ with titles). Keep it that way; add text labels to the live ✓/⏱/✗ buttons (they currently show title-only on hover).
+
+---
+
+## 8. User-Flow Reviews
+
+### 8.1 Student — Booking
+**Flow:** Packages → Book a Class → filters → Book → toast → appears in Schedule.
+**Friction**
+- **F-28 (High) — No confirmation screen.** Booking succeeds silently via toast only. Users can't tell it "stuck"; also no undo. Add a lightweight confirmation state (or an undo action).
+- **F-29 (Med) — Capacity not shown up-front.** Cards don't consistently show seats left; users only discover "Full" on click. Show `X seats left` inline.
+- **F-30 (Med) — No waitlist.** When full, the only option is another class. Add "Join Waitlist" (auto-promote on cancel).
+- **F-31 (Low) — AI Recommended** section always recommends the same level (intermediate) and competes with the main list for attention. Personalize by student level/history.
+- **F-32 (Low) — Demo booking** books the *first available* demo with no date/time choice. Add a picker.
+- **F-33 (Low) — No in-flow "why blocked"** except level gates (which are good). Fine.
+
+### 8.2 Student — Scheduling
+**Flow:** Schedule lists upcoming/past/demo with Change/Cancel (confirm modals).
+**Friction**
+- **F-34 (Med) — Relative day labels computed but never shown.** The code builds "Today"/"Tomorrow" (`dayLabel`, line ~10164) yet renders only weekday+day tiles. Showing "Today · 14:00" would be much more scannable.
+- **F-35 (Low) — No calendar view** (only a list). A weekly strip would help planning.
+- **F-36 (Low) — Cancel has no rebooking path / no waitlist handoff.**
+- **F-37 (Low) — No reminders/notifications** (in-app or otherwise) before a class. Add in-app "tomorrow" reminders on the dashboard.
+
+### 8.3 Account Management (all personas)
+- **F-38 (High) — No profile management.** Students can't edit contact details or preferences; instructors can't edit their specialization/photo; admin has no self-service for studio details beyond Settings. At minimum: a Profile page per persona.
+- **F-39 (Med) — No password change / reset.** Instructor passwords live in the DB; there's no "forgot password" or change-password path. Add change + reset (demo-safe: seeded `rules123`).
+- **F-40 (Med) — No payment method entry.** `togglePay` is a manual admin flag; students can't see invoices or payment history. For a real studio, add invoice history + a demo payment screen (gateway later).
+- **F-41 (Low) — No notifications/preferences hub.**
+- **F-42 (Low) — No audit log UI** (a `logAuditEvent` exists but nothing renders it). Expose recent admin actions in Reports.
+
+### 8.4 Instructor — Live Class & Notes
+- **F-43 (High) — Per-student note-taking is dead UI.** ~~The new console layout (`ls-shell`) dropped the `.live-center` panel; `buildLiveCenterPanel`, `#ai-suggestions-{sid}`, `#note-input-{sid}`, voice notes, and `selectActiveStudent` now have no surface in the rendered page.~~ **FIXED (2026-08-08):** the live console now includes a "Student Observations" panel (student chips + note input + voice + `#ai-suggestions-{sid}`, `#notes-history-{sid}`, tag bar) in the `ls-right` column; `selectActiveStudent` swaps the panel in place. Verified by suite H09. *(OBS-011)*
+- **F-44 (Med) — Placeholder menu items.** Overflow menu's "Privacy & Consent", "Retention Settings", "Export Data" only close the menu. Either implement or remove.
+- **F-45 (Med) — Long-press gesture is undiscoverable.** Voice-capture toggles on an 800ms long-press of the timer with no visible hint. Add an explicit mic control.
+- **F-46 (Low) — No class conflict/availability warnings** when creating a class (instructor could double-book themselves).
+
+### 8.5 Admin
+- **F-47 (Med) — No class-level administration.** Classes are owned by instructors; admin can't reschedule/cancel a class directly from Reports/Instructors. Add a lightweight admin class view.
+- **F-48 (Low) — Instructor/package CRUD is solid**; add confirm-on-delete consistency (some deletes confirm, some don't).
+
+---
+
+## 9. Severity-ranked Findings
+
+| ID | Sev | Area | Summary |
+|---|---|---|---|
+| F-43 | **High** | Live class | Per-student notes/AI suggestions have no UI in the current console — **FIXED** (Student Observations panel, suite H09) |
+| F-01 | **High** | Nav/IA | Instructor Attendance/Students/Demo/Insights hidden from nav |
+| F-09 | **High** | Typography | Base type 9.6–13px — below readable/accessible minimums |
+| F-12 | **High** | Color | `--text-dim` 2.56:1 contrast failure (used for helper text) |
+| F-21 | **High** | A11y | No `aria-live` on toasts — feedback invisible to SR users |
+| F-22 | **High** | A11y | Modals: no dialog semantics, no Escape close, focus not restored |
+| F-23 | **High** | A11y | Emoji/icons announced by screen readers; no `aria-hidden` |
+| F-28 | **High** | Booking | No confirmation/undo after booking |
+| F-38 | **High** | Account | No profile management for any persona |
+| F-44 | Med | Live | Placeholder overflow-menu items do nothing |
+| F-02 | Med | Nav | Admin 6-item nav crowded on mobile |
+| F-05 | Med | Layout | Ad-hoc inline styles vs design system inconsistency |
+| F-06 | Med | Layout | Emoji vs SVG icon systems mixed |
+| F-13 | Med | Color | Disabled buttons fail contrast |
+| F-14 | Med | Color | Live-session muted text fails contrast |
+| F-17 | Med | Responsive | Nav overflow has no affordance |
+| F-18 | Med | Responsive | Live console needs verified 1-col reflow at 390px |
+| F-24 | Med | A11y | No `:focus-visible`; weak focus states |
+| F-25 | Med | A11y | Touch targets mostly <44px |
+| F-26 | Med | A11y | Modal forms lack labels |
+| F-29 | Med | Booking | Seats-left not shown up front |
+| F-30 | Med | Booking | No waitlist |
+| F-34 | Med | Scheduling | "Today/Tomorrow" labels computed but not shown |
+| F-39 | Med | Account | No password change/reset |
+| F-40 | Med | Account | No payment history/invoices |
+| F-45 | Med | Live | Long-press mic gesture undiscoverable |
+| F-47 | Med | Admin | No admin class-level admin view |
+| F-03/04/07/08/10/11 | Low | Various | Breadcrumb consistency, brand mark, spacing scale, etc. |
+| F-15/16 | Low | Color | Duplicate tokens; theme only affects primary |
+| F-19/20 | Low | Responsive | iPad 820px spot-check; safe-area for top notch |
+| F-27/31/32/33 | Low | Flow | Icon labels, AI rec personalization, demo picker |
+| F-35/36/37/41/42/46/48 | Low | Flow | Calendar view, rebooking, reminders, audit UI, conflict hints |
+
+---
+
+## 10. Actionable Recommendations (Prioritized)
+
+### P0 — Release blockers (do first; fixes already mapped to QA loop)
+> **Status: all three shipped in the QA fix pass (2026-08-08) and verified by suite G/J + H09.**
+1. **Restore per-student observation panel in the live console** (student chips + note input + voice + `#ai-suggestions-{sid}`). Reuses existing `buildLiveCenterPanel`/`saveLiveNote`/`autoTagNote`. *(F-43)* — **DONE** — "Student Observations" panel added to the `ls-right` column (OBS-011, verified H09).
+2. **Session persistence on refresh** (persona + page via `sessionStorage`) — refresh must not log out. *(QA J-suite)* — **DONE** — `saveSession()`/`restoreSession()` via `zenpilates_session_v1` (OBS-009, verified J01–J04).
+3. **Add proper brand logo** (SVG monogram) to login + app header + mobile header. *(F-07)* — **DONE** — `BRAND_LOGO` SVG monogram injected at all four brand slots (OBS-012, verified G01).
+
+### P1 — Premium & accessibility lift
+4. **Accessibility pass:** `aria-live` toasts, `role="dialog"` + Escape + focus-return on modals, `aria-hidden` on decorative emoji, `:focus-visible` ring, 44px touch targets. *(F-21…F-27)*
+5. **Type scale bump:** floor captions at 13px, body at 14px, titles 16–24px. *(F-09)*
+6. **Contrast fixes:** darken `--text-dim` and `--ls-text-dim`, fix disabled states. *(F-12,13,14)*
+7. **Instructor nav:** expose Attendance/Students/Demo/Insights in the top nav (mobile-safe). *(F-01)*
+
+### P2 — Experience & flows
+8. **Booking UX:** inline seats-left, confirmation/undo, waitlist, personalized AI recommendations. *(F-28…F-31)*
+9. **Scheduling:** show "Today/Tomorrow" labels; optional weekly calendar; reminders. *(F-34,35,37)*
+10. **Account management:** profile pages, password change/reset, payment/invoice history. *(F-38,39,40)*
+11. **Live console polish:** implement or remove placeholder overflow items, explicit mic control, class-conflict warning on create. *(F-44,45,46)*
+12. **Design-system consolidation:** reusable card/chip/button components; single SVG icon set; unify radii/spacing; optional full light/dark themes. *(F-05,06,15,16)*
+13. **Admin class view + audit-log UI.** *(F-47,42)*
+
+### Quick wins (< 1 day)
+- Add `aria-live="polite"` to `#toast-container`.
+- Add `role="dialog" aria-modal="true"` + `Escape` in `showModal`/`trapModalFocus`.
+- Bump `--text-dim` to #6b7280 (one token change).
+- Add `:focus-visible` outline globally.
+- Show the already-computed `dayLabel` in the schedule.
+- Remove or implement the three placeholder overflow items.
+- Add a compact SVG brand mark.
+
+---
+
+## 11. Conclusion
+
+The prototype is **functionally strong and visually coherent in intent**; the login experience, live-session console, and data-dense dashboards demonstrate real product thinking. Since this audit, the QA fix pass shipped all three P0 items: per-student note-taking is restored in the live class (F-43), refresh no longer logs users out (session persistence), and a proper SVG brand logo replaced the emoji/text marks. Remaining highest-leverage work is now: (1) fixing instructor nav discoverability (F-01), (2) raising the type scale and contrast floor (F-09, F-12–14), (3) adding core ARIA/focus scaffolding (F-21–23), and (4) adding confirmation/recovery paths in booking and account management (F-28, F-38). Items are tracked as P1/P2 recommendations in §10.

@@ -24,10 +24,12 @@
   packages & payments, appearance/branding, reports.
 - Instructor: dashboard, classes (CRUD, tabs, search, filters), rosters, attendance,
   students & profiles, demo sessions, AI pre-class brief, live class console
-  (timer, notes, cues, transcript, voice, End & Save), post-class summary, insights/consultations.
+  (timer, per-student observation notes + AI suggestions, cues, transcript, voice, End & Save),
+  post-class summary, insights/consultations.
 - Student: dashboard, booking (filters, level gating, overlap & full-class rules, package limit),
   schedule (change/cancel with 1-day rule), packages (switch plan), demo booking.
-- Cross-cutting: persistence, responsiveness, runtime errors, toasts, offline banner.
+- Cross-cutting: persistence (data **and** session), responsiveness, runtime errors, toasts,
+  offline banner, branding/tooltips, AI-feature health, refresh-not-logout.
 
 **Out of scope**
 - Real backend/API (app is a client-side prototype).
@@ -150,6 +152,40 @@ Severity: **S1** blocks go-live (crash, dead primary flow). **S2** major functio
 | E-04 | Offline banner | Element exists in DOM |
 | E-05 | Responsive (mobile) | Login + app usable at 390px, no horizontal overflow |
 | E-06 | Responsive (tablet) | Usable at 768px |
+
+### G — Branding & guidance (added cycle 2)
+| ID | Scenario | Expected |
+| --- | --- | --- |
+| G-01 | Brand logo | SVG brand mark on login + app header (+ mobile header) |
+| G-02 | Tooltips | Nav items, logout, New Class, Change/Cancel have guidance |
+| G-03 | Login guidance | Demo creds visible; placeholders for all roles |
+
+### H — AI features (added cycle 2)
+| ID | Scenario | Expected |
+| --- | --- | --- |
+| H-01 | Pre-class brief | Structured overview/highlights/risks/recommendations |
+| H-02 | Priority cue | Confidence-scored cue from notes |
+| H-03 | Smart suggestion | Context-aware suggestion text |
+| H-04 | Auto-tag | Note text classified to tags |
+| H-05 | Consultations | AI-prioritized student list page renders |
+| H-06 | Consult detail | Detail + AI summary modals open |
+| H-07 | Enhanced insights | Analytics page renders |
+| H-08 | Insights export | CSV export function + page renders |
+| H-09 | Live AI suggestions | Suggestions appear in per-student panel |
+| H-10 | Voice degrade | Graceful feedback when mic/API/UI unavailable |
+
+### I — Responsive (added cycle 2)
+| ID | Scenario | Expected |
+| --- | --- | --- |
+| I-01/02/03 | Student/Instructor/Admin | No horizontal overflow at 390/768px |
+| I-04 | Desktop + iPad landscape | All pages render at 1280/1024px, no overflow/errors |
+| I-05 | Mobile chrome | Student bottom nav + mobile header on phone; topbar on desktop |
+
+### J — Session persistence (added cycle 2)
+| ID | Scenario | Expected |
+| --- | --- | --- |
+| J-01/02/03 | Refresh Admin/Instructor/Student | Persona + page restored; not logged out |
+| J-04 | Logout then refresh | Session cleared; login screen shown |
 
 ---
 

@@ -2910,6 +2910,31 @@
       margin-left:4px;
     }
 
+    /* Student observation panel (per-student notes + AI suggestions) */
+    .ls-notes-panel { display:flex; flex-direction:column; min-height:0; }
+    .ls-stu-selector { display:flex; flex-wrap:wrap; gap:5px; margin-bottom:8px; }
+    .ls-stu-chip {
+      font-size:0.66rem; font-weight:600; padding:4px 9px; border-radius:20px;
+      background:var(--ls-surface); color:var(--ls-text); border:1px solid var(--ls-border);
+      cursor:pointer; transition:all 0.15s ease;
+    }
+    .ls-stu-chip:hover { border-color:var(--ls-accent); color:var(--ls-accent); }
+    .ls-stu-chip.active { background:var(--ls-accent); border-color:var(--ls-accent); color:#04121a; }
+    .ls-notes-body { flex:1; min-height:0; overflow-y:auto; }
+    .ls-notes-body .live-center-header {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:4px 0 8px; border-bottom:1px solid var(--ls-border); margin-bottom:8px;
+    }
+    .ls-notes-body .live-center-header .student-name { font-size:0.78rem; font-weight:700; color:var(--ls-text); display:flex; align-items:center; gap:6px; }
+    .ls-notes-body .live-center-body { max-height:150px; overflow-y:auto; }
+    .ls-notes-body .live-center-body .ai-suggestion { color:var(--ls-text); }
+    .ls-notes-body .live-center-body .note-entry { border-bottom:1px solid var(--ls-border); }
+    .ls-notes-body .live-center-body .note-entry .ne-text { color:var(--ls-text); }
+    .ls-notes-body .live-input-area { background:var(--ls-surface); border:1px solid var(--ls-border); }
+    .ls-notes-body .live-input-area .lia-input { color:var(--ls-text); }
+    .ls-notes-body .live-tag-bar { background:var(--ls-surface); }
+    .ls-notes-body .lia-btn { color:var(--ls-text); border-color:var(--ls-border); }
+
     /* Right bottom actions */
     /* ── Responsive ── */
     @media (max-width:1024px) {
@@ -3879,10 +3904,10 @@
   <!-- Student Mobile Header (replaces topbar on mobile) -->
   <div class="stu-mobile-header" id="stu-mobile-header">
     <div style="display:flex;align-items:center;gap:0.5rem;">
-      <div style="width:32px;height:32px;background:var(--primary-light);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--primary);font-size:0.8rem;">P</div>
+      <div class="logo-mini" style="width:32px;height:32px;background:var(--primary-light);border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--primary);font-size:0.8rem;">P</div>
       <span style="font-weight:600;font-size:0.85rem;">Pilates Studio</span>
     </div>
-    <button class="logout-btn" onclick="logout()" style="font-size:0.7rem;padding:0.25rem 0.6rem;">Logout</button>
+    <button class="logout-btn" onclick="logout()" style="font-size:0.7rem;padding:0.25rem 0.6rem;" title="End session and return to login">Logout</button>
   </div>
   <div class="app-topbar">
     <div class="brand">
@@ -3896,7 +3921,7 @@
       </div>
       <span style="font-size:0.85rem;font-weight:500;" id="header-username">User</span>
       <span class="role-badge" id="header-role-badge">Role</span>
-      <button class="logout-btn" onclick="logout()">Logout</button>
+      <button class="logout-btn" onclick="logout()" title="End session and return to login">Logout</button>
     </div>
   </div>
     <div class="app-topnav" id="topnav"></div>
@@ -3932,6 +3957,7 @@
 // DATA LAYER
 // ============================
 const DB_KEY = 'zenpilates_data_v3';
+const SESSION_KEY = 'zenpilates_session_v1';
 
 // Unified color constants for JS template strings
 const C = {
@@ -4320,6 +4346,9 @@ const ICONS = {
   'info': '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>'
 };
 
+// Brand mark: premium SVG monogram used across login, app header and mobile header
+const BRAND_LOGO = '<svg viewBox="0 0 64 64" width="40" height="40" role="img" aria-label="Pilates Studio logo" style="display:block;width:100%;height:100%;"><defs><linearGradient id="plg-brand" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#7c3aed"/><stop offset="1" stop-color="#0ea5e9"/></linearGradient></defs><rect x="3" y="3" width="58" height="58" rx="16" fill="url(#plg-brand)"/><path d="M22 45V20c0-2 1.6-3 3.5-3h5.5c5.5 0 9.5 3.8 9.5 9s-4 9-9.5 9H26" fill="none" stroke="#fff" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="45" cy="47" r="4" fill="#fff"/></svg>';
+
 const PHASE_PRESETS = {
   free: { name: 'Free Run', phases: [] },
   pilates: {
@@ -4414,7 +4443,7 @@ function setAuthRole(role) {
   if (form) form.style.display = isStudent ? 'none' : 'block';
   if (studentNote) studentNote.style.display = isStudent ? 'block' : 'none';
   if (uname) {
-    uname.placeholder = role === 'admin' ? 'admin' : role === 'instructor' ? 'neelamr' : '';
+    uname.placeholder = role === 'admin' ? 'admin' : role === 'instructor' ? 'neelamr' : 'Select your student profile below';
     uname.value = '';
   }
   if (pwd) pwd.value = '';
@@ -4566,8 +4595,62 @@ function logout() {
   currentPersona = null;
   currentInstructorId = null;
   currentStudentId = null;
+  currentPage = null;
+  try { sessionStorage.removeItem(SESSION_KEY); } catch (e) {}
   document.getElementById('app-screen').classList.remove('active', 'in-active-class');
   document.getElementById('login-screen').style.display = 'block';
+}
+
+// ============================
+// SESSION PERSISTENCE (refresh keeps you signed in)
+// ============================
+function saveSession() {
+  try {
+    if (currentPersona) {
+      sessionStorage.setItem(SESSION_KEY, JSON.stringify({
+        persona: currentPersona,
+        instructorId: currentInstructorId || null,
+        studentId: currentStudentId || null,
+        page: currentPage || null
+      }));
+    }
+  } catch (e) {}
+}
+
+function restoreSession() {
+  let sess = null;
+  try { sess = JSON.parse(sessionStorage.getItem(SESSION_KEY) || 'null'); } catch (e) { sess = null; }
+  if (!sess || !sess.persona) return false;
+  const persona = sess.persona;
+  if (persona === 'admin') {
+    login('admin');
+  } else if (persona === 'instructor') {
+    const inst = sess.instructorId ? (db.instructors || []).find(i => i.id === sess.instructorId) : null;
+    if (inst && inst.active) {
+      db.settings.instructorName = inst.name;
+      db.settings.instructorSpecialization = inst.specialization || '';
+      db.settings.instructorPhoto = inst.photo || null;
+      login('instructor', inst.id);
+    } else {
+      try { sessionStorage.removeItem(SESSION_KEY); } catch (e) {}
+      return false;
+    }
+  } else if (persona === 'student') {
+    const stu = sess.studentId ? (db.students || []).find(s => s.id === sess.studentId) : null;
+    if (stu && stu.active) {
+      login('student', null, stu.id);
+    } else {
+      try { sessionStorage.removeItem(SESSION_KEY); } catch (e) {}
+      return false;
+    }
+  } else {
+    return false;
+  }
+  if (sess.page) {
+    const valid = (getNavItems() || []).find(n => n.id === sess.page);
+    if (valid) navigate(sess.page);
+  }
+  return true;
 }
 
 // ============================
@@ -4645,7 +4728,7 @@ function renderApp() {
   const topnav = document.getElementById('topnav');
   const isLive = currentPersona === 'instructor' && activeClassId && timerRunning;
   topnav.innerHTML = navItems.filter(n => !n.hidden).map(n =>
-    `<div class="nav-item ${n.id === currentPage ? 'active' : ''}" onclick="navigate('${n.id}')">
+    `<div class="nav-item ${n.id === currentPage ? 'active' : ''}" onclick="navigate('${n.id}')" title="${n.label}">
       <span class="nav-icon">${n.icon}</span>
       <span>${n.label}</span>
       ${isLive && n.id === 'instructor-active-class' ? '<span class="nav-live-dot"></span>' : ''}
@@ -4680,6 +4763,7 @@ function renderApp() {
   if (mobileHeader) {
     mobileHeader.style.display = (currentPersona === 'student' && window.innerWidth <= 768) ? 'flex' : 'none';
   }
+  saveSession();
 }
 
 function getNavItems() {
@@ -4700,6 +4784,8 @@ function getNavItems() {
       { id: 'instructor-students', label: 'Students', icon: '&#128101;', hidden: true },
       { id: 'instructor-demo', label: 'Demo Sessions', icon: '&#127881;', hidden: true },
       { id: 'instructor-insights', label: 'Insights', icon: '&#128200;', hidden: true },
+      { id: 'instructor-consultations', label: 'Consultations', icon: '&#128172;', hidden: true },
+      { id: 'instructor-enhanced-insights', label: 'Enhanced Insights', icon: '&#11088;', hidden: true },
       { id: 'instructor-active-class', label: 'Active Class', icon: '&#9654;', hidden: true }
     ];
   } else {
@@ -4727,9 +4813,9 @@ function updateBranding() {
   const s = db.settings;
   const icon = document.getElementById('header-logo-icon');
   if (s.logoData) {
-    icon.innerHTML = `<img src="${s.logoData}" style="width:100%;height:100%;object-fit:cover;">`;
+    icon.innerHTML = `<img src="${s.logoData}" style="width:100%;height:100%;object-fit:cover;" alt="${s.studioName || 'Pilates Studio'} logo">`;
   } else {
-    icon.textContent = (s.studioName || 'Z').charAt(0).toUpperCase();
+    icon.innerHTML = BRAND_LOGO;
   }
   document.querySelector('.app-topbar .brand h2').innerHTML = s.studioName
     ? `${s.studioName.replace('Studio','')}<span>${s.studioName.includes('Studio') ? 'Studio' : ''}</span>`
@@ -6340,7 +6426,7 @@ function renderInstructorClasses(el) {
     <div class="ic-breadcrumb">Dashboard <span>›</span> <span>My Classes</span></div>
     <div class="ic-header">
       <div class="ic-title">📋 My Classes</div>
-      <button class="btn btn-primary" style="padding:0.45rem 1rem;font-size:0.8rem;" onclick="showCreateClassModal()">+ New Class</button>
+      <button class="btn btn-primary" style="padding:0.45rem 1rem;font-size:0.8rem;" onclick="showCreateClassModal()" title="Schedule a new class">+ New Class</button>
     </div>
 
     <div class="ic-tabs">
@@ -8182,7 +8268,10 @@ function startVoiceNote(sid, classId) {
   }
   const btn = document.getElementById('voice-btn-' + sid);
   const input = document.getElementById('note-input-' + sid);
-  if (!input) return;
+  if (!input) {
+    showToast('Note area not ready yet. Start an active class first, then try voice notes.', 'error');
+    return;
+  }
 
   // Stop if already listening
   if (voiceRecognizers[sid]) {
@@ -8657,6 +8746,16 @@ function selectActiveStudent(sid) {
     center.innerHTML = buildLiveCenterPanel(activeClassId, activeStudentId, c);
     renderLiveNotes(activeClassId, activeStudentId);
     setTimeout(() => { const inp = document.getElementById('note-input-' + activeStudentId); if (inp) inp.focus(); }, 150);
+  } else if (document.getElementById('ls-notes-body')) {
+    // New console layout — swap the observation panel in place
+    const c = getClass(activeClassId);
+    if (!c) return;
+    document.querySelectorAll('.ls-stu-chip').forEach(el => el.classList.toggle('active', el.dataset.sid === sid));
+    const body = document.getElementById('ls-notes-body');
+    if (body) {
+      body.innerHTML = buildLiveCenterPanel(activeClassId, activeStudentId, c);
+      renderLiveNotes(activeClassId, activeStudentId);
+    }
   } else {
     // New console layout — re-render entire page
     renderPage('instructor-active-class');
@@ -9027,6 +9126,20 @@ function renderInstructorActiveClass(el) {
             '</div>' +
           '</div>' +
 
+          // Student Observations (per-student notes + AI suggestions)
+          '<div class="ls-panel ls-notes-panel" style="flex:1.3;min-height:0;">' +
+            '<div class="ls-panel-title">' + ICONS['edit'] + ' Student Observations' +
+              '<span class="ls-info-tip" data-tip="Select a student, type or dictate an observation, then press send. AI suggestions appear automatically as you log notes.">?</span>' +
+            '</div>' +
+            '<div class="ls-stu-selector" id="ls-stu-selector">' +
+              enrolled.map(function(sid) {
+                var s = getStudent(sid);
+                return '<span class="ls-stu-chip' + (sid === activeStudentId ? ' active' : '') + '" data-sid="' + sid + '" onclick="selectActiveStudent(\'' + sid + '\')" title="Take notes for ' + (s ? s.name : sid) + '">' + (s ? s.name.split(' ')[0] : sid) + '</span>';
+              }).join('') +
+            '</div>' +
+            '<div class="ls-notes-body" id="ls-notes-body">' + buildLiveCenterPanel(activeClassId, activeStudentId, c) + '</div>' +
+          '</div>' +
+
         '</div>' +
 
       '</div>' +
@@ -9042,6 +9155,7 @@ function renderInstructorActiveClass(el) {
   autoNotesCache = {};
   startClassVoiceRecognition(activeClassId);
   renderVoiceStatusListening();
+  if (activeStudentId) renderLiveNotes(activeClassId, activeStudentId);
 }
 
 // Build preset buttons for the new layout
@@ -10175,8 +10289,8 @@ function renderStudentSchedule(target) {
             <div style="font-size:0.68rem;color:var(--text-muted);">${scDate.toLocaleTimeString('en-US', {hour:'numeric', minute:'2-digit'})} · ${cls ? cls.duration : 60}min · ${cls ? (cls.type === 'reformer' ? 'Reformer' : 'Mat') : ''}</div>
           </div>
           <div style="display:flex;gap:0.35rem;">
-            ${canChange ? `<button onclick="studentChangeBooking('${cls.id}')" style="padding:0.5rem 0.65rem;border-radius:8px;border:1px solid var(--border-dark);background:white;color:var(--text-secondary);font-size:0.65rem;font-weight:500;cursor:pointer;">Change</button>` : ''}
-            <button onclick="studentCancelBooking('${cls.id}')" style="padding:0.5rem 0.65rem;border-radius:8px;border:1px solid #fecaca;background:#fef2f2;color:var(--danger);font-size:0.65rem;font-weight:500;cursor:pointer;">Cancel</button>
+            ${canChange ? `<button onclick="studentChangeBooking('${cls.id}')" title="Move this booking to a different class" style="padding:0.5rem 0.65rem;border-radius:8px;border:1px solid var(--border-dark);background:white;color:var(--text-secondary);font-size:0.65rem;font-weight:500;cursor:pointer;">Change</button>` : ''}
+            <button onclick="studentCancelBooking('${cls.id}')" title="Cancel this booking" style="padding:0.5rem 0.65rem;border-radius:8px;border:1px solid #fecaca;background:#fef2f2;color:var(--danger);font-size:0.65rem;font-weight:500;cursor:pointer;">Cancel</button>
           </div>
         </div>
       </div>`;
@@ -10442,10 +10556,15 @@ function init() {
   document.getElementById('login-screen').style.display = 'block';
   const app = document.getElementById('app-screen');
   if (app && !document.getElementById('offline-banner')) app.insertAdjacentHTML('afterbegin', buildOfflineBannerHTML());
+  const al = document.querySelector('.auth-logo');
+  if (al) al.innerHTML = BRAND_LOGO;
+  const ab = document.querySelector('.auth-mobile-logo .abox');
+  if (ab) ab.innerHTML = BRAND_LOGO;
+  const mh = document.querySelector('#stu-mobile-header .logo-mini');
+  if (mh) mh.innerHTML = BRAND_LOGO;
   animateExerciseProgress();
+  restoreSession();
 }
-
-init();
 
 // ============================
 // AI-NATIVE ENGINE
@@ -11447,6 +11566,8 @@ saveLiveNote = function(classId, studentId) {
   updateLiveFooter();
   showToast('Note saved with AI tags: ' + autoTags.join(', '));
 };
+
+init();
 </script>
 </body>
 </html>
