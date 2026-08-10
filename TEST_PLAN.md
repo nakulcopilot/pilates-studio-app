@@ -223,7 +223,17 @@ Severity: **S1** blocks go-live (crash, dead primary flow). **S2** major functio
 | L-05 | XAI tag (priority cue) | Priority cue shows "Why this works" chip (new console layout, `ls-cue-*` classes); gated on `db.settings.xaiEnabled` |
 | L-06 | Coaching style settings | Admin settings card with style picker; selection persists; `adaptCueText`/`xaiSuffix` reflect it |
 | L-07 | Voice debrief | Post-class debrief parses spoken notes into structured client notes + progress logs |
-| L-08 | Regression suite | Harness at `~/.claude/opencode/regression/regress.js` runs 5 suites — **34 PASS / 0 FAIL** |
+| L-08 | Regression suite | Harness runs 6 suites — **45 PASS / 0 FAIL** (incl. new Suite 6 AI-provider checks) |
+
+### M — Admin-configured AI provider (cycle 4)
+| ID | Scenario | Expected |
+| --- | --- | --- |
+| M-01 | AI off by default | `isAIEnabled()` false; `callChatLLM` returns null (no network call); heuristics behavior byte-identical |
+| M-02 | AI Assistant card | Admin Settings renders 🤖 AI Assistant card: enable checkbox, provider presets (OpenAI/OpenRouter/Groq/Ollama/LM Studio), base URL, model + datalist, API key (toggled), temperature, Test Connection + status |
+| M-03 | Provider presets | Selecting a preset fills base URL + model; persists via `saveSettings` into `db.settings.ai` |
+| M-04 | Local-server support | API key optional — Authorization header sent only when key present (Ollama/LM Studio) |
+| M-05 | Fallback on API failure | With AI on but endpoint unreachable, voice debrief still parses via heuristics (`parseDebriefSpeechHeuristic`); `enrichNoteAfterSave` fails safe |
+| M-06 | AI enrichment scope | Same configured endpoint powers pre-class brief, priority cue, live suggestions, JIT cues, auto-tagging, voice debrief; all wrapped in try/catch with heuristic fallback |
 
 ---
 
