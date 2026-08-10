@@ -213,6 +213,18 @@ Severity: **S1** blocks go-live (crash, dead primary flow). **S2** major functio
 | K21 | DS booking cards | Booking cards use consolidated `.ds-*` components (F-05) |
 | K22 | Instructor account extras | Photo upload + social links (FB/IG/YT) save, refresh header avatar, survive reload |
 
+### L — New AI/coaching features (cycle 3)
+| ID | Scenario | Expected |
+| --- | --- | --- |
+| L-01 | Mobile header fix | At 390px, `.stu-mobile-header` only shows for students; admin/instructor see topbar + exactly one logout button |
+| L-02 | JIT cues | Live console shows JIT cue panel; saving a shoulder note renders a cue (`triggerJitCues`) |
+| L-03 | Batch mode | Toggle in Student Observations; select multiple students; a batch note saves to each selected student |
+| L-04 | Longitudinal patterns | Student profile has a Patterns tab; recurring-challenge pattern detected from repeated notes |
+| L-05 | XAI tag (priority cue) | Priority cue shows "Why this works" chip (new console layout, `ls-cue-*` classes); gated on `db.settings.xaiEnabled` |
+| L-06 | Coaching style settings | Admin settings card with style picker; selection persists; `adaptCueText`/`xaiSuffix` reflect it |
+| L-07 | Voice debrief | Post-class debrief parses spoken notes into structured client notes + progress logs |
+| L-08 | Regression suite | Harness at `~/.claude/opencode/regression/regress.js` runs 5 suites — **34 PASS / 0 FAIL** |
+
 ---
 
 ## 9. Test data notes

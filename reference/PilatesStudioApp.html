@@ -3781,7 +3781,7 @@
       display: none;
     }
     @media (max-width: 768px) {
-      .stu-mobile-header {
+      .student-mode .stu-mobile-header {
         display: flex !important;
         align-items: center;
         justify-content: space-between;
@@ -3910,6 +3910,66 @@
       align-items: center;
       gap: 0.4rem;
     }
+
+    /* ===== FEATURE: Just-in-Time AI Cues + XAI + Batch + Debrief + Style (2026) ===== */
+    .jit-panel { margin-top:0.75rem; }
+    .jit-panel-title { font-size:0.78rem; font-weight:700; color:var(--ls-accent); display:flex; align-items:center; gap:6px; margin-bottom:0.4rem; }
+    .jit-empty { font-size:0.72rem; color:var(--ls-muted); font-style:italic; line-height:1.5; }
+    .jit-cue { border:1px solid var(--ls-border); border-left:3px solid var(--ls-accent); border-radius:8px; padding:0.5rem 0.6rem; margin-bottom:0.45rem; background:rgba(0,194,168,0.05); }
+    .jit-cue-head { display:flex; align-items:center; gap:6px; font-size:0.7rem; font-weight:700; color:var(--ls-accent-2); text-transform:uppercase; letter-spacing:0.03em; }
+    .jit-cue-text { font-size:0.8rem; color:var(--ls-text); margin:0.25rem 0 0.15rem; line-height:1.45; }
+    .jit-cue-meta { display:flex; align-items:center; gap:0.4rem; flex-wrap:wrap; }
+    .jit-cue-ex { font-size:0.68rem; color:var(--ls-accent); border:1px solid rgba(0,194,168,0.35); padding:0.05rem 0.45rem; border-radius:999px; }
+    .jit-cue-prep { font-size:0.68rem; color:var(--ls-warning); border:1px solid rgba(245,158,11,0.35); padding:0.05rem 0.45rem; border-radius:999px; }
+    .jit-progress { margin-top:0.4rem; font-size:0.7rem; color:var(--ls-warning); display:flex; align-items:flex-start; gap:4px; line-height:1.4; }
+    .jit-why { position:relative; cursor:help; font-size:0.68rem; color:var(--ls-muted); text-decoration:underline dotted; }
+    .jit-why-tip { position:absolute; bottom:calc(100% + 8px); left:0; width:220px; background:#0b1220; border:1px solid var(--ls-border); border-radius:8px; padding:0.5rem; font-size:0.7rem; color:var(--ls-text); opacity:0; pointer-events:none; transition:opacity 0.15s; z-index:30; line-height:1.45; box-shadow:0 8px 24px rgba(0,0,0,0.35); }
+    .jit-why:hover .jit-why-tip { opacity:1; pointer-events:auto; }
+
+    .batch-bar { display:flex; align-items:center; gap:0.4rem; margin:0.4rem 0; }
+    .batch-toggle { font-size:0.72rem; font-weight:700; padding:0.25rem 0.6rem; border-radius:999px; border:1px solid var(--ls-border); background:transparent; color:var(--ls-muted); cursor:pointer; font-family:inherit; transition:all 0.15s; }
+    .batch-toggle.active { background:var(--ls-accent-grad); border-color:transparent; color:#fff; }
+    .batch-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:0.35rem; }
+    .batch-chip { font-size:0.7rem; padding:0.3rem 0.2rem; text-align:center; border-radius:8px; border:1px solid var(--ls-border); background:var(--ls-surface); color:var(--ls-text); cursor:pointer; transition:all 0.12s; min-height:34px; display:flex; align-items:center; justify-content:center; }
+    .batch-chip:hover { border-color:var(--ls-accent); }
+    .batch-chip.selected { background:var(--ls-accent-grad); color:#fff; border-color:transparent; }
+    .batch-chip.bobs { grid-column:1/-1; }
+    .batch-chip.bobs.step2 { border-color:var(--ls-warning); color:var(--ls-warning); }
+    .batch-clear { font-size:0.68rem; color:var(--ls-muted); cursor:pointer; text-decoration:underline; }
+
+    .debrief-btn { display:inline-flex; align-items:center; gap:0.4rem; font-size:0.78rem; font-weight:700; padding:0.45rem 0.9rem; border-radius:8px; border:none; cursor:pointer; font-family:inherit; transition:all 0.15s; }
+    .debrief-btn.live { background:var(--danger); color:#fff; animation:debriefPulse 1.2s ease infinite; }
+    .debrief-btn:not(.live) { background:var(--primary); color:#fff; }
+    @keyframes debriefPulse { 0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,0.4);} 50%{box-shadow:0 0 0 8px rgba(239,68,68,0);} }
+    .debrief-transcript { font-size:0.8rem; color:var(--text); background:#f8fafc; border:1px solid var(--border-dark); border-radius:8px; padding:0.6rem; margin-top:0.5rem; max-height:130px; overflow-y:auto; white-space:pre-wrap; }
+    .debrief-parse { margin-top:0.6rem; }
+    .debrief-entry { display:flex; gap:0.5rem; align-items:flex-start; padding:0.4rem 0; border-bottom:1px solid #f3f4f6; font-size:0.8rem; }
+    .debrief-entry .de-tag { flex-shrink:0; padding:0.1rem 0.45rem; border-radius:6px; font-size:0.65rem; font-weight:700; }
+    .debrief-entry .de-stu { font-weight:700; color:var(--text); }
+    .debrief-entry .de-text { color:var(--text-muted); line-height:1.45; }
+    .debrief-parse-empty { font-size:0.75rem; color:var(--text-muted); font-style:italic; padding:0.5rem 0; }
+
+    .xai-tag { display:inline-flex; align-items:center; gap:3px; font-size:0.65rem; color:var(--ls-muted); border:1px solid var(--ls-border); border-radius:999px; padding:0.05rem 0.45rem; cursor:help; position:relative; }
+    .xai-tag .xai-tip { position:absolute; bottom:calc(100% + 8px); left:0; width:200px; background:#0b1220; border:1px solid var(--ls-border); border-radius:8px; padding:0.5rem; font-size:0.7rem; color:var(--ls-text); opacity:0; pointer-events:none; transition:opacity 0.15s; z-index:30; line-height:1.45; box-shadow:0 8px 24px rgba(0,0,0,0.35); }
+    .xai-tag:hover .xai-tip { opacity:1; pointer-events:auto; }
+
+    .style-pick { display:flex; gap:0.5rem; flex-wrap:wrap; }
+    .style-pick .sp-item { flex:1; min-width:130px; border:1.5px solid var(--border-dark); border-radius:10px; padding:0.6rem; cursor:pointer; text-align:center; transition:all 0.15s; }
+    .style-pick .sp-item.selected { border-color:var(--primary); background:var(--primary-light); }
+    .style-pick .sp-item .sp-name { font-size:0.8rem; font-weight:700; color:var(--text); }
+    .style-pick .sp-item .sp-desc { font-size:0.68rem; color:var(--text-muted); margin-top:0.15rem; line-height:1.4; }
+
+    .prog-pattern { border:1px solid var(--border-dark); border-radius:10px; padding:0.6rem; margin-bottom:0.5rem; background:#fff; }
+    .prog-pattern .pp-title { font-size:0.78rem; font-weight:700; color:var(--text); display:flex; align-items:center; gap:6px; margin-bottom:0.3rem; }
+    .prog-pattern .pp-text { font-size:0.78rem; color:var(--text-muted); line-height:1.5; }
+    .prog-pattern .pp-tag { font-size:0.65rem; padding:0.1rem 0.45rem; border-radius:999px; font-weight:700; margin-left:auto; flex-shrink:0; }
+    .prog-bar-row { display:flex; align-items:center; gap:0.5rem; margin-bottom:0.35rem; }
+    .prog-bar-row .pbr-label { font-size:0.72rem; font-weight:600; color:var(--text-muted); width:92px; flex-shrink:0; }
+    .prog-bar-row .pbr-track { flex:1; height:6px; background:#f3f4f6; border-radius:999px; overflow:hidden; }
+    .prog-bar-row .pbr-fill { height:100%; border-radius:999px; transition:width 0.6s ease; }
+    .prog-bar-row .pbr-val { font-size:0.7rem; color:var(--text-muted); width:34px; text-align:right; flex-shrink:0; }
+    .lpa-banner { background:linear-gradient(135deg,rgba(124,58,237,0.08),rgba(14,165,233,0.06)); border:1px solid var(--primary-light); border-radius:10px; padding:0.6rem; font-size:0.78rem; color:var(--text); margin-bottom:0.5rem; line-height:1.5; }
+    .lpa-banner strong { color:var(--primary); }
   </style>
 
 </head>
@@ -4441,7 +4501,8 @@ const ICONS = {
   'sparkles': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3Z"/></svg>',
   'folder': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>',
   'play-circle': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></svg>',
-  'bar-chart-2': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>'
+  'bar-chart-2': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>',
+  'trending-up': '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>'
 };
 
 function svgIcon(name, size) {
@@ -6044,6 +6105,34 @@ function renderAdminSettings(el) {
         </div>
       </div>
     </div>
+    <div class="card" style="margin-top:0.9rem;">
+      <div class="card-title">${ICONS['palette']} Instructor Coaching Style</div>
+      <div class="page-subtitle" style="margin-bottom:0.6rem;">Personalize how AI cues, debrief summaries and observation suggestions are phrased for you.</div>
+      <div class="style-pick" id="coaching-style-pick">
+        ${[{ key: 'direct', name: 'Direct &amp; Precise', desc: 'Short, actionable cues. No fluff.' },
+           { key: 'supportive', name: 'Supportive &amp; Encouraging', desc: 'Warm tone with positive framing.' },
+           { key: 'detailed', name: 'Detailed &amp; Educational', desc: 'Explains the \'why\' behind each cue.' }].map(st =>
+          `<div class="sp-item ${(s.coachingStyle || 'direct') === st.key ? 'selected' : ''}" onclick="selectCoachingStyle('${st.key}')" data-style="${st.key}">
+            <div class="sp-name">${st.name}</div>
+            <div class="sp-desc">${st.desc}</div>
+          </div>`).join('')}
+      </div>
+      <div class="form-group" style="margin-top:0.6rem;">
+        <label>Include data reasoning in cues <span class="badge badge-blue" style="margin-left:0.3rem;">XAI</span></label>
+        <label style="display:flex;align-items:center;gap:0.4rem;font-size:0.8rem;color:var(--text-muted);cursor:pointer;margin-top:0.2rem;">
+          <input type="checkbox" id="as-xai-enabled" ${s.xaiEnabled === false ? '' : 'checked'} style="width:16px;height:16px;">
+          Attach a short \`Why this works\` explanation to AI cues and suggestions
+        </label>
+      </div>
+      <div class="form-group">
+        <label>Auto-suggested note prompt</label>
+        <select class="form-control" id="as-suggestion-mode">
+          <option value="quick" ${(s.suggestionMode || 'quick') === 'quick' ? 'selected' : ''}>Quick taps (single-word tags)</option>
+          <option value="guided" ${(s.suggestionMode || 'quick') === 'guided' ? 'selected' : ''}>Guided prompts (fill-in-the-blank)</option>
+          <option value="mixed" ${(s.suggestionMode || 'quick') === 'mixed' ? 'selected' : ''}>Mixed</option>
+        </select>
+      </div>
+    </div>
   `;
   document.getElementById('as-logo-upload').addEventListener('change', function(e) {
     const file = e.target.files[0];
@@ -6056,6 +6145,11 @@ function renderAdminSettings(el) {
     };
     reader.readAsDataURL(file);
   });
+}
+
+function selectCoachingStyle(key) {
+  window._coachingStyle = key;
+  document.querySelectorAll('#coaching-style-pick .sp-item').forEach(i => i.classList.toggle('selected', i.dataset.style === key));
 }
 
 function selectTheme(color) {
@@ -6099,6 +6193,11 @@ function saveSettings() {
   s.timeSlots = document.getElementById('as-time-slots').value.split(',').map(t => t.trim()).filter(Boolean);
   s.instructorName = document.getElementById('as-instructor-name').value.trim() || 'Instructor';
   s.instructorSpecialization = document.getElementById('as-instructor-spec').value.trim() || '';
+  if (window._coachingStyle) s.coachingStyle = window._coachingStyle;
+  const xaiEl = document.getElementById('as-xai-enabled');
+  if (xaiEl) s.xaiEnabled = xaiEl.checked;
+  const sugEl = document.getElementById('as-suggestion-mode');
+  if (sugEl) s.suggestionMode = sugEl.value;
   saveDB();
   updateBranding();
   showToast('&#10003; Studio settings saved successfully!');
@@ -7415,6 +7514,7 @@ function showStudentProfile(studentId) {
     '<div class="profile-tabs">' +
       '<span class="profile-tab active" onclick="switchProfileTab(this,\'profile-overview\')">&#128196; Overview</span>' +
       '<span class="profile-tab" onclick="switchProfileTab(this,\'profile-timeline\')">&#128214; Timeline</span>' +
+      '<span class="profile-tab" onclick="switchProfileTab(this,\'profile-patterns\')">' + ICONS['trending-up'] + ' Patterns</span>' +
       '<span class="profile-tab" onclick="switchProfileTab(this,\'profile-milestones\')">&#127942; Milestones</span>' +
       '<span class="profile-tab" onclick="switchProfileTab(this,\'profile-injuries\')">&#9888; Conditions</span>' +
       '<span class="profile-tab" onclick="switchProfileTab(this,\'profile-graph\')">&#128200; Graph</span>' +
@@ -7449,6 +7549,11 @@ function showStudentProfile(studentId) {
             (n.tags && n.tags.length > 0 ? '<div style="display:flex;gap:0.25rem;margin-top:0.2rem;">' + n.tags.map(t => '<span class="note-tag-rendered">' + t + '</span>').join('') + '</div>' : '') +
           '</div>';
         }).join('')) +
+    '</div>' +
+
+    // Tab: Longitudinal Patterns
+    '<div class="profile-tab-content" id="profile-patterns">' +
+      buildLongitudinalPatterns(studentId, studentClassNotes) +
     '</div>' +
 
     // Tab: Milestones
@@ -8304,8 +8409,179 @@ function showPostClassDashboard(c) {
         '<button class="lf-btn" onclick="closeModal();navigate(\'instructor-insights\')">View All Insights</button>' +
         '<button class="lf-btn danger" onclick="closeModal()">Close</button>' +
       '</div>' +
+      '<div class="pcd-debrief" style="margin-top:0.75rem;padding-top:0.75rem;border-top:1px solid var(--border-dark);">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;gap:0.5rem;flex-wrap:wrap;">' +
+          '<div>' +
+            '<div style="font-size:0.85rem;font-weight:700;color:var(--text);">🎙 Voice Debrief</div>' +
+            '<div style="font-size:0.7rem;color:var(--text-muted);">Speak your observations — AI parses them into structured client notes &amp; progress logs.</div>' +
+          '</div>' +
+          '<button class="debrief-btn" id="debrief-btn" onclick="togglePostClassDebrief()">🎤 Start Debrief</button>' +
+        '</div>' +
+        '<div id="debrief-transcript" class="debrief-transcript" style="display:none;"></div>' +
+        '<div id="debrief-parse" class="debrief-parse"></div>' +
+      '</div>' +
     '</div></div>';
   showModal();
+}
+
+let postClassDebriefRecognizer = null;
+let postClassDebriefActive = false;
+let postClassDebriefBuffer = '';
+
+function togglePostClassDebrief() {
+  if (postClassDebriefActive) { stopPostClassDebrief(); return; }
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    showToast('Voice-to-text not supported in this browser. Try Chrome.', 'error');
+    return;
+  }
+  const btn = document.getElementById('debrief-btn');
+  if (btn) { btn.classList.add('live'); btn.innerHTML = '⏹ Stop &amp; Parse'; }
+  const tr = document.getElementById('debrief-transcript');
+  if (tr) { tr.style.display = 'block'; tr.textContent = ''; }
+  postClassDebriefBuffer = '';
+  postClassDebriefActive = true;
+  const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const start = () => {
+    if (!postClassDebriefActive) return;
+    const rec = new Recognition();
+    rec.lang = 'en-IN';
+    rec.interimResults = true;
+    rec.continuous = true;
+    let finalBuf = '';
+    rec.onresult = e => {
+      let interim = '';
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        const t = e.results[i][0].transcript;
+        if (e.results[i].isFinal) finalBuf += (finalBuf ? ' ' : '') + t;
+        else interim += t;
+      }
+      if (finalBuf.trim()) {
+        postClassDebriefBuffer += (postClassDebriefBuffer ? ' ' : '') + finalBuf.trim();
+        finalBuf = '';
+        const tr2 = document.getElementById('debrief-transcript');
+        if (tr2) tr2.textContent = postClassDebriefBuffer + (interim ? ' [' + interim + ']' : '');
+      }
+    };
+    rec.onerror = () => { if (postClassDebriefActive) setTimeout(start, 1000); };
+    rec.onend = () => { if (postClassDebriefActive) setTimeout(start, 500); };
+    postClassDebriefRecognizer = rec;
+    try { rec.start(); } catch (e) { setTimeout(start, 500); }
+  };
+  start();
+  showToast('Listening — speak your observations, then tap Stop &amp; Parse', 'info');
+}
+
+function stopPostClassDebrief() {
+  postClassDebriefActive = false;
+  if (postClassDebriefRecognizer) {
+    try { postClassDebriefRecognizer.stop(); } catch (e) {}
+    postClassDebriefRecognizer = null;
+  }
+  const btn = document.getElementById('debrief-btn');
+  if (btn) { btn.classList.remove('live'); btn.innerHTML = '🎤 Start Debrief'; }
+  if (postClassDebriefBuffer.trim()) {
+    parseDebriefSpeech(postClassDebriefBuffer.trim(), activeClassId);
+  } else {
+    showToast('No speech captured — tap Start Debrief and try again', 'error');
+  }
+}
+
+// LLM-prompt debrief parser: raw speech → structured client notes + progress logs
+function parseDebriefSpeech(rawText, classId) {
+  const c = getClass(classId);
+  if (!c) { showToast('Class not found', 'error'); return; }
+  const nameMap = buildStudentNameMap(classId);
+  const lower = rawText.toLowerCase();
+  const entries = [];
+  const sentences = rawText.split(/(?<=[.!?])\s+/);
+
+  sentences.forEach(sentence => {
+    const sLower = sentence.toLowerCase();
+    let sid = null;
+    Object.entries(nameMap).forEach(([name, id]) => {
+      if (sLower.includes(name)) sid = id;
+    });
+    if (!sid) return;
+    const s = getStudent(sid);
+    if (!s) return;
+    const tags = autoTagNote(sentence);
+    const type = classifyDebriefSentence(sentence, tags);
+    entries.push({ studentId: sid, studentName: s.name, text: sentence.trim(), tags, type });
+  });
+
+  if (entries.length === 0) {
+    const parseEl = document.getElementById('debrief-parse');
+    if (parseEl) parseEl.innerHTML = '<div class="debrief-parse-empty">No student names matched. Include the client\'s name in each sentence, e.g. "Neha had great core control today".</div>';
+    showToast('No client observations parsed', 'info');
+    return;
+  }
+
+  // Render structured preview
+  const parseEl = document.getElementById('debrief-parse');
+  if (parseEl) {
+    parseEl.innerHTML = entries.map(en => {
+      const color = en.type === 'progress' ? '#16a34a' : en.type === 'concern' ? '#ef4444' : en.type === 'milestone' ? '#7c3aed' : '#2563eb';
+      return '<div class="debrief-entry">' +
+        '<span class="de-tag" style="background:' + color + '18;color:' + color + ';">' + en.type.toUpperCase() + '</span>' +
+        '<div><span class="de-stu">' + en.studentName + ':</span> <span class="de-text">' + en.text + '</span>' +
+        '<div style="display:flex;gap:0.25rem;margin-top:0.2rem;">' + en.tags.map(t => '<span class="note-tag-rendered">' + t + '</span>').join('') + '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('') +
+    '<div style="display:flex;gap:0.5rem;margin-top:0.6rem;">' +
+      '<button class="btn btn-sm btn-primary" onclick="applyDebriefEntries()">✔ Save to Notes</button>' +
+      '<button class="btn btn-sm btn-outline" onclick="discardDebriefEntries()">Discard</button>' +
+    '</div>';
+  }
+  window._debriefEntries = entries;
+  showToast('Parsed ' + entries.length + ' client observation' + (entries.length > 1 ? 's' : '') + ' — review then save', 'info');
+}
+
+function classifyDebriefSentence(sentence, tags) {
+  const lower = sentence.toLowerCase();
+  const progressWords = ['great','good','excellent','improved','improving','progress','better','strong','confident','mastered','nailed'];
+  const concernWords = ['struggle','struggled','pain','hurt','trouble','difficult','weak','poor','tight','stiff','painful','uncomfortable','worry'];
+  const milestoneWords = ['first time','milestone','achieved','can now','finally','graduated','ready for','advanced','level up','breakthrough'];
+  if (milestoneWords.some(w => lower.includes(w))) return 'milestone';
+  if (concernWords.some(w => lower.includes(w))) return 'concern';
+  if (progressWords.some(w => lower.includes(w))) return 'progress';
+  if (tags.includes('Injury')) return 'concern';
+  return 'note';
+}
+
+function applyDebriefEntries() {
+  const entries = window._debriefEntries || [];
+  if (!activeClassId || entries.length === 0) return;
+  entries.forEach(en => {
+    const notes = getClassNotes(activeClassId, en.studentId);
+    notes.push({ text: en.text, tags: en.tags, timestamp: new Date().toISOString(), source: 'voice-debrief' });
+    db.classNotes[activeClassId][en.studentId] = notes;
+    // Progress log: bump level progress for 'progress'/'milestone' type entries
+    if ((en.type === 'progress' || en.type === 'milestone') && db.students) {
+      const s = getStudent(en.studentId);
+      if (s) {
+        if (!s.levelProgress) s.levelProgress = { beginner: 0, intermediate: 0, expert: 0 };
+        const lv = s.level || 'beginner';
+        if (s.levelProgress[lv] !== undefined) s.levelProgress[lv] = (s.levelProgress[lv] || 0) + 0.5;
+      }
+    }
+    if (en.type === 'milestone') {
+      if (!db.studentMilestones) db.studentMilestones = [];
+      db.studentMilestones.push({ id: genId(), studentId: en.studentId, title: 'Voice-debriefed progress: ' + en.text.substring(0, 50), description: en.text, date: new Date().toISOString().split('T')[0], achieved: true });
+    }
+  });
+  logAuditEvent('voice_debrief_applied', { classId: activeClassId, entries: entries.map(e => e.studentId), count: entries.length });
+  saveDB();
+  const parseEl = document.getElementById('debrief-parse');
+  if (parseEl) parseEl.innerHTML = '<div style="font-size:0.8rem;color:var(--success);font-weight:600;padding:0.4rem 0;">&#10003; Saved ' + entries.length + ' observation(s) to client notes' + (entries.some(e => e.type === 'progress' || e.type === 'milestone') ? ' · progress logs updated' : '') + '.</div>';
+  showToast('&#10003; Debrief saved to client notes');
+  updateSummaryFooter();
+}
+
+function discardDebriefEntries() {
+  window._debriefEntries = null;
+  const parseEl = document.getElementById('debrief-parse');
+  if (parseEl) parseEl.innerHTML = '<div class="debrief-parse-empty">Debrief discarded.</div>';
 }
 
 function expandFirstNote() {
@@ -8464,6 +8740,7 @@ function processVoiceForNote(text, classId) {
   if (autoNotesCache[matchedSid].length > 5) autoNotesCache[matchedSid].shift();
   renderTranscriptFeed();
   renderAutoNotes();
+  triggerJitCues(classId, matchedSid, text);
 }
 
 function renderTranscriptFeed() {
@@ -8597,6 +8874,7 @@ function saveClassNote(classId, studentId) {
   renderLiveNotes(classId, studentId);
   updateSummaryFooter();
   updateLiveFooter();
+  triggerJitCues(classId, studentId, text);
 }
 
 function renderLiveNotes(classId, studentId) {
@@ -8829,6 +9107,80 @@ function saveLiveNote(classId, studentId) {
   saveDB();
   renderLiveNotes(classId, studentId);
   updateLiveFooter();
+  triggerJitCues(classId, studentId, text);
+}
+
+// ─── Feature 4c: Batch Observation Mode ───
+function toggleBatchMode(btn) {
+  window._batchMode = !window._batchMode;
+  btn.classList.toggle('active', window._batchMode);
+  const hint = document.getElementById('batch-mode-hint');
+  if (hint) hint.style.display = window._batchMode ? 'block' : 'none';
+  const noteInput = document.getElementById('note-input-' + activeStudentId);
+  if (window._batchMode && noteInput) {
+    noteInput.placeholder = 'Batch observation... (applies to all selected)';
+  } else if (noteInput) {
+    noteInput.placeholder = 'Observation...';
+  }
+  if (!window._batchMode) {
+    document.querySelectorAll('.ls-stu-chip').forEach(chip => chip.classList.remove('active'));
+    const c = getClass(activeClassId);
+    if (c) {
+      const first = (c.enrolled || [])[0];
+      if (first) {
+        activeStudentId = first;
+        const fchip = document.querySelector('.ls-stu-chip[data-sid="' + first + '"]');
+        if (fchip) fchip.classList.add('active');
+      }
+    }
+    const body = document.getElementById('ls-notes-body');
+    if (body) { body.innerHTML = buildLiveCenterPanel(activeClassId, activeStudentId, getClass(activeClassId)); renderLiveNotes(activeClassId, activeStudentId); }
+  }
+  updateBatchSelectionLabel();
+}
+
+function getBatchSelection() {
+  return Array.from(document.querySelectorAll('.ls-stu-chip.active')).map(chip => chip.dataset.sid);
+}
+
+function updateBatchSelectionLabel() {
+  const hint = document.getElementById('batch-mode-hint');
+  if (!hint) return;
+  if (!window._batchMode) { hint.textContent = 'Select multiple students, then one observation applies to all.'; return; }
+  const sel = getBatchSelection();
+  hint.textContent = sel.length === 0
+    ? 'No students selected — click the chips above to add to the batch.'
+    : sel.length + ' student' + (sel.length > 1 ? 's' : '') + ' selected — one observation will apply to all.';
+}
+
+function saveBatchNote(classId, text) {
+  const sids = getBatchSelection();
+  if (sids.length === 0) { showToast('Select at least one student for batch mode', 'error'); return; }
+  const tagsEl = document.getElementById('note-tags-' + activeStudentId);
+  const activeTags = [];
+  if (tagsEl) tagsEl.querySelectorAll('.ltag.selected').forEach(t => activeTags.push(t.dataset.tag));
+  sids.forEach(sid => {
+    const notes = getClassNotes(classId, sid);
+    notes.push({ text: text, tags: activeTags, timestamp: new Date().toISOString(), source: 'batch' });
+    saveDB();
+    renderLiveNotes(classId, sid);
+    triggerJitCues(classId, sid, text);
+  });
+  const input = document.getElementById('note-input-' + activeStudentId);
+  if (input) input.value = '';
+  if (tagsEl) tagsEl.querySelectorAll('.ltag.selected').forEach(t => t.classList.remove('selected'));
+  showToast('Batch note saved for ' + sids.length + ' student' + (sids.length > 1 ? 's' : ''));
+  logAuditEvent('batch_note_created', { classId: classId, studentIds: sids, text: text, tags: activeTags });
+}
+
+function saveLiveNoteOrBatch(classId, studentId) {
+  if (window._batchMode) {
+    const input = document.getElementById('note-input-' + studentId);
+    const text = input ? input.value.trim() : '';
+    if (text) saveBatchNote(classId, text);
+    return;
+  }
+  saveLiveNote(classId, studentId);
 }
 
 const AI_SUGGESTIONS = [
@@ -8991,6 +9343,13 @@ document.addEventListener('keydown', function(e) {
 });
 
 function selectActiveStudent(sid) {
+  if (window._batchMode && document.querySelector('.ls-stu-chip[data-sid="' + sid + '"]')) {
+    // In batch mode: toggle the chip instead of switching the note target
+    const chip = document.querySelector('.ls-stu-chip[data-sid="' + sid + '"]');
+    chip.classList.toggle('active');
+    updateBatchSelectionLabel();
+    return;
+  }
   activeStudentId = sid;
   const center = document.querySelector('.live-center');
   if (center) {
@@ -9057,9 +9416,9 @@ function buildLiveCenterPanel(classId, studentId, c) {
     ).join('') +
   '</div>' +
   '<div class="live-input-area">' +
-    '<input class="lia-input" id="note-input-' + studentId + '" placeholder="Observation..." onkeydown="if(event.key===\'Enter\')saveLiveNote(\'' + classId + '\',\'' + studentId + '\')">' +
+    '<input class="lia-input" id="note-input-' + studentId + '" placeholder="Observation..." onkeydown="if(event.key===\'Enter\')saveLiveNoteOrBatch(\'' + classId + '\',\'' + studentId + '\')">' +
     '<button class="lia-btn" id="voice-btn-' + studentId + '" onclick="startVoiceNote(\'' + studentId + '\',\'' + classId + '\')" title="Voice-to-Text">🎤</button>' +
-    '<button class="lia-btn send" onclick="saveLiveNote(\'' + classId + '\',\'' + studentId + '\')">↵</button>' +
+    '<button class="lia-btn send" onclick="saveLiveNoteOrBatch(\'' + classId + '\',\'' + studentId + '\')">↵</button>' +
   '</div>';
 }
 
@@ -9386,10 +9745,24 @@ function renderInstructorActiveClass(el) {
             '</div>' +
           '</div>' +
 
+          // Just-in-Time Passive AI Cues (contextual sidebar widget)
+          '<div class="ls-panel" id="jit-cue-panel" style="flex:1;min-height:0;">' +
+            '<div class="ls-panel-title">' + ICONS['zap'] + ' Just-in-Time AI Cues' +
+              '<span class="ls-info-tip" data-tip="As you log a movement challenge (e.g. shoulder stability), corrective cues and prep exercises surface here in real time.">?</span>' +
+            '</div>' +
+            '<div class="jit-panel" id="jit-cue-list">' +
+              '<div class="jit-empty">Log an observation about a movement challenge to see corrective cues &amp; prep exercises in real time.</div>' +
+            '</div>' +
+          '</div>' +
+
           // Student Observations (per-student notes + AI suggestions)
           '<div class="ls-panel ls-notes-panel" style="flex:1.3;min-height:0;">' +
             '<div class="ls-panel-title">' + ICONS['edit'] + ' Student Observations' +
               '<span class="ls-info-tip" data-tip="Select a student, type or dictate an observation, then press send. AI suggestions appear automatically as you log notes.">?</span>' +
+            '</div>' +
+            '<div class="batch-bar">' +
+              '<button class="batch-toggle" id="batch-mode-toggle" onclick="toggleBatchMode(this)">' + ICONS['repeat'] + ' Batch Mode</button>' +
+              '<span class="batch-hint" id="batch-mode-hint" style="display:none;font-size:0.68rem;color:var(--ls-muted);">Select multiple students, then one observation applies to all.</span>' +
             '</div>' +
             '<div class="ls-stu-selector" id="ls-stu-selector">' +
               enrolled.map(function(sid) {
@@ -9515,6 +9888,16 @@ function refreshLiveTimerUI() {
   }
 }
 
+// Shared XAI "why this works" rationales for cue types (Feature 4a)
+const XAI_RATIONALES_EXT = {
+  form: 'Correcting alignment first gives the nervous system a clear movement template, so the pattern is learned correctly rather than compensated.',
+  core: 'Core stability protects the spine and transfers force; cueing engagement first makes every other exercise safer and more effective.',
+  breathing: 'Breath drives intra-abdominal pressure and movement rhythm — fixing it improves both form and endurance.',
+  injury: 'Respecting an injury boundary prevents tissue overload and keeps the student training through pain-free range.',
+  motivation: 'Positive reinforcement releases dopamine, which strengthens habit formation and class adherence.',
+  flexibility: 'Slow, breath-led stretching increases range through gradual tissue adaptation rather than reflexive guarding.'
+};
+
 // Build priority cue for new dark layout
 function buildLivePriorityCueHTML(classId) {
   var cue = generatePriorityCue(classId);
@@ -9570,6 +9953,7 @@ function buildLivePriorityCueHTML(classId) {
     '<span class="ls-cm-chip">' + cue.affected.length + ' affected</span>' +
     (currentPreset !== 'free' && phaseTimerPhases.length > 0 ?
       '<span class="ls-cm-chip">' + ICONS['clock'] + ' ' + (phaseTimerPhases[phaseTimerCurrentIndex] ? phaseTimerPhases[phaseTimerCurrentIndex].name : '') + '</span>' : '') +
+    (db.settings && db.settings.xaiEnabled !== false ? '<span class="xai-tag ls-cm-xai" title="">' + ICONS['sparkles'] + ' Why this works<span class="xai-tip">' + (XAI_RATIONALES_EXT[cue.type] || XAI_RATIONALES_EXT.form) + '</span></span>' : '') +
   '</div>' +
   '<button class="ls-cue-why-btn" id="ls-cue-why-btn" onclick="toggleRationale()">' +
     '<span class="why-icon">' + ICONS['info'] + '</span>' +
@@ -11585,6 +11969,230 @@ function generatePriorityCue(classId) {
   return top;
 }
 
+// ─── Feature 2: Just-in-Time Passive AI Cues ───
+// Knowledge base: movement challenge → corrective cue + prep exercise + XAI rationale
+const JIT_KB = [
+  { key: 'shoulder', match: ['shoulder', 'shoulders', 'neck', 'trapezius', 'shrug'], tag: 'form',
+    cue: 'Draw the shoulder blades down and away from the ears — float the collarbones wide.',
+    prep: 'Wall Slides', rationale: 'Excessive upper-trap dominance limits shoulder-blade control, so we retrain scapular depression first.' },
+  { key: 'stability', match: ['stability', 'stable', 'wobbl', 'shake', 'balance', 'unstable'], tag: 'core',
+    cue: 'Anchor through the supporting limb and breathe into the ribcage to steady the center.',
+    prep: 'Single-Leg Balance Taps', rationale: 'Wobble usually means the deep stabilizers switch off; short single-leg holds re-engage them.' },
+  { key: 'core', match: ['core', 'abdominal', 'plank', 'belly', 'hollow', 'engag'], tag: 'core',
+    cue: 'Draw the navel in toward the spine and keep a hollow, braced center.',
+    prep: 'Dead Bug', rationale: 'Plank/wobble patterns point to weak transverse abdominis, so we isolate it before loading it.' },
+  { key: 'breath', match: ['breath', 'inhale', 'exhale', 'holding breath', 'gasp'], tag: 'breathing',
+    cue: 'Exhale fully on the effort — never hold the breath mid-rep.',
+    prep: 'Supine Breathing Drill', rationale: 'Breath-holding raises intra-abdominal pressure and blocks core engagement.' },
+  { key: 'hip', match: ['hip', 'hips', 'pelvis', 'glute', 'hollowing'], tag: 'form',
+    cue: 'Keep the pelvis neutral — think a glass of water resting on the hip bones.',
+    prep: 'Hip Hinge from Box', rationale: 'Anterior tilt or pelvic shift signals weak glutes/hip flexor tightness, so we restore neutral first.' },
+  { key: 'hamstring', match: ['hamstring', 'tight hamstring', 'stiff hamstring'], tag: 'flexibility',
+    cue: 'Lengthen the spine and lead with the chest — never force the reach.',
+    prep: 'Standing Hamstring Stretch', rationale: 'Tight hamstrings pull the pelvis into posterior tilt; stretching restores neutral.' },
+  { key: 'spine', match: ['spine', 'back', 'lower back', 'vertebra', 'rounding', 'slouch', 'kyphos'], tag: 'form',
+    cue: 'Roll through each vertebra one at a time and lengthen the crown of the head.',
+    prep: 'Cat-Cow Articulation', rationale: 'Flattening or over-rounding shows segmental control gaps, so we train articulation.' },
+  { key: 'lower-back', match: ['lower back pain', 'lumbar', 'low back', 'back pain'], tag: 'injury',
+    cue: 'Modify range and keep the lower back imprinted — check in after every rep.',
+    prep: 'Pelvic Tilts (Paced)', rationale: 'Lumbar discomfort during flexion means the core is not bracing; pelvic tilts restore safe load.' },
+  { key: 'knee', match: ['knee', 'knees'], tag: 'form',
+    cue: 'Track the knee in line with the toes — never let it cave inward.',
+    prep: 'Glute Bridge with Band', rationale: 'Inward knee collapse is a hip-strength pattern; bridging strengthens the stabilizer.' },
+  { key: 'ankle', match: ['ankle', 'foot', 'feet', 'arch'], tag: 'form',
+    cue: 'Spread the weight through the whole foot — lift the arches gently.',
+    prep: 'Ankle Alphabet', rationale: 'A collapsed arch destabilizes the whole chain; ankle control rebuilds the foundation.' },
+  { key: 'neck', match: ['neck', 'chin', 'jaw', 'craning'], tag: 'form',
+    cue: 'Keep a long line through the back of the neck — look toward the thighs, not the chest.',
+    prep: 'Chin Tucks', rationale: 'Craning the neck strains the cervical spine; chin tucks reset head position.' },
+  { key: 'tight', match: ['tight', 'stiff', 'strain', 'sore'], tag: 'flexibility',
+    cue: 'Ease into the stretch and breathe — release at the first sign of strain.',
+    prep: 'Gentle Mobility Flow', rationale: 'Tissue that is chronically tight needs gradual lengthening, not aggressive force.' }
+];
+
+function matchJitCue(text) {
+  const lower = (text || '').toLowerCase();
+  if (!lower) return null;
+  for (let i = 0; i < JIT_KB.length; i++) {
+    const entry = JIT_KB[i];
+    if (entry.match.some(m => lower.includes(m))) return entry;
+  }
+  return null;
+}
+
+// Feature 4b: rephrase cues according to the instructor's selected coaching style
+function adaptCueText(text, entry) {
+  const style = (db.settings && db.settings.coachingStyle) || 'direct';
+  const xai = db.settings && db.settings.xaiEnabled !== false;
+  if (style === 'supportive') {
+    return text;
+  }
+  if (style === 'detailed') {
+    return text + ' ' + (entry && entry.rationale ? '(' + entry.rationale + ')' : '');
+  }
+  return text;
+}
+
+function xaiSuffix() {
+  if (db.settings && db.settings.xaiEnabled === false) return '';
+  return '<span class="xai-tag">' + ICONS['sparkles'] + ' Why this works<span class="xai-tip">Based on movement-science principles applied to this student\'s logged patterns.</span></span>';
+}
+
+function triggerJitCues(classId, studentId, noteText) {
+  const entry = matchJitCue(noteText);
+  const listEl = document.getElementById('jit-cue-list');
+  if (!entry) {
+    if (listEl && listEl.dataset.lastStudent === studentId) {
+      const note = getClassNotes(classId, studentId);
+      renderJitCueList(classId, studentId, entry, noteText);
+    }
+    return;
+  }
+  renderJitCueList(classId, studentId, entry, noteText);
+  logAuditEvent('jit_cue_generated', { classId, studentId, cueKey: entry.key, text: entry.cue });
+}
+
+function renderJitCueList(classId, studentId, entry, noteText) {
+  const listEl = document.getElementById('jit-cue-list');
+  if (!listEl) return;
+  const stu = getStudent(studentId);
+  const firstName = stu ? stu.name.split(' ')[0] : 'This student';
+
+  // Repeat/frequency detection → progression insight (Feature 3 hook)
+  const notes = getClassNotes(classId, studentId);
+  const repeats = notes.filter(n => entry ? matchJitCue(n.text) && matchJitCue(n.text).key === entry.key : false).length;
+  const progressionNote = repeats > 2
+    ? '<div class="jit-progress">' + ICONS['trending-up'] + ' Pattern: this is the ' + ordinal(repeats) + ' time ' + firstName + ' logged a ' + entry.key.replace('-', ' ') + ' challenge. Consider reassessing form or escalating the prep.</div>'
+    : '';
+
+  if (!entry) {
+    listEl.innerHTML =
+      '<div class="jit-empty">Log an observation about a movement challenge to see corrective cues &amp; prep exercises in real time.</div>';
+    listEl.dataset.lastStudent = studentId;
+    return;
+  }
+
+  listEl.innerHTML =
+    '<div class="jit-cue-head">' + ICONS['zap'] + ' Corrective Cue · ' + firstName + '</div>' +
+    '<div class="jit-cue-text">' + adaptCueText(entry.cue, entry) + '</div>' +
+    '<div class="jit-cue-meta">' +
+      '<span class="jit-cue-ex">Prep: ' + entry.prep + '</span>' +
+      (db.settings && db.settings.xaiEnabled !== false ? '<span class="jit-cue-tag xai-tag">' + ICONS['sparkles'] + ' Why: ' + entry.rationale + '</span>' : '') +
+    '</div>' +
+    progressionNote;
+  listEl.dataset.lastStudent = studentId;
+}
+
+function ordinal(n) {
+  const s = ['th', 'st', 'nd', 'rd'];
+  const v = n % 100;
+  return n + (s[(v - 20) % 10] || s[v] || s[0]);
+}
+
+// ─── Feature 3: Longitudinal Progress Pattern Recognition ───
+function detectLongitudinalPatterns(studentId) {
+  const notes = [];
+  if (db.classNotes) {
+    Object.keys(db.classNotes).forEach(cid => {
+      const per = db.classNotes[cid] && db.classNotes[cid][studentId];
+      if (per && per.length) {
+        const c = getClass(cid);
+        per.forEach(n => notes.push({ ...n, className: c ? c.name || (c.type === 'mat' ? 'Mat' : 'Reformer') : cid }));
+      }
+    });
+  }
+  notes.sort((a, b) => (a.timestamp || '').localeCompare(b.timestamp || ''));
+
+  const patterns = [];
+
+  // 1. Recurring movement challenges (same JIT key appears across ≥3 dated sessions)
+  const challengeMap = {};
+  const challengeDates = {};
+  notes.forEach(n => {
+    const key = matchJitCue(n.text);
+    if (key) {
+      challengeMap[key.key] = (challengeMap[key.key] || 0) + 1;
+      if (!challengeDates[key.key]) challengeDates[key.key] = [];
+      const d = (n.timestamp || '').split('T')[0];
+      if (d && challengeDates[key.key][challengeDates[key.key].length - 1] !== d) {
+        challengeDates[key.key].push(d);
+      }
+    }
+  });
+  Object.keys(challengeMap).forEach(k => {
+    if (challengeMap[k] >= 3) {
+      const span = challengeDates[k].length > 1
+        ? (new Date(challengeDates[k][challengeDates[k].length - 1]) - new Date(challengeDates[k][0])) / 86400000
+        : 0;
+      patterns.push({
+        type: 'recurring',
+        severity: span >= 30 ? 'high' : 'medium',
+        title: 'Recurring ' + k.replace('-', ' ') + ' challenge',
+        text: k.replace('-', ' ') + ' difficulty was logged ' + challengeMap[k] + ' times across ' + challengeDates[k].length + ' dated session' + (challengeDates[k].length > 1 ? 's' : '') + (span >= 30 ? ' spanning ' + Math.round(span) + ' days — likely a chronic pattern that needs a programming change.' : '. Reassess the prep exercise next session.')
+      });
+    }
+  });
+
+  // 2. Trend direction: compare concern vs. progress/milestone tags over time
+  const timeline = notes.map(n => {
+    const t = (n.tags || []).map(x => x.toLowerCase());
+    let val = 0;
+    if (t.some(x => x === 'progress' || x === 'milestone') || /great|excellent|improve|better|progress|milestone/.test(n.text.toLowerCase())) val = 1;
+    if (t.some(x => x === 'concern') || /struggl|pain|trouble|weak|regress/.test(n.text.toLowerCase())) val = -1;
+    return { ts: n.timestamp || '', val: val };
+  }).filter(x => x.val !== 0);
+
+  if (timeline.length >= 3) {
+    const firstHalf = timeline.slice(0, Math.floor(timeline.length / 2));
+    const secondHalf = timeline.slice(Math.floor(timeline.length / 2));
+    const sum = arr => arr.reduce((a, b) => a + b.val, 0);
+    const trend = sum(secondHalf) - sum(firstHalf);
+    if (trend >= 2) {
+      patterns.push({ type: 'trend', severity: 'positive', title: 'Improving trajectory', text: 'Recent observations skew positive — the student is trending up. Keep current programming and log next milestones.' });
+    } else if (trend <= -2) {
+      patterns.push({ type: 'trend', severity: 'alert', title: 'Regression risk', text: 'Recent observations skew negative. Recommend a form reassessment and a step-down in intensity.' });
+    } else {
+      patterns.push({ type: 'trend', severity: 'info', title: 'Plateau detected', text: 'Observations are mixed/stable over the last ' + timeline.length + ' entries. Consider adding variety to break through.' });
+    }
+  } else if (timeline.length > 0) {
+    patterns.push({ type: 'trend', severity: 'info', title: 'Building signal', text: 'Only ' + timeline.length + ' directional observation' + (timeline.length > 1 ? 's' : '') + ' so far — keep logging to unlock trend detection.' });
+  }
+
+  // 3. Attendance cadence insight
+  const attKeys = Object.keys(db.attendance || {});
+  let present = 0, total = 0;
+  attKeys.forEach(cid => {
+    const r = db.attendance[cid] && db.attendance[cid][studentId];
+    if (r) { total++; if (r === 'present' || r === 'late') present++; }
+  });
+  if (total >= 3) {
+    const pct = Math.round(present / total * 100);
+    if (pct >= 80) {
+      patterns.push({ type: 'consistency', severity: 'positive', title: 'Strong consistency', text: present + ' of ' + total + ' sessions attended (' + pct + '%) — high commitment is correlated with faster progress.' });
+    } else if (pct <= 40) {
+      patterns.push({ type: 'consistency', severity: 'alert', title: 'Attendance gap', text: 'Only ' + present + ' of ' + total + ' sessions attended (' + pct + '%) — gaps slow adaptation. Consider a reminder or schedule check.' });
+    }
+  }
+
+  return patterns;
+}
+
+function buildLongitudinalPatterns(studentId, studentClassNotes) {
+  const patterns = detectLongitudinalPatterns(studentId);
+  if (patterns.length === 0) {
+    return '<div class="empty-state" style="margin-top:0.5rem;">Not enough data yet — log observations across several sessions to unlock pattern recognition.</div>';
+  }
+  const sevColor = { high: 'badge-red', medium: 'badge-yellow', low: 'badge-gray', alert: 'badge-red', positive: 'badge-green', info: 'badge-blue' };
+  return patterns.map(p =>
+    '<div class="prog-pattern">' +
+      '<div class="pp-title">' + (p.type === 'recurring' ? ICONS['repeat'] : p.type === 'trend' ? ICONS['trending-up'] : ICONS['calendar']) + ' ' + p.title +
+        '<span class="pp-tag ' + (sevColor[p.severity] || 'badge-gray') + '">' + p.severity + '</span>' +
+      '</div>' +
+      '<div class="pp-text">' + p.text + '</div>' +
+    '</div>'
+  ).join('');
+}
+
 // ─── Audit Logging ───
 function logAuditEvent(eventType, payload) {
   if (!db.auditLog) db.auditLog = [];
@@ -11667,15 +12275,18 @@ function buildPriorityCueHTML(classId) {
   };
   const steps = CHECKLIST_STEPS[cue.type] || CHECKLIST_STEPS.form;
 
+  const xaiRationale = XAI_RATIONALES_EXT[cue.type] || XAI_RATIONALES_EXT.form;
+
   return '<div class="pcc-card" id="priority-cue-card">' +
     '<div class="pcc-header">' +
       '<span class="pcc-title">' + ICONS['brain'] + ' Priority Cue</span>' +
       '<span class="pcc-confidence" style="background:' + confColor + '20;color:' + confColor + ';">' + confLabel + ' &middot; ' + cue.confidence.percent + '%</span>' +
     '</div>' +
-    '<div class="pcc-text">' + cue.text + '</div>' +
+    '<div class="pcc-text">' + adaptCueText(cue.text, { rationale: xaiRationale }) + '</div>' +
     '<div class="pcc-meta">' +
       '<span class="pcc-exercise">' + cue.exercise + '</span>' +
       '<span class="pcc-affected">' + (cue.affected.length > 0 ? cue.affected.length + ' affected' : 'General') + '</span>' +
+      (db.settings && db.settings.xaiEnabled !== false ? '<span class="xai-tag" title="">' + ICONS['sparkles'] + ' Why this works<span class="xai-tip">' + xaiRationale + '</span></span>' : '') +
     '</div>' +
     '<div class="pcc-rationale" id="pcc-rationale" style="display:none;">' + cue.confidence.rationale + '</div>' +
     '<div class="pcc-actions">' +
@@ -12300,6 +12911,7 @@ saveLiveNote = function(classId, studentId) {
   renderLiveNotes(classId, studentId);
   updateLiveFooter();
   showToast('Note saved with AI tags: ' + autoTags.join(', '));
+  triggerJitCues(classId, studentId, text);
 };
 
 init();
