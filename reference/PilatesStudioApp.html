@@ -4158,7 +4158,14 @@ function defaultDB() {
       sidebarActiveText: '#a78bfa',
       sidebarHoverBg: 'rgba(255,255,255,0.06)',
       sidebarBannerData: null,
-      sidebarBannerText: ''
+      sidebarBannerText: '',
+      ai: {
+        enabled: false,
+        baseUrl: 'https://api.openai.com/v1',
+        apiKey: '',
+        model: 'gpt-4o-mini',
+        temperature: 0.4
+      }
     },
     instructors: [
       { id: 'i1', name: 'Priya Sharma', specialization: 'Mat & Reformer', certification: 'ACE Certified Personal Trainer', experience: 8, email: 'priya@zenpilates.com', phone: '+91 98765 43201', photo: null, password: 'instructor123', active: true, dateJoined: '2026-01-15', bio: 'Certified Pilates instructor with 8+ years experience. Specializes in gentle flows for beginners.', availability: { mon: ['07:00','09:00','11:00'], tue: ['07:00','09:00'], wed: ['07:00','09:00','11:00'], thu: ['07:00','09:00'], fri: ['07:00','09:00','11:00'] }, permissions: { editSchedule: true, editPricing: false }, rating: 4.6 },
@@ -6133,6 +6140,56 @@ function renderAdminSettings(el) {
         </select>
       </div>
     </div>
+    <div class="card" style="margin-top:0.9rem;">
+      <div class="card-title">${ICONS['bot'] || '🤖'} AI Assistant — Provider Connection</div>
+      <div class="page-subtitle" style="margin-bottom:0.6rem;">Connect any OpenAI-compatible endpoint to power AI features (pre-class briefs, priority cues, live suggestions, JIT cues, auto-tagging, voice debrief parsing) with the built-in heuristics as automatic fallback.</div>
+      <div class="form-group">
+        <label style="display:flex;align-items:center;gap:0.4rem;font-size:0.8rem;color:var(--text);cursor:pointer;">
+          <input type="checkbox" id="as-ai-enabled" ${s.ai && s.ai.enabled ? 'checked' : ''} style="width:16px;height:16px;">
+          <strong>Enable AI-powered assistance</strong>
+        </label>
+      </div>
+      <div class="form-group">
+        <label>Provider Preset</label>
+        <div class="style-pick" id="ai-provider-pick" style="grid-template-columns:repeat(auto-fit,minmax(120px,1fr));">
+          ${[{ key: 'openai', name: 'OpenAI' }, { key: 'openrouter', name: 'OpenRouter' }, { key: 'groq', name: 'Groq' }, { key: 'ollama', name: 'Ollama (local)' }, { key: 'lmstudio', name: 'LM Studio' }].map(p =>
+            `<div class="sp-item" data-provider="${p.key}" onclick="setAIProvider('${p.key}')"><div class="sp-name">${p.name}</div><div class="sp-desc">Fills base URL + model</div></div>`).join('')}
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Base URL</label>
+          <input class="form-control" id="as-ai-baseurl" value="${(s.ai && s.ai.baseUrl) || 'https://api.openai.com/v1'}" placeholder="https://api.openai.com/v1">
+        </div>
+        <div class="form-group">
+          <label>Model</label>
+          <input class="form-control" id="as-ai-model" value="${(s.ai && s.ai.model) || 'gpt-4o-mini'}" placeholder="gpt-4o-mini" list="ai-model-suggest">
+          <datalist id="ai-model-suggest">
+            <option value="gpt-4o-mini"><option value="gpt-4o"><option value="gpt-4.1-mini">
+            <option value="openai/gpt-4o-mini"><option value="anthropic/claude-3.5-sonnet"><option value="meta-llama/llama-3.1-8b-instant">
+            <option value="llama3.2"><option value="llama3.1"><option value="qwen2.5">
+          </datalist>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>API Key (optional for local servers)</label>
+        <div style="display:flex;gap:0.4rem;">
+          <input class="form-control" type="password" id="as-ai-apikey" value="${(s.ai && s.ai.apiKey) || ''}" placeholder="sk-…" autocomplete="off" style="flex:1;">
+          <button class="btn btn-secondary ai-key-toggle" type="button" onclick="toggleAIKey()" style="min-height:0;padding:0 0.75rem;">👁</button>
+        </div>
+        <div style="font-size:0.72rem;color:var(--text-muted);margin-top:0.3rem;">⚠️ Stored in this browser&apos;s localStorage only. For production, route requests through a backend proxy to keep your key private.</div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Temperature</label>
+          <input class="form-control" type="number" id="as-ai-temp" min="0" max="1" step="0.1" value="${(s.ai && typeof s.ai.temperature === 'number') ? s.ai.temperature : 0.4}">
+        </div>
+        <div class="form-group" style="display:flex;align-items:flex-end;">
+          <button class="btn btn-secondary" id="ai-test-btn" onclick="testAIConnection()" style="width:100%;">⚡ Test Connection</button>
+        </div>
+      </div>
+      <div id="ai-test-status" style="font-size:0.75rem;color:var(--text-muted);margin-top:0.2rem;">${(s.ai && s.ai.enabled) ? 'Configured: ' + ((s.ai.baseUrl || '') + ' · ' + (s.ai.model || '')) : 'AI assistance disabled — all AI features use built-in heuristics.'}</div>
+    </div>
   `;
   document.getElementById('as-logo-upload').addEventListener('change', function(e) {
     const file = e.target.files[0];
@@ -6198,6 +6255,17 @@ function saveSettings() {
   if (xaiEl) s.xaiEnabled = xaiEl.checked;
   const sugEl = document.getElementById('as-suggestion-mode');
   if (sugEl) s.suggestionMode = sugEl.value;
+  const ai = s.ai || (s.ai = {});
+  const aiEnabledEl = document.getElementById('as-ai-enabled');
+  if (aiEnabledEl) ai.enabled = aiEnabledEl.checked;
+  const aiBaseEl = document.getElementById('as-ai-baseurl');
+  if (aiBaseEl) ai.baseUrl = aiBaseEl.value.trim() || 'https://api.openai.com/v1';
+  const aiKeyEl = document.getElementById('as-ai-apikey');
+  if (aiKeyEl) ai.apiKey = aiKeyEl.value.trim();
+  const aiModelEl = document.getElementById('as-ai-model');
+  if (aiModelEl) ai.model = aiModelEl.value.trim() || 'gpt-4o-mini';
+  const aiTempEl = document.getElementById('as-ai-temp');
+  if (aiTempEl) ai.temperature = Math.min(1, Math.max(0, parseFloat(aiTempEl.value) || 0.4));
   saveDB();
   updateBranding();
   showToast('&#10003; Studio settings saved successfully!');
@@ -8486,12 +8554,98 @@ function stopPostClassDebrief() {
   }
 }
 
+// ============================
+// ADMIN-CONFIGURED AI PROVIDER (Feature: connect any OpenAI-compatible endpoint)
+// ============================
+function getAIConfig() {
+  return (db.settings && db.settings.ai) || {};
+}
+function isAIEnabled() {
+  const a = getAIConfig();
+  return !!(a.enabled && a.baseUrl && a.model);
+}
+function aiChatURL() {
+  return (getAIConfig().baseUrl || 'https://api.openai.com/v1').replace(/\/+$/, '') + '/chat/completions';
+}
+async function callChatLLM(system, user, opts) {
+  const a = getAIConfig();
+  if (!isAIEnabled()) return null;
+  opts = opts || {};
+  const headers = { 'Content-Type': 'application/json' };
+  if (a.apiKey) headers['Authorization'] = 'Bearer ' + a.apiKey;
+  const res = await fetch(aiChatURL(), {
+    method: 'POST',
+    headers: headers,
+    body: JSON.stringify({
+      model: a.model,
+      messages: [
+        { role: 'system', content: system },
+        { role: 'user', content: user }
+      ],
+      temperature: typeof a.temperature === 'number' ? a.temperature : 0.4,
+      max_tokens: opts.maxTokens || 900
+    })
+  });
+  if (!res.ok) throw new Error('AI request failed (' + res.status + '): ' + (await res.text()).slice(0, 160));
+  const data = await res.json();
+  const content = data && data.choices && data.choices[0] && data.choices[0].message ? data.choices[0].message.content : null;
+  if (!content) throw new Error('AI returned an empty response');
+  return content;
+}
+function extractJSON(text) {
+  if (!text) return null;
+  const clean = text.replace(/```json|```/g, '');
+  const m = clean.match(/(\{[\s\S]*\}|\[[\s\S]*\])/);
+  if (!m) return null;
+  try { return JSON.parse(m[1]); } catch (e) {
+    try { return JSON.parse(m[1].replace(/,\s*([}\]])/g, '$1')); } catch (e2) { return null; }
+  }
+}
+async function testAIConnection() {
+  const statusEl = document.getElementById('ai-test-status');
+  const btn = document.getElementById('ai-test-btn');
+  if (statusEl) { statusEl.textContent = 'Testing connection…'; statusEl.style.color = '#9ca3af'; }
+  if (btn) btn.disabled = true;
+  try {
+    if (!isAIEnabled()) throw new Error('Enable AI and set a base URL + model first');
+    const reply = await callChatLLM('You are a connection test. Reply with exactly the word OK and nothing else.', 'Ping', { maxTokens: 10 });
+    if (statusEl) { statusEl.textContent = '✓ Connected to ' + getAIConfig().model + ' — replied "' + (reply || '').trim().slice(0, 40) + '"'; statusEl.style.color = '#16a34a'; }
+    showToast('AI connection successful', 'success');
+  } catch (e) {
+    if (statusEl) { statusEl.textContent = '✗ ' + e.message; statusEl.style.color = '#ef4444'; }
+    showToast('AI connection failed: ' + e.message, 'error');
+  }
+  if (btn) btn.disabled = false;
+}
+function setAIProvider(key) {
+  const presets = {
+    openai:     { baseUrl: 'https://api.openai.com/v1',        model: 'gpt-4o-mini' },
+    openrouter: { baseUrl: 'https://openrouter.ai/api/v1',      model: 'openai/gpt-4o-mini' },
+    groq:       { baseUrl: 'https://api.groq.com/openai/v1',    model: 'llama-3.1-8b-instant' },
+    ollama:     { baseUrl: 'http://localhost:11434/v1',         model: 'llama3.2' },
+    lmstudio:   { baseUrl: 'http://localhost:1234/v1',          model: 'local-model' }
+  };
+  const p = presets[key];
+  if (!p) return;
+  const baseEl = document.getElementById('as-ai-baseurl');
+  const modelEl = document.getElementById('as-ai-model');
+  if (baseEl) baseEl.value = p.baseUrl;
+  if (modelEl) modelEl.value = p.model;
+  document.querySelectorAll('#ai-provider-pick .sp-item').forEach(i => i.classList.toggle('selected', i.dataset.provider === key));
+}
+function toggleAIKey() {
+  const el = document.getElementById('as-ai-apikey');
+  if (!el) return;
+  el.type = el.type === 'password' ? 'text' : 'password';
+  const btn = document.querySelector('.ai-key-toggle');
+  if (btn) btn.textContent = el.type === 'password' ? '👁' : '🙈';
+}
+
 // LLM-prompt debrief parser: raw speech → structured client notes + progress logs
-function parseDebriefSpeech(rawText, classId) {
+function parseDebriefSpeechHeuristic(rawText, classId) {
   const c = getClass(classId);
-  if (!c) { showToast('Class not found', 'error'); return; }
+  if (!c) { showToast('Class not found', 'error'); return null; }
   const nameMap = buildStudentNameMap(classId);
-  const lower = rawText.toLowerCase();
   const entries = [];
   const sentences = rawText.split(/(?<=[.!?])\s+/);
 
@@ -8509,16 +8663,17 @@ function parseDebriefSpeech(rawText, classId) {
     entries.push({ studentId: sid, studentName: s.name, text: sentence.trim(), tags, type });
   });
 
-  if (entries.length === 0) {
-    const parseEl = document.getElementById('debrief-parse');
-    if (parseEl) parseEl.innerHTML = '<div class="debrief-parse-empty">No student names matched. Include the client\'s name in each sentence, e.g. "Neha had great core control today".</div>';
-    showToast('No client observations parsed', 'info');
-    return;
-  }
+  return entries;
+}
 
-  // Render structured preview
+function renderDebriefEntries(entries) {
   const parseEl = document.getElementById('debrief-parse');
   if (parseEl) {
+    if (!entries || entries.length === 0) {
+      parseEl.innerHTML = '<div class="debrief-parse-empty">No client observations parsed. Include the client\'s name in each sentence, e.g. "Neha had great core control today".</div>';
+      showToast('No client observations parsed', 'info');
+      return;
+    }
     parseEl.innerHTML = entries.map(en => {
       const color = en.type === 'progress' ? '#16a34a' : en.type === 'concern' ? '#ef4444' : en.type === 'milestone' ? '#7c3aed' : '#2563eb';
       return '<div class="debrief-entry">' +
@@ -8535,6 +8690,55 @@ function parseDebriefSpeech(rawText, classId) {
   }
   window._debriefEntries = entries;
   showToast('Parsed ' + entries.length + ' client observation' + (entries.length > 1 ? 's' : '') + ' — review then save', 'info');
+}
+
+async function aiParseDebrief(rawText, classId) {
+  const c = getClass(classId);
+  const roster = (c.enrolled || []).map(sid => {
+    const s = getStudent(sid);
+    return s ? s.name : sid;
+  });
+  const system = 'You are an expert Pilates studio assistant. You convert a coach\'s spoken post-class debrief into structured observations.\n' +
+    'Return ONLY a JSON array, no markdown. Each element: {"studentName": string, "text": string, "tags": string[], "type": "progress"|"concern"|"milestone"|"note"}.\n' +
+    'studentName must match an enrolled student name. type: "progress" for positive notes, "concern" for struggles/pain, "milestone" for first-time achievements, "note" otherwise.\n' +
+    'tags use categories: Form, Core, Breathing, Injury, Motivation, Posture, Flexibility, Progress.';
+  const user = 'Class: ' + (c.name || c.type) + ' (' + c.type + ', ' + c.level + ')\n' +
+    'Enrolled students: ' + roster.join(', ') + '\n\n' +
+    'Coach debrief transcript:\n"""\n' + rawText + '\n"""\n\n' +
+    'Extract every observation that mentions an enrolled student. If none match, return [].';
+  const reply = await callChatLLM(system, user, { maxTokens: 900 });
+  const data = extractJSON(reply);
+  if (!data || !Array.isArray(data)) throw new Error('AI returned malformed JSON');
+  const nameMap = buildStudentNameMap(classId);
+  const entries = [];
+  data.forEach(en => {
+    const sid = nameMap[en.studentName];
+    if (!sid) return;
+    const s = getStudent(sid);
+    if (!s) return;
+    entries.push({
+      studentId: sid,
+      studentName: s.name,
+      text: String(en.text || '').trim(),
+      tags: (Array.isArray(en.tags) && en.tags.length) ? en.tags.map(String) : autoTagNote(en.text || ''),
+      type: ['progress', 'concern', 'milestone', 'note'].includes(en.type) ? en.type : 'note'
+    });
+  });
+  return entries;
+}
+
+async function parseDebriefSpeech(rawText, classId) {
+  let entries = null;
+  if (isAIEnabled()) {
+    try { entries = await aiParseDebrief(rawText, classId); }
+    catch (e) { entries = null; }
+  }
+  if (entries === null) {
+    entries = parseDebriefSpeechHeuristic(rawText, classId);
+    if (entries === null) return;
+    if (entries.length && isAIEnabled()) showToast('AI parsing unavailable — using built-in parser', 'info');
+  }
+  renderDebriefEntries(entries);
 }
 
 function classifyDebriefSentence(sentence, tags) {
@@ -9789,6 +9993,7 @@ function renderInstructorActiveClass(el) {
   startClassVoiceRecognition(activeClassId);
   renderVoiceStatusListening();
   if (activeStudentId) renderLiveNotes(activeClassId, activeStudentId);
+  if (isAIEnabled()) enrichPriorityCue(activeClassId);
 }
 
 // Build preset buttons for the new layout
@@ -10004,7 +10209,50 @@ function refreshLiveCueCard() {
   var card = document.getElementById('ls-cue-card');
   if (card && activeClassId) {
     card.innerHTML = buildLivePriorityCueHTML(activeClassId);
+    if (isAIEnabled()) enrichPriorityCue(activeClassId);
   }
+}
+
+// AI-powered priority cue enrichment (Feature: configured AI model refines the top cue)
+async function enrichPriorityCue(classId) {
+  if (!isAIEnabled()) return;
+  const c = getClass(classId);
+  if (!c) return;
+  try {
+    const notes = [];
+    (c.enrolled || []).forEach(sid => {
+      if (db.classNotes && db.classNotes[classId] && db.classNotes[classId][sid]) {
+        const s = getStudent(sid);
+        db.classNotes[classId][sid].forEach(n => notes.push({ student: s ? s.name : sid, text: n.text, tags: n.tags || [] }));
+      }
+    });
+    if (!notes.length) return;
+    const tagCounts = {};
+    notes.forEach(n => (n.tags || []).forEach(t => { tagCounts[t] = (tagCounts[t] || 0) + 1; }));
+    const topTag = Object.entries(tagCounts).sort((a, b) => b[1] - a[1])[0];
+    const system = 'You are a Pilates instructor AI coach in a live class. Based on the instructor\'s notes so far, identify the single most important thing to address and give ONE clear priority cue.\n' +
+      'Return ONLY a JSON object, no markdown: {"focus": string, "cue": string, "reason": string}.';
+    const user = JSON.stringify({
+      class: { name: c.name, type: c.type, level: c.level },
+      notes: notes.slice(-12),
+      topTag: topTag ? topTag[0] : ''
+    });
+    const reply = await callChatLLM(system, user, { maxTokens: 200 });
+    const obj = extractJSON(reply);
+    if (!obj || !obj.cue) return;
+    const card = document.getElementById('ls-cue-card');
+    if (!card) return;
+    const existing = card.querySelector('.ls-ai-insight');
+    if (existing) existing.remove();
+    const el = document.createElement('div');
+    el.className = 'ls-ai-insight';
+    el.style.cssText = 'margin-top:10px;padding:10px;border-radius:10px;background:rgba(0,194,168,0.08);border:1px solid rgba(0,194,168,0.25);font-size:0.72rem;color:var(--ls-text);line-height:1.5;';
+    el.innerHTML = '<div style="font-weight:700;color:var(--ls-accent);margin-bottom:4px;">' + ICONS['sparkles'] + ' AI Coach Insight</div>' +
+      (obj.focus ? '<div style="margin-bottom:4px;"><strong>Focus:</strong> ' + String(obj.focus).replace(/</g, '&lt;') + '</div>' : '') +
+      '<div style="margin-bottom:4px;"><strong>Cue:</strong> ' + String(obj.cue).replace(/</g, '&lt;') + '</div>' +
+      '<div style="opacity:0.8;"><strong>Why:</strong> ' + String(obj.reason || '').replace(/</g, '&lt;') + '</div>';
+    card.appendChild(el);
+  } catch (e) { /* keep heuristic cue */ }
 }
 
 function saveSessionNotesModal() {
@@ -12046,10 +12294,61 @@ function triggerJitCues(classId, studentId, noteText) {
       const note = getClassNotes(classId, studentId);
       renderJitCueList(classId, studentId, entry, noteText);
     }
+    if (isAIEnabled()) enrichNoteAfterSave(classId, studentId, noteText, null);
     return;
   }
   renderJitCueList(classId, studentId, entry, noteText);
   logAuditEvent('jit_cue_generated', { classId, studentId, cueKey: entry.key, text: entry.cue });
+  if (isAIEnabled()) enrichNoteAfterSave(classId, studentId, noteText, entry);
+}
+
+// AI-powered enrichment after a note is saved: refine the JIT corrective cue text
+// and improve auto-tags using the configured model, always falling back to heuristics.
+async function enrichNoteAfterSave(classId, studentId, noteText, fallbackEntry) {
+  if (!isAIEnabled()) return;
+
+  // 1. AI corrective cue refinement
+  try {
+    const s = getStudent(studentId);
+    const recent = getClassNotes(classId, studentId).slice(-4).map(n => n.text);
+    const system = 'You are a Pilates instructor AI coach. Given a coach observation about a student, write one specific corrective cue.\n' +
+      'Return ONLY a JSON object, no markdown: {"cue": string, "prep": string, "rationale": string}.';
+    const user = 'Student: ' + (s ? s.name : studentId) +
+      '\nObservation: ' + noteText +
+      '\nRecent notes: ' + JSON.stringify(recent) +
+      (fallbackEntry ? '\nReference cue (improve on it): ' + fallbackEntry.cue + ' | prep: ' + fallbackEntry.prep : '');
+    const reply = await callChatLLM(system, user, { maxTokens: 220 });
+    const obj = extractJSON(reply);
+    const listEl = document.getElementById('jit-cue-list');
+    if (obj && obj.cue && listEl && listEl.dataset.lastStudent === studentId) {
+      const aiEntry = {
+        key: fallbackEntry ? fallbackEntry.key : 'ai-cue',
+        cue: String(obj.cue),
+        prep: String(obj.prep || (fallbackEntry && fallbackEntry.prep) || 'Adjust to their level'),
+        rationale: String(obj.rationale || (fallbackEntry && fallbackEntry.rationale) || 'Generated from this session\'s observation.')
+      };
+      listEl.classList.add('jit-ai');
+      renderJitCueList(classId, studentId, aiEntry, noteText);
+    }
+  } catch (e) { /* keep heuristic cue */ }
+
+  // 2. AI auto-tag refinement for the just-saved note
+  try {
+    const notes = getClassNotes(classId, studentId);
+    const last = notes[notes.length - 1];
+    if (!last || last.text !== noteText) return;
+    const system = 'You are a Pilates note tagger. Tag the coach observation.\n' +
+      'Return ONLY a JSON array of tags from: Form, Core, Breathing, Injury, Motivation, Posture, Flexibility, Progress (use General if nothing fits). No markdown.';
+    const reply = await callChatLLM(system, 'Observation: ' + noteText, { maxTokens: 60 });
+    const data = extractJSON(reply);
+    if (!Array.isArray(data) || data.length === 0) return;
+    const allowed = ['Form', 'Core', 'Breathing', 'Injury', 'Motivation', 'Posture', 'Flexibility', 'Progress', 'General'];
+    const newTags = data.map(String).filter(t => allowed.includes(t));
+    if (newTags.length === 0) return;
+    last.tags = newTags;
+    saveDB();
+    renderLiveNotes(classId, studentId);
+  } catch (e) { /* keep heuristic tags */ }
 }
 
 function renderJitCueList(classId, studentId, entry, noteText) {
@@ -12768,6 +13067,79 @@ function renderEnhancedInsights(el) {
 // ============================
 // PRE-CLASS AI BRIEFING
 // ============================
+function renderBriefSections(brief) {
+  return '<div style="font-size:0.78rem;color:var(--text-dim);margin-bottom:1rem;">' + (brief.overview || '') + '</div>' +
+
+  '<div style="margin-bottom:0.75rem;">' +
+    '<div style="font-size:0.78rem;font-weight:600;color:var(--text-muted);margin-bottom:0.3rem;">⚠️ Risk Flags</div>' +
+    (brief.riskFlags || []).filter(r => r.studentId).map(r => `
+      <div style="display:flex;align-items:center;gap:0.4rem;padding:0.3rem 0;font-size:0.78rem;">
+        <span style="color:#ef4444;">⚠️</span>
+        <span><strong>${r.name}</strong> — ${r.issue}</span>
+      </div>
+    `).join('') +
+    (brief.riskFlags || []).filter(r => !r.studentId).map(r => `
+      <div style="font-size:0.75rem;color:var(--text-dim);font-style:italic;">${r.issue}</div>
+    `).join('') +
+  '</div>' +
+
+  '<div style="margin-bottom:0.75rem;">' +
+    '<div style="font-size:0.78rem;font-weight:600;color:var(--text-muted);margin-bottom:0.3rem;">🌟 Student Highlights</div>' +
+    (brief.studentHighlights || []).map(h => `
+      <div style="display:flex;align-items:flex-start;gap:0.4rem;padding:0.2rem 0;font-size:0.75rem;color:var(--text-dim);">
+        <span style="color:var(--green-bright);">✦</span>
+        <span>${h}</span>
+      </div>
+    `).join('') +
+  '</div>' +
+
+  '<div style="margin-bottom:0.75rem;">' +
+    '<div style="font-size:0.78rem;font-weight:600;color:var(--text-muted);margin-bottom:0.3rem;">💡 AI Recommendations</div>' +
+    (brief.recommendations || []).map(r => `
+      <div style="display:flex;align-items:flex-start;gap:0.4rem;padding:0.2rem 0;font-size:0.75rem;">
+        <span style="color:var(--cyan);">▶</span>
+        <span>${r}</span>
+      </div>
+    `).join('') +
+  '</div>';
+}
+
+async function enhancePreClassBrief(fallbackBrief, classId) {
+  const c = getClass(classId);
+  if (!c) return;
+  const statusEl = document.getElementById('pcc-ai-status');
+  if (statusEl) { statusEl.textContent = 'AI is enhancing this briefing…'; statusEl.style.color = '#9ca3af'; }
+  try {
+    const roster = (c.enrolled || []).map(sid => {
+      const s = getStudent(sid);
+      const perf = getStudentPerformance(sid);
+      return {
+        name: s ? s.name : sid,
+        level: s ? s.level : '',
+        perf: perf ? { trend: perf.trend, injuries: (perf.activeInjuries || []).map(i => i.bodyPart), focus: perf.focusAreas || [] } : null
+      };
+    });
+    const system = 'You are an expert Pilates studio AI assistant. Produce a concise pre-class coaching brief for the instructor.\n' +
+      'Return ONLY a JSON object, no markdown: {"overview": string, "riskFlags": [{"name": string, "issue": string}], "studentHighlights": string[], "recommendations": string[]}.';
+    const user = JSON.stringify({ class: { name: c.name, type: c.type, level: c.level, duration: c.duration, enrolled: c.enrolled.length + '/' + c.maxStudents }, roster: roster });
+    const reply = await callChatLLM(system, user, { maxTokens: 700 });
+    const b = extractJSON(reply);
+    if (!b || !b.overview) throw new Error('AI returned malformed brief');
+    const brief = {
+      overview: String(b.overview),
+      riskFlags: (Array.isArray(b.riskFlags) ? b.riskFlags : []).map(r => ({ studentId: (r && r.name) ? String(r.name) : '', name: (r && r.name) || '', issue: (r && r.issue) || '' })),
+      studentHighlights: (Array.isArray(b.studentHighlights) ? b.studentHighlights : []).map(String),
+      recommendations: (Array.isArray(b.recommendations) ? b.recommendations : []).map(String)
+    };
+    if (!brief.riskFlags.length) brief.riskFlags = [{ studentId: '', name: '', issue: 'No risk flags — all students on track' }];
+    const body = document.getElementById('pcc-brief-body');
+    if (body) body.innerHTML = renderBriefSections(brief);
+    if (statusEl) { statusEl.textContent = '✦ AI-generated briefing'; statusEl.style.color = '#16a34a'; }
+  } catch (e) {
+    if (statusEl) { statusEl.textContent = 'AI unavailable — showing built-in briefing'; statusEl.style.color = '#9ca3af'; }
+  }
+}
+
 function showPreClassBrief(classId) {
   const brief = generatePreClassBrief(classId);
   if (!brief) return;
@@ -12778,40 +13150,8 @@ function showPreClassBrief(classId) {
         <div style="font-size:1rem;font-weight:700;color:var(--text);">🧠 Pre-Class AI Briefing</div>
         <button onclick="closeModal()" style="background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--text-dim);">✕</button>
       </div>
-      <div style="font-size:0.78rem;color:var(--text-dim);margin-bottom:1rem;">${brief.overview}</div>
-
-      <div style="margin-bottom:0.75rem;">
-        <div style="font-size:0.78rem;font-weight:600;color:var(--text-muted);margin-bottom:0.3rem;">⚠️ Risk Flags</div>
-        ${brief.riskFlags.filter(r => r.studentId).map(r => `
-          <div style="display:flex;align-items:center;gap:0.4rem;padding:0.3rem 0;font-size:0.78rem;">
-            <span style="color:#ef4444;">⚠️</span>
-            <span><strong>${r.name}</strong> — ${r.issue}</span>
-          </div>
-        `).join('')}
-        ${brief.riskFlags.filter(r => !r.studentId).map(r => `
-          <div style="font-size:0.75rem;color:var(--text-dim);font-style:italic;">${r.issue}</div>
-        `).join('')}
-      </div>
-
-      <div style="margin-bottom:0.75rem;">
-        <div style="font-size:0.78rem;font-weight:600;color:var(--text-muted);margin-bottom:0.3rem;">🌟 Student Highlights</div>
-        ${brief.studentHighlights.map(h => `
-          <div style="display:flex;align-items:flex-start;gap:0.4rem;padding:0.2rem 0;font-size:0.75rem;color:var(--text-dim);">
-            <span style="color:var(--green-bright);">✦</span>
-            <span>${h}</span>
-          </div>
-        `).join('')}
-      </div>
-
-      <div style="margin-bottom:0.75rem;">
-        <div style="font-size:0.78rem;font-weight:600;color:var(--text-muted);margin-bottom:0.3rem;">💡 AI Recommendations</div>
-        ${brief.recommendations.map(r => `
-          <div style="display:flex;align-items:flex-start;gap:0.4rem;padding:0.2rem 0;font-size:0.75rem;">
-            <span style="color:var(--cyan);">▶</span>
-            <span>${r}</span>
-          </div>
-        `).join('')}
-      </div>
+      <div id="pcc-brief-body">${renderBriefSections(brief)}</div>
+      <div id="pcc-ai-status" style="font-size:0.72rem;color:var(--text-dim);margin-bottom:0.5rem;"></div>
 
       <div style="display:flex;gap:0.5rem;justify-content:flex-end;margin-top:0.5rem;">
         <button class="btn btn-primary" onclick="closeModal();safeStartClass('${classId}')" style="font-size:0.78rem;">▶ Start Class</button>
@@ -12819,6 +13159,7 @@ function showPreClassBrief(classId) {
       </div>
     </div>
   `);
+  if (isAIEnabled()) enhancePreClassBrief(brief, classId);
 }
 
 // ============================
@@ -12884,7 +13225,35 @@ addAISuggestion = function(classId, studentId) {
   el.innerHTML = '🤖 ' + smart.text;
   container.appendChild(el);
   setTimeout(() => { if (el.parentNode) el.remove(); }, 8000);
+  if (isAIEnabled()) enrichAISuggestion(c.id, sid, container);
 };
+
+// AI-powered live suggestion using the configured model (fallback: none — heuristic already shown)
+async function enrichAISuggestion(classId, studentId, container) {
+  const s = getStudent(studentId);
+  const history = [];
+  if (db.classNotes) {
+    Object.keys(db.classNotes).forEach(cid => {
+      if (db.classNotes[cid] && db.classNotes[cid][studentId]) {
+        db.classNotes[cid][studentId].forEach(n => history.push(n.text));
+      }
+    });
+  }
+  const system = 'You are a Pilates instructor AI coach in a live class. Given a student profile, write ONE short actionable suggestion (under 25 words).\n' +
+    'Return ONLY the suggestion text, no JSON, no quotes, no markdown.';
+  const user = 'Student: ' + (s ? s.name + ' (' + s.level + ')' : studentId) + '\nRecent history: ' + JSON.stringify(history.slice(-8));
+  try {
+    const text = await callChatLLM(system, user, { maxTokens: 80 });
+    const clean = (text || '').trim().replace(/^"|"$/g, '');
+    if (!clean) return;
+    const el = document.createElement('div');
+    el.className = 'dp-insight focus ls-ai-suggestion';
+    el.style.cssText = 'animation:panelSlideIn 0.3s ease;margin-bottom:0.2rem;';
+    el.innerHTML = '🤖 <strong>AI:</strong> ' + clean.replace(/</g, '&lt;');
+    container.appendChild(el);
+    setTimeout(() => { if (el.parentNode) el.remove(); }, 8000);
+  } catch (e) { /* heuristic suggestion already shown */ }
+}
 
 // ============================
 // PATCH: Auto-tag notes on save
