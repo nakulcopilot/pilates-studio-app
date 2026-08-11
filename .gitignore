@@ -26,3 +26,20 @@ pnpm-debug.log*
 coverage/
 .vercel
 Thumbs.db
+
+# Local validation / credentials (never commit these)
+.pgdata/
+.pgdata-*/
+CREDENTIALS.txt
+scripts/node_modules/
+scripts/accounts.json
+scripts/supabase-conn.mjs
+scripts/inspect-live.mjs
+scripts/apply-live.mjs
+scripts/verify-live.mjs
+scripts/verify-users.mjs
+scripts/verify-passwords.mjs
+scripts/reset-live.mjs
+scripts/cleanup-users.mjs
+scripts/probe-auth*.mjs
+scripts/verify-staff-live.mjs

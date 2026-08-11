@@ -1,0 +1,17 @@
+{
+  "name": "pilates-studio-scripts",
+  "private": true,
+  "type": "module",
+  "description": "Seed/validation tooling for the Pilates Studio App live deployment.",
+  "scripts": {
+    "extract-seed": "node extract-seed.mjs",
+    "validate": "node validate-local.mjs",
+    "seed-users": "node seed-users-sql.mjs",
+    "apply-live": "node apply-live.mjs",
+    "verify-live": "node verify-live.mjs"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0",
+    "embedded-postgres": "18.4.0-beta.17"
+  }
+}
