@@ -43,3 +43,6 @@ scripts/reset-live.mjs
 scripts/cleanup-users.mjs
 scripts/probe-auth*.mjs
 scripts/verify-staff-live.mjs
+
+# Unusable source photos (HEIC has no browser codec)
+*.heic

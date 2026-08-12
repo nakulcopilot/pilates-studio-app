@@ -5,6 +5,12 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { DashData } from "@/lib/data";
 import { Badge, ClassTypeTag, EmptyState, SectionTitle, StatCard } from "./ui";
 import { formatCurrency, formatDate, getGreeting, timeLabel } from "@/lib/utils";
+import {
+  IconCalendar,
+  IconCheckSquare,
+  IconMilestone,
+  IconStar,
+} from "@/components/icons";
 
 export function StudentDashboardView({ data }: { data: DashData }) {
   const profile = data.profile;
@@ -34,13 +40,13 @@ export function StudentDashboardView({ data }: { data: DashData }) {
   return (
     <div className="space-y-6">
       <SectionTitle>
-        {greeting.emoji} {greeting.text}, {student.name.split(" ")[0]}
+        {greeting}, {student.name.split(" ")[0]}
       </SectionTitle>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="Level" value={student.level} icon="🏅" accent="#7c3aed" />
-        <StatCard label="Upcoming classes" value={upcoming.length} icon="📅" accent="#16a34a" />
-        <StatCard label="Attendance" value={`${pct}%`} icon="✅" accent="#2563eb" />
-        <StatCard label="Milestones" value={myMilestones.length} icon="🏆" accent="#f59e0b" />
+        <StatCard label="Level" value={student.level} icon={<IconMilestone />} accent="#8f3153" />
+        <StatCard label="Upcoming classes" value={upcoming.length} icon={<IconCalendar />} accent="#2e7d5b" />
+        <StatCard label="Attendance" value={`${pct}%`} icon={<IconCheckSquare />} accent="#3b5f9e" />
+        <StatCard label="Milestones" value={myMilestones.length} icon={<IconStar />} accent="#b58a63" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

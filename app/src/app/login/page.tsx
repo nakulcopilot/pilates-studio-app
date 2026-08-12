@@ -1,16 +1,49 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
+import Image from "next/image";
 import { createClient } from "@/lib/supabase/browser";
 import type { Role } from "@/lib/types";
+import { IconArrowRight, IconChart, IconEye, IconEyeOff, IconShield, IconSparkles } from "@/components/icons";
 
-const DEMO_ACCOUNTS: Record<Role, { email: string; label: string }> = {
-  admin: { email: "admin@pilates-studio.app", label: "Admin" },
-  instructor: { email: "neelamr@zenpilates.com", label: "Instructor" },
-  student: { email: "neha@email.com", label: "Student" },
+const DEMO_ACCOUNTS: Record<Role, { email: string; label: string; loginId: string }> = {
+  admin: { email: "admin@pilates-studio.app", label: "Admin", loginId: "admin" },
+  instructor: { email: "neelamr@zenpilates.com", label: "Instructor", loginId: "neelamr" },
+  student: { email: "neha@email.com", label: "Student", loginId: "s1" },
 };
+
+const LOGIN_IDS: Record<string, string> = {
+  admin: "admin@pilates-studio.app",
+  neelamr: "neelamr@zenpilates.com",
+  s1: "neha@email.com",
+  s2: "kavita@email.com",
+  s3: "meera@email.com",
+  s4: "rohit@email.com",
+  s5: "ananya@email.com",
+  s6: "priyam@email.com",
+  s7: "amitp@email.com",
+  s8: "sneha@email.com",
+  s9: "neelam@email.com",
+};
+
+function resolveEmail(value: string): string {
+  const v = value.trim();
+  if (v.includes("@")) return v;
+  return LOGIN_IDS[v] ?? v;
+}
+
+function BrandMark({ size = 44 }: { size?: number }) {
+  return (
+    <span className="logo-mark" style={{ width: size, height: size, fontSize: size * 0.42 }}>
+      <svg width={size * 0.5} height={size * 0.5} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" aria-hidden>
+        <path d="M12 20s7-3.5 7-9V5.5L12 3 5 5.5V11c0 5.5 7 9 7 9Z" />
+        <path d="M12 20V8.5M12 8.5C10.5 7.5 8.8 7.5 7.5 8M12 8.5c1.5-1 3.2-1 4.5-.5" />
+      </svg>
+    </span>
+  );
+}
 
 function LoginForm() {
   const router = useRouter();
@@ -24,9 +57,10 @@ function LoginForm() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    setEmail(DEMO_ACCOUNTS[role].email);
-  }, [role]);
+  const selectRole = (r: Role) => {
+    setRole(r);
+    setEmail(DEMO_ACCOUNTS[r].email);
+  };
 
   const handleSubmit = useCallback(
     async (e: React.FormEvent) => {
@@ -35,7 +69,7 @@ function LoginForm() {
       setLoading(true);
       const supabase = createClient();
       const { error } = await supabase.auth.signInWithPassword({
-        email: email.trim(),
+        email: resolveEmail(email.trim()),
         password,
       });
       if (error) {
@@ -52,44 +86,55 @@ function LoginForm() {
   return (
     <div className="auth-shell">
       <div className="auth-brand">
+        <Image
+          src="/neelam/neelam-hero.jpg"
+          alt="Neelam — Pilates instructor"
+          className="auth-brand-photo"
+          fill
+          priority
+          sizes="55vw"
+          unoptimized
+        />
+        <div className="auth-logo">
+          <BrandMark />
+          <span className="auth-brand-name">Pilates With Neelam</span>
+        </div>
         <div className="auth-brand-inner">
-          <div className="auth-logo">🧘</div>
-          <div className="auth-brand-name">
-            Pilates<span>Studio</span>
-          </div>
-          <h1>AI-Enhanced Pilates Studio</h1>
+          <h1>Strength begins with mindful movement.</h1>
           <p>
-            Movement intelligence powered by instructor observations. No
-            cameras. No wearables. Your studio, supercharged.
+            Private and small-group pilates guided by Neelam — every class
+            tailored to your body, your goals, and your rhythm.
           </p>
           <div className="auth-features">
-            <div className="auth-feature">
-              <span>🤖</span> AI Cues
-            </div>
-            <div className="auth-feature">
-              <span>📊</span> Progress
-            </div>
-            <div className="auth-feature">
-              <span>🔒</span> Private
-            </div>
+            <span className="auth-feature">
+              <IconSparkles size={15} /> Personalized cues
+            </span>
+            <span className="auth-feature">
+              <IconChart size={15} /> Progress tracking
+            </span>
+            <span className="auth-feature">
+              <IconShield size={15} /> Your privacy
+            </span>
           </div>
           <div className="auth-quote">
-            &quot;AI reinforces your expertise — it never replaces it.&quot;
+            &quot;Pilates is the art of controlled motion. Let me guide your practice.&quot;
           </div>
         </div>
       </div>
       <div className="auth-main">
         <div className="auth-card">
           <div className="auth-mobile-logo">
-            <span className="abox">🧘</span> Pilates Studio
-          </div>
-          <div className="auth-live-badge">
-            <span className="dot" />
-            Live — Supabase
+            <span className="abox">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden>
+                <path d="M12 20s7-3.5 7-9V5.5L12 3 5 5.5V11c0 5.5 7 9 7 9Z" />
+              </svg>
+            </span>
+            Pilates With Neelam
           </div>
           <div className="auth-card-head">
+            <div className="eyebrow">Studio workspace</div>
             <h2>Welcome back</h2>
-            <p>Sign in to continue to your workspace</p>
+            <p>Sign in to continue to your studio</p>
           </div>
           <div className="auth-tabs">
             {(Object.keys(DEMO_ACCOUNTS) as Role[]).map((r) => (
@@ -97,7 +142,7 @@ function LoginForm() {
                 key={r}
                 type="button"
                 className={`auth-tab ${role === r ? "active" : ""}`}
-                onClick={() => setRole(r)}
+                onClick={() => selectRole(r)}
               >
                 {DEMO_ACCOUNTS[r].label}
               </button>
@@ -105,12 +150,12 @@ function LoginForm() {
           </div>
           <form onSubmit={handleSubmit} noValidate>
             <div className="auth-field">
-              <label htmlFor="email">Email</label>
+              <label htmlFor="email">Email or username</label>
               <input
                 id="email"
-                type="email"
+                type="text"
                 autoComplete="username"
-                placeholder="you@example.com"
+                placeholder={`${DEMO_ACCOUNTS[role].loginId} or ${DEMO_ACCOUNTS[role].email}`}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -130,21 +175,40 @@ function LoginForm() {
                   type="button"
                   className="auth-pw-toggle"
                   onClick={() => setShowPw((s) => !s)}
-                  title="Show password"
-                  aria-label="Show password"
+                  title={showPw ? "Hide password" : "Show password"}
+                  aria-label={showPw ? "Hide password" : "Show password"}
                 >
-                  {showPw ? "🙈" : "👁"}
+                  {showPw ? <IconEyeOff size={17} /> : <IconEye size={17} />}
                 </button>
               </div>
             </div>
             {error && <div className="auth-error">{error}</div>}
             <button className="auth-submit" type="submit" disabled={loading}>
-              {loading ? "Signing in…" : <>Sign In <span>→</span></>}
+              {loading ? (
+                <span className="login-loading">
+                  <span className="spinner" style={{ width: 16, height: 16 }} /> Signing in…
+                </span>
+              ) : (
+                <>
+                  Sign In <IconArrowRight size={16} />
+                </>
+              )}
             </button>
           </form>
-          <div className="auth-footer-note">
-            Live build — data stored in PostgreSQL (Supabase). Demo credentials
-            for each role are pre-filled; ask for the passwords.
+          <div className="auth-demo">
+            <div className="auth-demo-title">Demo credentials</div>
+            <div className="auth-demo-row">
+              <span>Admin</span> <code>admin</code>
+            </div>
+            <div className="auth-demo-row">
+              <span>Instructor</span> <code>neelamr</code>
+            </div>
+            <div className="auth-demo-row">
+              <span>Students</span> <code>s1</code> … <code>s9</code>
+            </div>
+            <div className="auth-demo-note">
+              Sign in with your username or email. Passwords are shared by your studio.
+            </div>
           </div>
         </div>
       </div>

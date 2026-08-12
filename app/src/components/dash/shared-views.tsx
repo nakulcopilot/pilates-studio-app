@@ -97,8 +97,8 @@ export function AccountView({
       )}
 
       <div className="card text-xs text-gray-500">
-        Signed in via Supabase Auth. Data is read/written to PostgreSQL with row
-        level security enforced per role.
+        You are signed in to the Pilates With Neelam studio workspace. Your data
+        is kept private and is only used to manage your studio.
       </div>
     </div>
   );

@@ -39,9 +39,18 @@ export function timeLabel(time: string): string {
   return m ? `${hr}:${String(m).padStart(2, "0")} ${period}` : `${hr} ${period}`;
 }
 
-export function getGreeting(): { text: string; emoji: string } {
+export function getGreeting(): string {
   const h = new Date().getHours();
-  if (h < 12) return { text: "Good Morning", emoji: "🌅" };
-  if (h < 17) return { text: "Good Afternoon", emoji: "☀️" };
-  return { text: "Good Evening", emoji: "🌙" };
+  if (h < 12) return "Good Morning";
+  if (h < 17) return "Good Afternoon";
+  return "Good Evening";
+}
+
+export const BRAND_NAME = "Pilates With Neelam";
+
+export function brandName(settingsData?: { studioName?: string }): string {
+  const raw = settingsData?.studioName?.trim() ?? "";
+  const cleaned = raw.replace(/\s*Studio\s*$/i, "").trim();
+  if (!cleaned || cleaned.toLowerCase() === "pilates") return BRAND_NAME;
+  return cleaned;
 }

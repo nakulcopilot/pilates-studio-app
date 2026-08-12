@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Pilates Studio",
+  title: "Pilates With Neelam",
   description:
-    "AI-Enhanced Pilates Studio — movement intelligence powered by instructor observations.",
+    "Private and small-group pilates guided by Neelam — tailored classes, personal attention, and progress that grows with you.",
 };
 
 export default function RootLayout({

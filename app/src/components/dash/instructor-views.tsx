@@ -14,6 +14,12 @@ import {
   StatCard,
 } from "./ui";
 import { formatDate, timeLabel } from "@/lib/utils";
+import {
+  IconCalendar,
+  IconCheckSquare,
+  IconClock,
+  IconUsers,
+} from "@/components/icons";
 
 export function InstructorDashboardView({
   data,
@@ -33,10 +39,10 @@ export function InstructorDashboardView({
     <div className="space-y-6">
       <SectionTitle>Instructor Overview</SectionTitle>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="My classes" value={active.length} icon="📚" accent="#7c3aed" />
-        <StatCard label="Classes today" value={todays.length} icon="📅" accent="#16a34a" />
-        <StatCard label="My students" value={rosterIds.size} icon="🧘" accent="#2563eb" />
-        <StatCard label="Attendance rows" value={data.attendance.length} icon="✅" accent="#f59e0b" />
+        <StatCard label="My classes" value={active.length} icon={<IconCalendar />} accent="#8f3153" />
+        <StatCard label="Classes today" value={todays.length} icon={<IconClock />} accent="#2e7d5b" />
+        <StatCard label="My students" value={rosterIds.size} icon={<IconUsers />} accent="#3b5f9e" />
+        <StatCard label="Attendance rows" value={data.attendance.length} icon={<IconCheckSquare />} accent="#b58a63" />
       </div>
 
       <div className="card">
@@ -269,7 +275,6 @@ export function InstructorAttendanceView({
   data: DashData;
   supabase: SupabaseClient;
 }) {
-  const today = new Date().toISOString().split("T")[0];
   const [classId, setClassId] = useState("");
   const [marks, setMarks] = useState<Record<string, AttendanceStatus>>({});
   const [saving, setSaving] = useState(false);

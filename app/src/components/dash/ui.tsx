@@ -13,10 +13,10 @@ export function StatCard({
   accent?: string;
 }) {
   return (
-    <div className="stat-card flex items-center gap-3">
+    <div className="stat-card">
       {icon && (
         <div
-          className="w-10 h-10 rounded-xl flex items-center justify-center text-lg shrink-0"
+          className="stat-icon"
           style={{ background: `${accent}1a`, color: accent }}
         >
           {icon}
@@ -55,7 +55,10 @@ export function Badge({
 export function EmptyState({ message }: { message: string }) {
   return (
     <div className="card flex flex-col items-center justify-center py-10 text-center">
-      <div className="text-3xl mb-2">🗂️</div>
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#c7b9c4" strokeWidth="1.6" strokeLinecap="round" className="mb-2" aria-hidden>
+        <rect x="3" y="4" width="18" height="16" rx="2" />
+        <path d="M3 10h18M9 15h3" />
+      </svg>
       <p className="text-sm text-gray-500">{message}</p>
     </div>
   );
@@ -104,7 +107,7 @@ export function Avatar({
         width: size,
         height: size,
         fontSize: size * 0.4,
-        background: "linear-gradient(135deg, #a78bfa, #7c3aed)",
+        background: "linear-gradient(135deg, #b05877, #8f3153)",
       }}
       aria-hidden="true"
     >

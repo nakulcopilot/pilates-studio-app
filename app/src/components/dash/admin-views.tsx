@@ -12,6 +12,16 @@ import {
   StatCard,
 } from "./ui";
 import { formatCurrency, formatDate, timeLabel } from "@/lib/utils";
+import {
+  IconActivity,
+  IconCalendar,
+  IconChart,
+  IconCheckSquare,
+  IconClock,
+  IconMilestone,
+  IconPencil,
+  IconUsers,
+} from "@/components/icons";
 
 export function AdminDashboardView({ data }: { data: DashData }) {
   const today = new Date().toISOString().split("T")[0];
@@ -29,10 +39,10 @@ export function AdminDashboardView({ data }: { data: DashData }) {
     <div className="space-y-6">
       <SectionTitle>Studio Overview</SectionTitle>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="Students" value={activeStudents} icon="🧘" accent="#7c3aed" />
-        <StatCard label="Instructors" value={activeInstructors} icon="🎓" accent="#2563eb" />
-        <StatCard label="Classes today" value={todaysClasses.length} icon="📅" accent="#16a34a" />
-        <StatCard label="Enrollments" value={totalEnrollments} icon="📚" accent="#f59e0b" />
+        <StatCard label="Students" value={activeStudents} icon={<IconUsers />} accent="#8f3153" />
+        <StatCard label="Instructors" value={activeInstructors} icon={<IconActivity />} accent="#3b5f9e" />
+        <StatCard label="Classes today" value={todaysClasses.length} icon={<IconCalendar />} accent="#2e7d5b" />
+        <StatCard label="Enrollments" value={totalEnrollments} icon={<IconChart />} accent="#b58a63" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -185,8 +195,8 @@ export function AdminSettingsView({ data }: { data: DashData }) {
         </div>
       </div>
       <div className="text-xs text-gray-400">
-        Config is stored as a single JSONB row in{" "}
-        <code>studio_settings</code>. Editing is a write-through to Postgres.
+        Studio configuration is saved automatically and applies to every role
+        in your workspace.
       </div>
     </div>
   );
@@ -310,10 +320,10 @@ export function AdminReportsView({ data }: { data: DashData }) {
     <div className="space-y-6">
       <SectionTitle>Reports</SectionTitle>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="Classes held" value={past.length} icon="🗓️" accent="#7c3aed" />
-        <StatCard label="Attendance rows" value={data.attendance.length} icon="✅" accent="#16a34a" />
-        <StatCard label="Class notes" value={data.classNotes.length} icon="📝" accent="#2563eb" />
-        <StatCard label="Milestones" value={data.milestones.length} icon="🏅" accent="#f59e0b" />
+        <StatCard label="Classes held" value={past.length} icon={<IconClock />} accent="#8f3153" />
+        <StatCard label="Attendance rows" value={data.attendance.length} icon={<IconCheckSquare />} accent="#2e7d5b" />
+        <StatCard label="Class notes" value={data.classNotes.length} icon={<IconPencil />} accent="#3b5f9e" />
+        <StatCard label="Milestones" value={data.milestones.length} icon={<IconMilestone />} accent="#b58a63" />
       </div>
 
       <div className="card">
