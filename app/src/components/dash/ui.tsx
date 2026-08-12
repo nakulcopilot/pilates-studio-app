@@ -5,7 +5,7 @@ export function StatCard({
   label,
   value,
   icon,
-  accent = "#7c3aed",
+  accent = "#c9975a",
 }: {
   label: string;
   value: string | number;
@@ -38,12 +38,12 @@ export function Badge({
   tone?: "neutral" | "green" | "red" | "amber" | "purple" | "blue";
 }) {
   const tones: Record<string, { background: string; color: string }> = {
-    neutral: { background: "#f3f4f6", color: "#4b5563" },
-    green: { background: "#ecfdf5", color: "#047857" },
-    red: { background: "#fef2f2", color: "#b91c1c" },
-    amber: { background: "#fffbeb", color: "#b45309" },
-    purple: { background: "#f5f3ff", color: "#6d28d9" },
-    blue: { background: "#eff6ff", color: "#1d4ed8" },
+    neutral: { background: "rgba(255,255,255,0.08)", color: "#d9cfc4" },
+    green: { background: "rgba(127,191,154,0.14)", color: "#8fd3ab" },
+    red: { background: "rgba(224,122,122,0.14)", color: "#f0a3a3" },
+    amber: { background: "rgba(212,162,89,0.16)", color: "#e8c184" },
+    purple: { background: "rgba(167,139,250,0.14)", color: "#c4b5fd" },
+    blue: { background: "rgba(143,168,224,0.16)", color: "#a7bceb" },
   };
   return (
     <span className="badge" style={tones[tone]}>
@@ -59,7 +59,7 @@ export function EmptyState({ message }: { message: string }) {
         <rect x="3" y="4" width="18" height="16" rx="2" />
         <path d="M3 10h18M9 15h3" />
       </svg>
-      <p className="text-sm text-gray-500">{message}</p>
+      <p className="text-sm text-[#b8a99c]">{message}</p>
     </div>
   );
 }
@@ -73,7 +73,7 @@ export function SectionTitle({
 }) {
   return (
     <div className="flex items-center justify-between gap-3 mb-4">
-      <h3 className="text-base font-bold text-[#1a1a2e] m-0">{children}</h3>
+      <h3 className="text-base font-bold text-[#f0e6dd] m-0">{children}</h3>
       {right}
     </div>
   );
@@ -107,7 +107,7 @@ export function Avatar({
         width: size,
         height: size,
         fontSize: size * 0.4,
-        background: "linear-gradient(135deg, #b05877, #8f3153)",
+        background: "linear-gradient(135deg, #c9975a, #9a7338)",
       }}
       aria-hidden="true"
     >

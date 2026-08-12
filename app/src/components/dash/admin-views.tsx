@@ -39,7 +39,7 @@ export function AdminDashboardView({ data }: { data: DashData }) {
     <div className="space-y-6">
       <SectionTitle>Studio Overview</SectionTitle>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="Students" value={activeStudents} icon={<IconUsers />} accent="#8f3153" />
+        <StatCard label="Students" value={activeStudents} icon={<IconUsers />} accent="#c9975a" />
         <StatCard label="Instructors" value={activeInstructors} icon={<IconActivity />} accent="#3b5f9e" />
         <StatCard label="Classes today" value={todaysClasses.length} icon={<IconCalendar />} accent="#2e7d5b" />
         <StatCard label="Enrollments" value={totalEnrollments} icon={<IconChart />} accent="#b58a63" />
@@ -61,14 +61,14 @@ export function AdminDashboardView({ data }: { data: DashData }) {
                   return (
                     <div
                       key={c.id}
-                      className="flex items-center gap-3 rounded-lg border border-gray-100 px-3 py-2"
+                      className="flex items-center gap-3 rounded-lg border border-[#2a2420] px-3 py-2"
                     >
                       <ClassTypeTag type={c.type} />
                       <div className="min-w-0 flex-1">
                         <div className="text-sm font-semibold text-[#1a1a2e] truncate">
                           {formatDate(c.date)} · {timeLabel(c.time)}
                         </div>
-                        <div className="text-xs text-gray-500">
+                        <div className="text-xs text-[#b8a99c]">
                           {inst?.name ?? "Unassigned"} · {c.enrolled.length}/{c.max_students}
                         </div>
                       </div>
@@ -86,14 +86,14 @@ export function AdminDashboardView({ data }: { data: DashData }) {
             {data.instructors.map((i) => (
               <div
                 key={i.id}
-                className="flex items-center gap-3 rounded-lg border border-gray-100 px-3 py-2"
+                className="flex items-center gap-3 rounded-lg border border-[#2a2420] px-3 py-2"
               >
                 <Avatar name={i.name} src={i.photo} size={34} />
                 <div className="min-w-0 flex-1">
                   <div className="text-sm font-semibold text-[#1a1a2e] truncate">
                     {i.name}
                   </div>
-                  <div className="text-xs text-gray-500 truncate">
+                  <div className="text-xs text-[#b8a99c] truncate">
                     {i.specialization || "—"}
                   </div>
                 </div>
@@ -120,14 +120,14 @@ export function AdminSettingsView({ data }: { data: DashData }) {
           <SectionTitle>Branding</SectionTitle>
           <dl className="grid grid-cols-2 gap-4 m-0 text-sm">
             <div>
-              <dt className="text-xs font-bold uppercase text-gray-400">Studio name</dt>
+              <dt className="text-xs font-bold uppercase text-[#85776c]">Studio name</dt>
               <dd className="m-0 mt-1 font-semibold">{s.studioName}</dd>
             </div>
             <div>
-              <dt className="text-xs font-bold uppercase text-gray-400">Theme</dt>
+              <dt className="text-xs font-bold uppercase text-[#85776c]">Theme</dt>
               <dd className="m-0 mt-1 flex items-center gap-2">
                 <span
-                  className="inline-block w-4 h-4 rounded-full border border-gray-200"
+                  className="inline-block w-4 h-4 rounded-full border border-[#2a2420]"
                   style={{ background: s.colorTheme }}
                 />
                 {s.colorTheme}
@@ -140,7 +140,7 @@ export function AdminSettingsView({ data }: { data: DashData }) {
           <SectionTitle>Classes</SectionTitle>
           <dl className="grid grid-cols-2 gap-4 m-0 text-sm">
             <div>
-              <dt className="text-xs font-bold uppercase text-gray-400">Class types</dt>
+              <dt className="text-xs font-bold uppercase text-[#85776c]">Class types</dt>
               <dd className="m-0 mt-1">
                 {s.classTypes.mat ? "Mat" : ""}
                 {s.classTypes.mat && s.classTypes.reformer ? " + " : ""}
@@ -148,15 +148,15 @@ export function AdminSettingsView({ data }: { data: DashData }) {
               </dd>
             </div>
             <div>
-              <dt className="text-xs font-bold uppercase text-gray-400">Default duration</dt>
+              <dt className="text-xs font-bold uppercase text-[#85776c]">Default duration</dt>
               <dd className="m-0 mt-1">{s.defaultDuration} min</dd>
             </div>
             <div>
-              <dt className="text-xs font-bold uppercase text-gray-400">Demo sessions</dt>
+              <dt className="text-xs font-bold uppercase text-[#85776c]">Demo sessions</dt>
               <dd className="m-0 mt-1">{s.demoSessions} per student</dd>
             </div>
             <div>
-              <dt className="text-xs font-bold uppercase text-gray-400">Instructor</dt>
+              <dt className="text-xs font-bold uppercase text-[#85776c]">Instructor</dt>
               <dd className="m-0 mt-1">{s.instructorName}</dd>
             </div>
           </dl>
@@ -166,11 +166,11 @@ export function AdminSettingsView({ data }: { data: DashData }) {
           <SectionTitle>Payments</SectionTitle>
           <dl className="grid grid-cols-2 gap-4 m-0 text-sm">
             <div>
-              <dt className="text-xs font-bold uppercase text-gray-400">Currency</dt>
+              <dt className="text-xs font-bold uppercase text-[#85776c]">Currency</dt>
               <dd className="m-0 mt-1">{s.currency}</dd>
             </div>
             <div>
-              <dt className="text-xs font-bold uppercase text-gray-400">Accepted</dt>
+              <dt className="text-xs font-bold uppercase text-[#85776c]">Accepted</dt>
               <dd className="m-0 mt-1">
                 {["Cash", "UPI", "Card"]
                   .filter((_, idx) => ["cash", "upi", "card"][idx] && Object.values(s.paymentTypes)[idx])
@@ -184,17 +184,17 @@ export function AdminSettingsView({ data }: { data: DashData }) {
           <SectionTitle>AI Assistant</SectionTitle>
           <dl className="grid grid-cols-2 gap-4 m-0 text-sm">
             <div>
-              <dt className="text-xs font-bold uppercase text-gray-400">Enabled</dt>
+              <dt className="text-xs font-bold uppercase text-[#85776c]">Enabled</dt>
               <dd className="m-0 mt-1">{s.ai.enabled ? "Yes" : "No"}</dd>
             </div>
             <div>
-              <dt className="text-xs font-bold uppercase text-gray-400">Model</dt>
+              <dt className="text-xs font-bold uppercase text-[#85776c]">Model</dt>
               <dd className="m-0 mt-1">{s.ai.model}</dd>
             </div>
           </dl>
         </div>
       </div>
-      <div className="text-xs text-gray-400">
+      <div className="text-xs text-[#85776c]">
         Studio configuration is saved automatically and applies to every role
         in your workspace.
       </div>
@@ -238,7 +238,7 @@ export function AdminInstructorsView({
                     <Avatar name={i.name} src={i.photo} size={34} />
                     <div>
                       <div className="font-semibold">{i.name}</div>
-                      <div className="text-xs text-gray-500">{i.email || "—"}</div>
+                      <div className="text-xs text-[#b8a99c]">{i.email || "—"}</div>
                     </div>
                   </div>
                 </td>
@@ -254,7 +254,7 @@ export function AdminInstructorsView({
                   {i.login_id ? (
                     <code>{i.login_id}</code>
                   ) : (
-                    <span className="text-gray-400">roster only</span>
+                    <span className="text-[#85776c]">roster only</span>
                   )}
                 </td>
                 <td>
@@ -282,13 +282,13 @@ export function AdminPackagesView({ data }: { data: DashData }) {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {packages.map((p) => (
           <div key={p.id} className="card text-center">
-            <div className="text-xs font-bold uppercase tracking-wide text-gray-400">
+            <div className="text-xs font-bold uppercase tracking-wide text-[#85776c]">
               {p.name}
             </div>
             <div className="text-2xl font-extrabold text-[#1a1a2e] mt-2">
               {formatCurrency(p.price, data.settings?.data.currency)}
             </div>
-            <div className="text-sm text-gray-500 mt-1">
+            <div className="text-sm text-[#b8a99c] mt-1">
               {p.classes === 999 ? "Unlimited classes" : `${p.classes} classes`}
             </div>
           </div>
@@ -320,7 +320,7 @@ export function AdminReportsView({ data }: { data: DashData }) {
     <div className="space-y-6">
       <SectionTitle>Reports</SectionTitle>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="Classes held" value={past.length} icon={<IconClock />} accent="#8f3153" />
+        <StatCard label="Classes held" value={past.length} icon={<IconClock />} accent="#c9975a" />
         <StatCard label="Attendance rows" value={data.attendance.length} icon={<IconCheckSquare />} accent="#2e7d5b" />
         <StatCard label="Class notes" value={data.classNotes.length} icon={<IconPencil />} accent="#3b5f9e" />
         <StatCard label="Milestones" value={data.milestones.length} icon={<IconMilestone />} accent="#b58a63" />

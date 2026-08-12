@@ -34,7 +34,7 @@ export function AccountView({
           <div className="font-bold text-lg text-[#1a1a2e] truncate">
             {profile.display_name}
           </div>
-          <div className="text-sm text-gray-500">{profile.email}</div>
+          <div className="text-sm text-[#b8a99c]">{profile.email}</div>
           <span className="role-badge mt-1 inline-flex" style={{ background: "#f5f3ff", color: "#6d28d9" }}>
             {profile.role}
           </span>
@@ -49,19 +49,19 @@ export function AccountView({
           <SectionTitle>Instructor Profile</SectionTitle>
           <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4 m-0 text-sm">
             <div>
-              <dt className="text-xs font-bold uppercase text-gray-400">Name</dt>
+              <dt className="text-xs font-bold uppercase text-[#85776c]">Name</dt>
               <dd className="m-0 mt-1">{linked.name}</dd>
             </div>
             <div>
-              <dt className="text-xs font-bold uppercase text-gray-400">Specialization</dt>
+              <dt className="text-xs font-bold uppercase text-[#85776c]">Specialization</dt>
               <dd className="m-0 mt-1">{linked.specialization || "—"}</dd>
             </div>
             <div>
-              <dt className="text-xs font-bold uppercase text-gray-400">Experience</dt>
+              <dt className="text-xs font-bold uppercase text-[#85776c]">Experience</dt>
               <dd className="m-0 mt-1">{linked.experience} years</dd>
             </div>
             <div>
-              <dt className="text-xs font-bold uppercase text-gray-400">Rating</dt>
+              <dt className="text-xs font-bold uppercase text-[#85776c]">Rating</dt>
               <dd className="m-0 mt-1">★ {Number(linked.rating).toFixed(1)}</dd>
             </div>
           </dl>
@@ -73,30 +73,30 @@ export function AccountView({
           <SectionTitle>Student Profile</SectionTitle>
           <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4 m-0 text-sm">
             <div>
-              <dt className="text-xs font-bold uppercase text-gray-400">Name</dt>
+              <dt className="text-xs font-bold uppercase text-[#85776c]">Name</dt>
               <dd className="m-0 mt-1">{student.name}</dd>
             </div>
             <div>
-              <dt className="text-xs font-bold uppercase text-gray-400">Level</dt>
+              <dt className="text-xs font-bold uppercase text-[#85776c]">Level</dt>
               <dd className="m-0 mt-1 capitalize">{student.level}</dd>
             </div>
             <div>
-              <dt className="text-xs font-bold uppercase text-gray-400">Phone</dt>
+              <dt className="text-xs font-bold uppercase text-[#85776c]">Phone</dt>
               <dd className="m-0 mt-1">{student.phone || "—"}</dd>
             </div>
             <div>
-              <dt className="text-xs font-bold uppercase text-gray-400">Email</dt>
+              <dt className="text-xs font-bold uppercase text-[#85776c]">Email</dt>
               <dd className="m-0 mt-1">{student.email || "—"}</dd>
             </div>
             <div>
-              <dt className="text-xs font-bold uppercase text-gray-400">Enrolled classes</dt>
+              <dt className="text-xs font-bold uppercase text-[#85776c]">Enrolled classes</dt>
               <dd className="m-0 mt-1">{student.enrolled_classes.length}</dd>
             </div>
           </dl>
         </div>
       )}
 
-      <div className="card text-xs text-gray-500">
+      <div className="card text-xs text-[#b8a99c]">
         You are signed in to the Pilates With Neelam studio workspace. Your data
         is kept private and is only used to manage your studio.
       </div>

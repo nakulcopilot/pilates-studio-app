@@ -39,7 +39,7 @@ export function InstructorDashboardView({
     <div className="space-y-6">
       <SectionTitle>Instructor Overview</SectionTitle>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="My classes" value={active.length} icon={<IconCalendar />} accent="#8f3153" />
+        <StatCard label="My classes" value={active.length} icon={<IconCalendar />} accent="#c9975a" />
         <StatCard label="Classes today" value={todays.length} icon={<IconClock />} accent="#2e7d5b" />
         <StatCard label="My students" value={rosterIds.size} icon={<IconUsers />} accent="#3b5f9e" />
         <StatCard label="Attendance rows" value={data.attendance.length} icon={<IconCheckSquare />} accent="#b58a63" />
@@ -58,14 +58,14 @@ export function InstructorDashboardView({
               .map((c) => (
                 <div
                   key={c.id}
-                  className="flex items-center gap-3 rounded-lg border border-gray-100 px-3 py-2"
+                  className="flex items-center gap-3 rounded-lg border border-[#2a2420] px-3 py-2"
                 >
                   <ClassTypeTag type={c.type} />
                   <div className="min-w-0 flex-1">
                     <div className="text-sm font-semibold text-[#1a1a2e]">
                       {formatDate(c.date)} · {timeLabel(c.time)}
                     </div>
-                    <div className="text-xs text-gray-500">
+                    <div className="text-xs text-[#b8a99c]">
                       {c.duration} min · {c.enrolled.length}/{c.max_students} enrolled
                     </div>
                   </div>
@@ -147,7 +147,7 @@ export function InstructorClassesView({
 
       {showCreate && (
         <form className="card grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3" onSubmit={createClass}>
-          <label className="flex flex-col gap-1 text-xs font-semibold text-gray-500">
+          <label className="flex flex-col gap-1 text-xs font-semibold text-[#b8a99c]">
             Type
             <select
               className="select"
@@ -158,7 +158,7 @@ export function InstructorClassesView({
               <option value="reformer">Reformer</option>
             </select>
           </label>
-          <label className="flex flex-col gap-1 text-xs font-semibold text-gray-500">
+          <label className="flex flex-col gap-1 text-xs font-semibold text-[#b8a99c]">
             Level
             <select
               className="select"
@@ -170,7 +170,7 @@ export function InstructorClassesView({
               <option value="expert">Expert</option>
             </select>
           </label>
-          <label className="flex flex-col gap-1 text-xs font-semibold text-gray-500">
+          <label className="flex flex-col gap-1 text-xs font-semibold text-[#b8a99c]">
             Date
             <input
               className="input"
@@ -179,7 +179,7 @@ export function InstructorClassesView({
               onChange={(e) => setForm({ ...form, date: e.target.value })}
             />
           </label>
-          <label className="flex flex-col gap-1 text-xs font-semibold text-gray-500">
+          <label className="flex flex-col gap-1 text-xs font-semibold text-[#b8a99c]">
             Time
             <input
               className="input"
@@ -188,7 +188,7 @@ export function InstructorClassesView({
               onChange={(e) => setForm({ ...form, time: e.target.value })}
             />
           </label>
-          <label className="flex flex-col gap-1 text-xs font-semibold text-gray-500">
+          <label className="flex flex-col gap-1 text-xs font-semibold text-[#b8a99c]">
             Duration
             <input
               className="input"
@@ -199,7 +199,7 @@ export function InstructorClassesView({
               onChange={(e) => setForm({ ...form, duration: e.target.value })}
             />
           </label>
-          <label className="flex flex-col gap-1 text-xs font-semibold text-gray-500">
+          <label className="flex flex-col gap-1 text-xs font-semibold text-[#b8a99c]">
             Capacity
             <input
               className="input"
@@ -255,7 +255,7 @@ export function InstructorClassesView({
                       <Badge tone={c.status === "active" ? "green" : c.status === "cancelled" ? "red" : "neutral"}>
                         {c.status}
                       </Badge>
-                      <span className="text-xs text-gray-400">{inst?.name ?? "—"}</span>
+                      <span className="text-xs text-[#85776c]">{inst?.name ?? "—"}</span>
                     </div>
                   </td>
                 </tr>
@@ -329,7 +329,7 @@ export function InstructorAttendanceView({
     <div className="space-y-6">
       <SectionTitle>Attendance</SectionTitle>
       <div className="card">
-        <label className="flex flex-col gap-1 text-xs font-semibold text-gray-500 max-w-md">
+        <label className="flex flex-col gap-1 text-xs font-semibold text-[#b8a99c] max-w-md">
           Select a class
           <select
             className="select"
@@ -379,7 +379,7 @@ export function InstructorAttendanceView({
                             <Avatar name={st?.name ?? sid} src={null} size={32} />
                             <div>
                               <div className="font-semibold">{st?.name ?? sid}</div>
-                              <div className="text-xs text-gray-500 capitalize">
+                              <div className="text-xs text-[#b8a99c] capitalize">
                                 {st?.level ?? ""}
                               </div>
                             </div>
@@ -445,7 +445,7 @@ export function InstructorStudentsView({ data }: { data: DashData }) {
                       <Avatar name={s.name} size={32} />
                       <div>
                         <div className="font-semibold">{s.name}</div>
-                        <div className="text-xs text-gray-500">{s.phone || "—"}</div>
+                        <div className="text-xs text-[#b8a99c]">{s.phone || "—"}</div>
                       </div>
                     </div>
                   </td>
@@ -560,7 +560,7 @@ export function InstructorDemoView({
           </table>
         </div>
       )}
-      {message && <div className="text-sm text-gray-600">{message}</div>}
+      {message && <div className="text-sm text-[#a99a8e]">{message}</div>}
     </div>
   );
 }
@@ -596,7 +596,7 @@ export function InstructorInsightsView({ data }: { data: DashData }) {
                   </td>
                   <td>
                     <div className="flex items-center gap-2">
-                      <div className="w-28 h-2 rounded-full bg-gray-100 overflow-hidden">
+                      <div className="w-28 h-2 rounded-full bg-[#2a2420] overflow-hidden">
                         <div
                           className="h-full rounded-full"
                           style={{

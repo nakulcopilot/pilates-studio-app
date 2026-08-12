@@ -72,10 +72,7 @@ const NAV: Record<Role, NavItem[]> = {
 function BrandMark({ size = 38 }: { size?: number }) {
   return (
     <span className="logo-mark" style={{ width: size, height: size }}>
-      <svg width={size * 0.5} height={size * 0.5} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" aria-hidden>
-        <path d="M12 20s7-3.5 7-9V5.5L12 3 5 5.5V11c0 5.5 7 9 7 9Z" />
-        <path d="M12 20V8.5M12 8.5C10.5 7.5 8.8 7.5 7.5 8M12 8.5c1.5-1 3.2-1 4.5-.5" />
-      </svg>
+      <img src="/branding/logo-gold.png" alt="Pilates With Neelam" className="brand-logo-img" />
     </span>
   );
 }
@@ -186,7 +183,7 @@ export default function DashboardPage() {
       <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--bg-deep)" }}>
         <div className="text-center">
           <div className="spinner mx-auto" />
-          <p className="mt-4 text-sm text-[#857a85]">Loading your studio…</p>
+          <p className="mt-4 text-sm text-[#b8a99c]">Loading your studio…</p>
         </div>
       </div>
     );
@@ -197,7 +194,7 @@ export default function DashboardPage() {
       <div className="min-h-screen flex items-center justify-center" style={{ background: "var(--bg-deep)" }}>
         <div className="max-w-sm w-full mx-4 card text-center">
           <div className="text-3xl mb-2">!</div>
-          <p className="text-sm text-[#a02626]">{error}</p>
+          <p className="text-sm text-[#f0a3a3]">{error}</p>
           <button className="btn btn-primary mt-4" onClick={signOut}>
             Back to login
           </button>
@@ -215,15 +212,15 @@ export default function DashboardPage() {
           <BrandMark />
           <div className="leading-tight">
             <div className="brand-wordmark text-lg">{wordmark}</div>
-            <div className="text-xs text-[#857a85] capitalize">{role} dashboard</div>
+            <div className="text-xs text-[#b8a99c] capitalize">{role} dashboard</div>
           </div>
         </div>
         <div className="flex items-center gap-3">
           <div className="hidden sm:block text-right leading-tight">
-            <div className="text-sm font-semibold text-[#2b2230]">
+            <div className="text-sm font-semibold text-[#f0e6dd]">
               {data.profile.display_name}
             </div>
-            <div className="text-xs text-[#857a85]">{data.profile.email}</div>
+            <div className="text-xs text-[#b8a99c]">{data.profile.email}</div>
           </div>
           <Avatar name={data.profile.display_name} src={data.profile.avatar_url} />
           <button className="btn btn-outline !min-h-9 !px-3 !py-1.5 !text-xs" onClick={signOut}>

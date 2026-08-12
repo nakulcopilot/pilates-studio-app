@@ -43,7 +43,7 @@ export function StudentDashboardView({ data }: { data: DashData }) {
         {greeting}, {student.name.split(" ")[0]}
       </SectionTitle>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard label="Level" value={student.level} icon={<IconMilestone />} accent="#8f3153" />
+        <StatCard label="Level" value={student.level} icon={<IconMilestone />} accent="#c9975a" />
         <StatCard label="Upcoming classes" value={upcoming.length} icon={<IconCalendar />} accent="#2e7d5b" />
         <StatCard label="Attendance" value={`${pct}%`} icon={<IconCheckSquare />} accent="#3b5f9e" />
         <StatCard label="Milestones" value={myMilestones.length} icon={<IconStar />} accent="#b58a63" />
@@ -61,14 +61,14 @@ export function StudentDashboardView({ data }: { data: DashData }) {
                 return (
                   <div
                     key={c.id}
-                    className="flex items-center gap-3 rounded-lg border border-gray-100 px-3 py-2"
+                    className="flex items-center gap-3 rounded-lg border border-[#2a2420] px-3 py-2"
                   >
                     <ClassTypeTag type={c.type} />
                     <div className="min-w-0 flex-1">
                       <div className="text-sm font-semibold text-[#1a1a2e]">
                         {formatDate(c.date)} · {timeLabel(c.time)}
                       </div>
-                      <div className="text-xs text-gray-500">
+                      <div className="text-xs text-[#b8a99c]">
                         {c.duration} min · {inst?.name ?? "Unassigned"}
                       </div>
                     </div>
@@ -86,11 +86,11 @@ export function StudentDashboardView({ data }: { data: DashData }) {
           <SectionTitle>Progress</SectionTitle>
           <div className="space-y-4">
             <div>
-              <div className="flex justify-between text-xs font-semibold text-gray-500 mb-1">
+              <div className="flex justify-between text-xs font-semibold text-[#b8a99c] mb-1">
                 <span>Attendance ({past.length} classes)</span>
                 <span>{pct}%</span>
               </div>
-              <div className="h-2.5 rounded-full bg-gray-100 overflow-hidden">
+              <div className="h-2.5 rounded-full bg-[#2a2420] overflow-hidden">
                 <div
                   className="h-full rounded-full"
                   style={{
@@ -102,16 +102,16 @@ export function StudentDashboardView({ data }: { data: DashData }) {
             </div>
             {Object.entries(student.level_progress ?? {}).map(([lv, n]) => (
               <div key={lv}>
-                <div className="flex justify-between text-xs font-semibold text-gray-500 mb-1">
+                <div className="flex justify-between text-xs font-semibold text-[#b8a99c] mb-1">
                   <span className="capitalize">{lv}</span>
                   <span>{n}</span>
                 </div>
-                <div className="h-2.5 rounded-full bg-gray-100 overflow-hidden">
+                <div className="h-2.5 rounded-full bg-[#2a2420] overflow-hidden">
                   <div
                     className="h-full rounded-full"
                     style={{
                       width: `${Math.min(100, (Number(n) / 20) * 100)}%`,
-                      background: "#7c3aed",
+                      background: "#c9975a",
                     }}
                   />
                 </div>
@@ -120,7 +120,7 @@ export function StudentDashboardView({ data }: { data: DashData }) {
           </div>
           {myNotes.length > 0 && (
             <div className="mt-5">
-              <div className="text-xs font-bold uppercase text-gray-400 mb-2">
+              <div className="text-xs font-bold uppercase text-[#85776c] mb-2">
                 Notes from your instructor
               </div>
               <div className="space-y-2">
@@ -142,12 +142,12 @@ export function StudentDashboardView({ data }: { data: DashData }) {
             {myInjuries.map((i) => (
               <div
                 key={i.id}
-                className="flex items-center gap-3 rounded-lg border border-gray-100 px-3 py-2"
+                className="flex items-center gap-3 rounded-lg border border-[#2a2420] px-3 py-2"
               >
                 <span className="text-lg">🩹</span>
                 <div className="min-w-0 flex-1">
                   <div className="text-sm font-semibold text-[#1a1a2e]">{i.injury}</div>
-                  {i.notes && <div className="text-xs text-gray-500">{i.notes}</div>}
+                  {i.notes && <div className="text-xs text-[#b8a99c]">{i.notes}</div>}
                 </div>
                 <Badge tone={i.status === "active" ? "amber" : "green"}>{i.status}</Badge>
               </div>
@@ -400,10 +400,10 @@ export function StudentPackagesView({ data }: { data: DashData }) {
         {packages.map((p, i) => (
           <div
             key={p.id}
-            className={`card text-center ${i === 1 ? "ring-2 ring-[#7c3aed]" : ""}`}
+            className={`card text-center ${i === 1 ? "ring-2 ring-[#c9975a]" : ""}`}
           >
             {i === 1 && (
-              <div className="inline-block text-[0.65rem] font-bold uppercase tracking-wide text-white bg-[#7c3aed] rounded-full px-3 py-0.5 mb-2">
+              <div className="inline-block text-[0.65rem] font-bold uppercase tracking-wide text-white bg-[#c9975a] rounded-full px-3 py-0.5 mb-2">
                 Popular
               </div>
             )}
@@ -411,7 +411,7 @@ export function StudentPackagesView({ data }: { data: DashData }) {
             <div className="text-3xl font-extrabold text-[#1a1a2e] mt-2">
               {formatCurrency(p.price, currency)}
             </div>
-            <div className="text-sm text-gray-500 mt-1">
+            <div className="text-sm text-[#b8a99c] mt-1">
               {p.classes === 999 ? "Unlimited classes" : `${p.classes} classes`}
             </div>
             <button className="btn btn-primary w-full mt-4" disabled>
@@ -420,7 +420,7 @@ export function StudentPackagesView({ data }: { data: DashData }) {
           </div>
         ))}
       </div>
-      <div className="text-xs text-gray-400">
+      <div className="text-xs text-[#85776c]">
         Packages are configured by the studio admin in <code>studio_settings</code>.
       </div>
     </div>

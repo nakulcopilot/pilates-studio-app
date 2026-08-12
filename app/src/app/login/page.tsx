@@ -36,11 +36,8 @@ function resolveEmail(value: string): string {
 
 function BrandMark({ size = 44 }: { size?: number }) {
   return (
-    <span className="logo-mark" style={{ width: size, height: size, fontSize: size * 0.42 }}>
-      <svg width={size * 0.5} height={size * 0.5} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" aria-hidden>
-        <path d="M12 20s7-3.5 7-9V5.5L12 3 5 5.5V11c0 5.5 7 9 7 9Z" />
-        <path d="M12 20V8.5M12 8.5C10.5 7.5 8.8 7.5 7.5 8M12 8.5c1.5-1 3.2-1 4.5-.5" />
-      </svg>
+    <span className="logo-mark" style={{ width: size, height: size }}>
+      <img src="/branding/logo-gold.png" alt="Pilates With Neelam" className="brand-logo-img" />
     </span>
   );
 }
