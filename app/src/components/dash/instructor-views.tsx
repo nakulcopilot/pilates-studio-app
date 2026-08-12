@@ -14,6 +14,9 @@ import {
   StatCard,
 } from "./ui";
 import { formatDate, timeLabel } from "@/lib/utils";
+import { AICoachingPanel, PreClassBriefPanel } from "./ai-panels";
+import { LiveStudentPanel } from "./live-student-panel";
+import { LiveTimer } from "./live-timer";
 import {
   IconCalendar,
   IconCheckSquare,
@@ -221,7 +224,7 @@ export function InstructorClassesView({
       <div className="table-wrap">
         <table className="data-table">
           <thead>
-            <tr>
+<tr>
               <th>Class</th>
               <th>Type</th>
               <th>Level</th>
@@ -229,6 +232,7 @@ export function InstructorClassesView({
               <th>Duration</th>
               <th>Roster</th>
               <th>Status</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
@@ -257,6 +261,12 @@ export function InstructorClassesView({
                       </Badge>
                       <span className="text-xs text-[#85776c]">{inst?.name ?? "—"}</span>
                     </div>
+                  </td>
+                  <td>
+                    <PreClassBriefPanel data={data} supabase={supabase} c={c} />
+                  </td>
+                  <td>
+                    <LiveTimer classId={c.id} onEnd={() => alert("Class ended")} />
                   </td>
                 </tr>
               );
@@ -565,7 +575,13 @@ export function InstructorDemoView({
   );
 }
 
-export function InstructorInsightsView({ data }: { data: DashData }) {
+export function InstructorInsightsView({
+  data,
+  supabase,
+}: {
+  data: DashData;
+  supabase: SupabaseClient;
+}) {
   const rows = data.students.map((s) => {
     const present = data.attendance.filter(
       (a) => a.student_id === s.id && a.status !== "absent",
@@ -577,6 +593,7 @@ export function InstructorInsightsView({ data }: { data: DashData }) {
   return (
     <div className="space-y-6">
       <SectionTitle>Insights</SectionTitle>
+      <AICoachingPanel data={data} supabase={supabase} />
       <div className="card">
         <div className="table-wrap">
           <table className="data-table">

@@ -146,12 +146,12 @@ export default function DashboardPage() {
           <StudentDashboardView data={data} />
         );
       case "settings":
-        return <AdminSettingsView data={data} />;
+        return <AdminSettingsView data={data} supabase={supabase} />;
       case "instructors":
         return <AdminInstructorsView data={data} supabase={supabase} />;
       case "packages":
         return role === "admin" ? (
-          <AdminPackagesView data={data} />
+          <AdminPackagesView data={data} supabase={supabase} />
         ) : (
           <StudentPackagesView data={data} />
         );
@@ -166,7 +166,7 @@ export default function DashboardPage() {
       case "demos":
         return <InstructorDemoView data={data} supabase={supabase} />;
       case "insights":
-        return <InstructorInsightsView data={data} />;
+        return <InstructorInsightsView data={data} supabase={supabase} />;
       case "book":
         return <StudentBookView data={data} supabase={supabase} />;
       case "schedule":
