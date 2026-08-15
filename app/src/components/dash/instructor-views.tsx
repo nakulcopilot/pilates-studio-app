@@ -133,8 +133,62 @@ export function InstructorClassesView({
   };
 
   const sorted = [...data.classes].sort((a, b) =>
-    (b.date + b.time).localeCompare(a.date + a.time),
+    (b.date + b.time).localeCompare(a.date + b.time),
   );
+
+  const [editingClass, setEditingClass] = useState<StudioClass | null>(null);
+  const [editingForm, setEditingForm] = useState({
+    type: "mat",
+    level: "beginner",
+    date: "",
+    time: "",
+    duration: "60",
+    max_students: "15",
+  });
+  const [deleting, setDeleting] = useState<string | null>(null);
+
+  const updateClass = async (c: StudioClass) => {
+    setEditingClass(c);
+    setEditingForm({
+      type: c.type,
+      level: c.level,
+      date: c.date,
+      time: c.time,
+      duration: String(c.duration),
+      max_students: String(c.max_students),
+    });
+  };
+
+  const saveEditedClass = async (c: StudioClass) => {
+    setSaving(true);
+    const { error } = await supabase
+      .from("classes")
+      .update({
+        type: editingForm.type,
+        level: editingForm.level,
+        date: editingForm.date,
+        time: editingForm.time,
+        duration: Number(editingForm.duration),
+        max_students: Number(editingForm.max_students),
+      })
+      .eq("id", c.id);
+    setSaving(false);
+    if (!error) {
+      window.location.reload();
+    }
+  };
+
+  const deleteClass = async (c: StudioClass) => {
+    setDeleting(c.id);
+  };
+
+  const confirmDeleteClass = async (id: string) => {
+    setDeleting(null);
+    const { error } = await supabase.from("classes").delete().eq("id", id);
+    if (!error) {
+      window.location.reload();
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -221,6 +275,110 @@ export function InstructorClassesView({
         </form>
       )}
 
+      {editingClass && (
+        <form
+          className="card grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3"
+          onSubmit={(e) => {
+            e.preventDefault();
+            saveEditedClass(editingClass);
+          }}
+        >
+          <input type="hidden" value={editingClass.id} name="id" />
+          <label className="flex flex-col gap-1 text-xs font-semibold text-[#b8a99c]">
+            Type
+            <select
+              className="select"
+              value={editingForm.type}
+              onChange={(e) => setEditingForm({ ...editingForm, type: e.target.value })}
+            >
+              <option value="mat">Mat</option>
+              <option value="reformer">Reformer</option>
+            </select>
+          </label>
+          <label className="flex flex-col gap-1 text-xs font-semibold text-[#b8a99c]">
+            Level
+            <select
+              className="select"
+              value={editingForm.level}
+              onChange={(e) =>
+                setEditingForm({ ...editingForm, level: e.target.value })
+              }
+            >
+              <option value="beginner">Beginner</option>
+              <option value="intermediate">Intermediate</option>
+              <option value="expert">Expert</option>
+            </select>
+          </label>
+          <label className="flex flex-col gap-1 text-xs font-semibold text-[#b8a99c]">
+            Date
+            <input
+              className="input"
+              type="date"
+              value={editingForm.date}
+              onChange={(e) =>
+                setEditingForm({ ...editingForm, date: e.target.value })
+              }
+            />
+          </label>
+          <label className="flex flex-col gap-1 text-xs font-semibold text-[#b8a99c]">
+            Time
+            <input
+              className="input"
+              type="time"
+              value={editingForm.time}
+              onChange={(e) =>
+                setEditingForm({ ...editingForm, time: e.target.value })
+              }
+            />
+          </label>
+          <label className="flex flex-col gap-1 text-xs font-semibold text-[#b8a99c]">
+            Duration
+            <input
+              className="input"
+              type="number"
+              min={30}
+              max={120}
+              value={editingForm.duration}
+              onChange={(e) =>
+                setEditingForm({ ...editingForm, duration: e.target.value })
+              }
+            />
+          </label>
+          <label className="flex flex-col gap-1 text-xs font-semibold text-[#b8a99c]">
+            Capacity
+            <input
+              className="input"
+              type="number"
+              min={1}
+              value={editingForm.max_students}
+              onChange={(e) =>
+                setEditingForm({ ...editingForm, max_students: e.target.value })
+              }
+            />
+          </label>
+          <div className="col-span-full flex items-center gap-3">
+            <button className="btn btn-primary" type="submit" disabled={saving}>
+              {saving ? "Saving…" : "Update class"}
+            </button>
+            {saved && <span className="text-sm text-green-600">✓ Class updated</span>}
+          </div>
+        </form>
+      )}
+
+      {deleting && (
+        <div className="card">
+          <p>Are you sure you want to delete class {deleting}?</p>
+          <div className="flex gap-3">
+            <button className="btn btn-outline" onClick={() => setDeleting(null)}>Cancel</button>
+            <button className="btn btn-danger" onClick={() => confirmDeleteClass(deleting!)}>Delete</button>
+          </div>
+        </div>
+      )}
+
+      <div className="flex items-center gap-3">
+        <button className="btn btn-outline" onClick={() => setEditingClass(null)}>Cancel edit</button>
+      </div>
+
       <div className="table-wrap">
         <table className="data-table">
           <thead>
@@ -232,7 +390,7 @@ export function InstructorClassesView({
               <th>Duration</th>
               <th>Roster</th>
               <th>Status</th>
-              <th></th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -255,18 +413,41 @@ export function InstructorClassesView({
                     {c.enrolled.length}/{c.max_students}
                   </td>
                   <td>
-                    <div className="flex items-center gap-2">
-                      <Badge tone={c.status === "active" ? "green" : c.status === "cancelled" ? "red" : "neutral"}>
-                        {c.status}
-                      </Badge>
-                      <span className="text-xs text-[#85776c]">{inst?.name ?? "—"}</span>
-                    </div>
+                    <Badge tone={c.status === "active" ? "green" : c.status === "cancelled" ? "red" : "neutral"}>
+                      {c.status}
+                    </Badge>
+                    <span className="text-xs text-[#85776c]">{inst?.name ?? "—"}</span>
                   </td>
                   <td>
                     <PreClassBriefPanel data={data} supabase={supabase} c={c} />
                   </td>
                   <td>
                     <LiveTimer classId={c.id} onEnd={() => alert("Class ended")} />
+                  </td>
+                  <td className="text-right">
+                    <div className="flex gap-1">
+                      <button
+                        className="btn btn-sm btn-outline"
+                        onClick={() => updateClass(c)}
+                        title="Edit class"
+                      >
+                        <IconEdit size={14} />
+                      </button>
+                      <button
+                        className="btn btn-sm btn-danger"
+                        onClick={() => deleteClass(c)}
+                        title="Delete class"
+                      >
+                        <IconTrash size={14} />
+                      </button>
+                      <button
+                        className="btn btn-sm btn-primary"
+                        onClick={() => window.location.href=`/instructor/class/${c.id}`}
+                        title="View roster"
+                      >
+                        View roster
+                      </button>
+                    </div>
                   </td>
                 </tr>
               );
@@ -278,7 +459,141 @@ export function InstructorClassesView({
   );
 }
 
-export function InstructorAttendanceView({
+
+
+export function InstructorAddStudentsToClassView({
+  data,
+  supabase,
+  classId,
+}: {
+  data: DashData;
+  supabase: SupabaseClient;
+  classId: string;
+}) {
+  const [adding, setAdding] = useState(false);
+  const [message, setMessage] = useState("");
+
+  // Get class object
+  const classObj = data.classes.find((c) => c.id === classId);
+  const enrolledSet = new Set(classObj?.enrolled ?? []);
+  const availableStudents = data.students.filter(
+    (s) => s.active && !enrolledSet.includes(s.id),
+  );
+
+  const addStudents = async (studentIds: string[]) => {
+    setAdding(true);
+    setMessage("");
+    if (studentIds.length === 0) {
+      setMessage("No students selected");
+      setAdding(false);
+      return;
+    }
+    if (!classObj) {
+      setMessage("Class not found");
+      setAdding(false);
+      return;
+    }
+
+    // Update class enrolled list
+    const newEnrolled = [...new Set([...classObj.enrolled, ...studentIds])];
+    const { error: classError } = await supabase
+      .from("classes")
+      .update({ enrolled: newEnrolled })
+      .eq("id", classId);
+
+    // Update each student's enrolled_classes
+    if (!classError) {
+      const { error: studentError } = await supabase
+        .from("students")
+        .update({ enrolled_classes: newEnrolled })
+        .in("id", studentIds);
+      if (studentError) {
+        setMessage(`Failed: ${studentError.message}`);
+        setAdding(false);
+        return;
+      }
+    } else {
+      setMessage(`Failed: ${classError.message}`);
+      setAdding(false);
+      return;
+    }
+
+    setMessage(`✓ ${studentIds.length} student(s) added`);
+    setAdding(false);
+    setTimeout(() => window.location.reload(), 1000);
+  };
+
+  return (
+    <div className="space-y-6">
+      <SectionTitle>Add Students to Class</SectionTitle>
+      <div className="card">
+        {classObj ? (
+          <div>
+            <p>Class: {classObj.id} - {formatDate(classObj.date)} {timeLabel(classObj.time)}</p>
+            <p>Current enrolled: {classObj.enrolled.length}/{classObj.max_students}</p>
+          </div>
+        ) : (
+          <p>Class not found</p>
+        )}
+      </div>
+
+      {availableStudents.length > 0 ? (
+        <div className="space-y-4">
+          <p className="text-sm text-[#b8a99c]">
+            Select students to add ({(classObj?.max_students ?? 0) - (classObj?.enrolled.length ?? 0)} spots remaining):
+          </p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {availableStudents.map((s) => (
+              <div
+                key={s.id}
+                className="checkbox item-gap-2"
+              >
+                <input
+                  type="checkbox"
+                  checked={false}
+                  className="checkbox-input"
+                  value={s.id}
+                />
+                <div>
+                  <span className="font-semibold">{s.name}</span>
+                  <span className="text-xs text-[#85776c]">{s.level}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="flex gap-3">
+            <button
+              className="btn btn-outline"
+              onClick={() => setMessage("")}
+              disabled={adding}
+            >
+              Cancel
+            </button>
+            <button
+              className="btn btn-primary"
+              onClick={() =>
+                addStudents(
+                  availableStudents
+                    .filter((s) => true)
+                    .map((s) => s.id)
+                )
+              }
+              disabled={adding}
+            >
+              {adding ? "Adding…" : "Add Students"}
+            </button>
+            <span className="text-sm text-[#a99a8e]">{message}</span>
+          </div>
+        </div>
+      ) : (
+        <div className="text-sm text-[#b8a99c]">
+          All students are already enrolled in this class.
+        </div>
+      )}
+    </div>
+  );
+}export function InstructorAttendanceView({
   data,
   supabase,
 }: {
