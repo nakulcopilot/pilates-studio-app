@@ -479,7 +479,7 @@ export function InstructorAddStudentsToClassView({
   const classObj = data.classes.find((c) => c.id === classId);
   const enrolledSet = new Set(classObj?.enrolled ?? []);
   const availableStudents = data.students.filter(
-    (s) => s.active && !([...enrolledSet].includes(s.id)),
+    (s) => s.active && !enrolledSet.has(s.id),
   );
 
   const addStudents = async (studentIds: string[]) => {
