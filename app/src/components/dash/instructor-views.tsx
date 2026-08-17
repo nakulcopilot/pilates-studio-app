@@ -15,17 +15,16 @@ import {
 } from "./ui";
 import { formatDate, timeLabel } from "@/lib/utils";
 import { AICoachingPanel, PreClassBriefPanel } from "./ai-panels";
-import { LiveStudentPanel } from "./live-student-panel";
-import { LiveTimer } from "./live-timer";
 import {
   IconCalendar,
-  IconCheckSquare,
   IconClock,
   IconUsers,
+  IconCheckSquare,
   IconEdit,
   IconTrash,
 } from "@/components/icons";
-
+import { LiveStudentPanel } from "./live-student-panel";
+import { LiveTimer } from "./live-timer";
 export function InstructorDashboardView({
   data,
   instructorId,
