@@ -152,9 +152,27 @@ export default function DashboardPage() {
     restoreSession();
   }, [data, supabase]);
 
+  // Load dashboard data after session is restored
   useEffect(() => {
-    saveSession();
-  }, [persona, instructorId, studentId, active]);
+    let cancelled = false;
+    async function load() {
+      try {
+        const dashData = await loadDashboardData(supabase);
+        if (!cancelled) {
+          setData(dashData);
+          setLoading(false);
+        }
+      } catch (err: any) {
+        if (!cancelled) {
+          console.error("Failed to load dashboard data:", err.message);
+          setError(err.message);
+          setLoading(false);
+        }
+      }
+    }
+    load();
+    return () => { cancelled = true; };
+  }, [supabase]);
 
   const role: Role | null = data?.profile.role ?? null;
   const nav = role ? NAV[role] : [];
