@@ -45,3 +45,5 @@ next-env.d.ts
 
 dev-server.log
 public/branding/*.jpg
+
+/src/generated/prisma

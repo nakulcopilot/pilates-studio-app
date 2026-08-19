@@ -84,30 +84,77 @@ export default function DashboardPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [active, setActive] = useState("dashboard");
+  const [persona, setPersona] = useState<Role | null>(null);
+  const [instructorId, setInstructorId] = useState<string | null>(null);
+  const [studentId, setStudentId] = useState<string | null>(null);
+
+  // Session persistence using sessionStorage
+  const SESSION_KEY = "zenpilates_session_v1";
+
+  function saveSession() {
+    try {
+      const sessionData = {
+        persona,
+        instructorId: instructorId || null,
+        studentId: studentId || null,
+        page: active,
+      };
+      sessionStorage.setItem(SESSION_KEY, JSON.stringify(sessionData));
+    } catch (e) {}
+  }
+
+  function restoreSession() {
+    try {
+      const sess = JSON.parse(sessionStorage.getItem(SESSION_KEY) || "null");
+      if (!sess || !sess.persona) return;
+      const persona = sess.persona;
+      setPersona(persona as Role);
+      if (persona === "admin") {
+        setInstructorId(null);
+        setStudentId(null);
+        router.replace("/dashboard");
+      } else if (persona === "instructor") {
+        const instructor = sess.instructorId
+          ? data?.instructors?.find((i) => i.id === sess.instructorId) || null
+          : null;
+        if (instructor) {
+          setInstructorId(instructor.id);
+          setStudentId(null);
+          router.replace("/instructor");
+        } else {
+          sessionStorage.removeItem(SESSION_KEY);
+          supabase.auth.signOut();
+          router.replace("/login");
+        }
+      } else if (persona === "student") {
+        const student = sess.studentId
+          ? data?.students?.find((s) => s.id === sess.studentId) || null
+          : null;
+        if (student) {
+          setStudentId(student.id);
+          setInstructorId(null);
+          router.replace("/student");
+        } else {
+          sessionStorage.removeItem(SESSION_KEY);
+          supabase.auth.signOut();
+          router.replace("/login");
+        }
+      }
+    } catch (e) {
+      sessionStorage.removeItem(SESSION_KEY);
+      supabase.auth.signOut();
+      router.replace("/login");
+    }
+  }
+
+  // Restore session on mount
+  useEffect(() => {
+    restoreSession();
+  }, [data, supabase]);
 
   useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        const d = await loadDashboardData(supabase);
-        if (cancelled) return;
-        setData(d);
-      } catch (e) {
-        if (cancelled) return;
-        const msg = e instanceof Error ? e.message : String(e);
-        if (/auth|logged|session/i.test(msg)) {
-          router.replace("/login");
-          return;
-        }
-        setError(msg);
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-  }, [router, supabase]);
+    saveSession();
+  }, [persona, instructorId, studentId, active]);
 
   const role: Role | null = data?.profile.role ?? null;
   const nav = role ? NAV[role] : [];
@@ -122,6 +169,9 @@ export default function DashboardPage() {
     );
 
   const signOut = async () => {
+    try {
+      sessionStorage.removeItem(SESSION_KEY);
+    } catch (e) {}
     await supabase.auth.signOut();
     router.replace("/login");
     router.refresh();
