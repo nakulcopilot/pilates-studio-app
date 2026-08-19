@@ -27,8 +27,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen">
-        {buildOfflineBannerHTML()}
         {children}
+        <script src="/offline-banner.js" defer></script>
       </body>
     </html>
   );
