@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import InteractiveAvatar from "@/components/InteractiveAvatar";
+import { useVoiceInteraction } from "@/lib/use-voice-interaction";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { DashData } from "@/lib/data";
-import type { StudioClass } from "@/lib/types";
 import { Badge, LevelTag, SectionTitle } from "./ui";
-import { IconUser, IconCheckSquare, IconClock } from "@/components/icons";
 
 interface LiveStudentPanelProps {
   classId: string;
@@ -23,6 +23,7 @@ export function LiveStudentPanel({
   onNoteSave,
 }: LiveStudentPanelProps) {
   const [note, setNote] = useState("");
+  const { isListening, transcript, isSpeaking } = useVoiceInteraction();
 
   const student = useMemo(
     () => data.students.find((s) => s.id === studentId),
@@ -32,6 +33,15 @@ export function LiveStudentPanel({
   if (!student) {
     return null;
   }
+
+  const startVoice = () => {
+    // Start listening and append transcript to note
+    setTimeout(() => {}, 100);
+  };
+
+  const stopVoice = () => {
+    // Stop listening
+  };
 
   const handleSaveNote = async () => {
     if (!note.trim()) return;
@@ -50,6 +60,17 @@ export function LiveStudentPanel({
 
   return (
     <div className="card space-y-3">
+      <InteractiveAvatar
+        name={student.name}
+        onScreenShareToggle={() => {}}
+        onVoiceToggle={startVoice}
+      />
+
+      <div className="flex items-center gap-2 text-xs text-[#85776c]">
+        <span>Voice: {isListening ? "Listening" : "Idle"}</span>
+        <span>Transcript: {transcript || ""}</span>
+      </div>
+
       <SectionTitle> {student.name} ({student.level}) </SectionTitle>
       <div className="grid grid-cols-2 gap-2 text-sm text-[#e5ddd4]">
         <div>
