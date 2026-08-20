@@ -467,7 +467,53 @@ END;
 $$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
 
 -- ---------------------------------------------------------------------------
+-- ai_interactions — AI interaction audit trail and tracking.
+-- ---------------------------------------------------------------------------
+CREATE TABLE IF NOT EXISTS public.ai_interactions (
+  id            uuid PRIMARY KEY DEFAULT uuid_generate_v4(),
+  user_id       uuid REFERENCES public.profiles(id) ON DELETE CASCADE,
+  type          text NOT NULL CHECK (type IN ('assessment' | 'booking_search' | 'copilot' | 'checkin')),
+  data          jsonb NOT NULL DEFAULT '{}'::jsonb,
+  created_at    timestamptz NOT NULL DEFAULT now(),
+  metadata      jsonb NOT NULL DEFAULT '{}'::jsonb
+);
+
+ALTER TABLE public.ai_interactions ENABLE ROW LEVEL SECURITY;
+
+DROP POLICY IF EXISTS ai_interactions_select ON public.ai_interactions;
+CREATE POLICY ai_interactions_select ON public.ai_interactions
+  FOR SELECT USING (
+    public.is_staff()
+    OR EXISTS (
+      SELECT 1 FROM public.profiles p
+      WHERE p.id = user_id AND p.profile_user_id = auth.uid()
+    )
+  );
+
+DROP POLICY IF EXISTS ai_interactions_insert ON public.ai_interactions;
+CREATE POLICY ai_interactions_insert ON public.ai_interactions
+  FOR INSERT WITH CHECK (public.is_staff());
+
+-- Convenience helper to log AI interactions (security definer, staff-only guard).
+CREATE OR REPLACE FUNCTION public.log_ai_interaction(action text, user_type text, details jsonb DEFAULT '{}'::jsonb)
+RETURNS void AS $$
+BEGIN
+  IF NOT public.is_staff() THEN
+    RAISE EXCEPTION 'Not authorized';
+  END IF;
+  INSERT INTO public.ai_interactions (user_id, type, data, metadata)
+  VALUES (
+    (SELECT profile_user_id FROM public.profiles WHERE display_name = user_type OR auth.uid() = (SELECT profile_user_id FROM public.profiles LIMIT 1)),
+    action,
+    details #>> '{}',
+    details
+  );
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public;
+
+-- ---------------------------------------------------------------------------
 -- client_state — per-user ephemeral UI state (cues, mic consent, retention).
+-- ---------------------------------------------------------------------------
 -- ---------------------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS public.client_state (
   user_id    uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
