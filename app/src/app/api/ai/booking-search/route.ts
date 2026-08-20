@@ -2,109 +2,6 @@ import { NextResponse } from "next/server";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { supabase } from "@/lib/supabase";
 
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: "2mb",
-    },
-  },
-};
-
-interface BookingQuery {
-  query: string;
-  userId?: string;
-  filters?: {
-    classType?: "mat" | "reformer" | "wunda-chair" | "cadillac" | "all";
-    dayOfWeek?: "monday" | "tuesday" | "wednesday" | "thursday" | "friday" | "saturday" | "sunday";
-    timeRange?: "morning" | "afternoon" | "evening";
-    level?: "beginner" | "intermediate" | "advanced";
-  };
-}
-
-const TIME_RANGE_MAP: Record<string, { start: number; end: number }> = {
-  morning: { start: 6, end: 12 },
-  afternoon: { start: 12, end: 17 },
-  evening: { start: 17, end: 21 },
-};
-
-const DAY_MAP: Record<string, number> = {
-  monday: 1,
-  tuesday: 2,
-  wednesday: 3,
-  thursday: 4,
-  friday: 5,
-  saturday: 6,
-  sunday: 7,
-};
-
-const CLASS_TYPE_MAP: Record<string, string> = {
-  mat: "mat",
-  reformer: "reformer",
-  "wunda-chair": "wunda_chair",
-  cadillac: "cadillac",
-  all: "all",
-};
-
-function parseNaturalLanguageQuery(query: string): Partial<BookingQuery["filters"]> {
-  const lower = query.toLowerCase();
-  const filters: Partial<BookingQuery["filters"]> = {};
-
-  // Parse class type
-  if (lower.includes("reformer")) filters.classType = "reformer";
-  if (lower.includes("mat")) filters.classType = "mat";
-  if (lower.includes("wunda") || lower.includes("chair")) filters.classType = "wunda_chair";
-  if (lower.includes("cadillac")) filters.classType = "cadillac";
-
-  // Parse day of week
-  const dayMatches = lower.match(/\b(monday|tuesday|wednesday|thursday|friday|saturday|sunday)\b/);
-  if (dayMatches) {
-    filters.dayOfWeek = DAY_MAP[dayMatches[1]] as BookingQuery["filters"]["dayOfWeek"];
-  }
-
-  // Parse time range
-  if (lower.includes("morning")) filters.timeRange = "morning";
-  if (lower.includes("afternoon")) filters.timeRange = "afternoon";
-  if (lower.includes("evening")) filters.timeRange = "evening";
-
-  // Parse level
-  if (lower.includes("beginner")) filters.level = "beginner";
-  if (lower.includes("intermediate")) filters.level = "intermediate";
-  if (lower.includes("advanced")) filters.level = "advanced";
-
-  return filters;
-}
-
-function matchesFilter(classData: any, filters: Partial<BookingQuery["filters"]>): boolean {
-  // Check class type
-  if (filters.classType && filters.classType !== "all") {
-    const classTypes = filters.classType === "mat"
-      ? ["mat"]
-      : [filters.classType];
-    if (!classTypes.includes(classData.type)) return false;
-  }
-
-  // Check day of week
-  if (filters.dayOfWeek) {
-    const classDay = new Date(classData.date).getDay();
-    if (classDay === 0) classDay = 7; // Sunday
-    if (classDay !== filters.dayOfWeek) return false;
-  }
-
-  // Check time range
-  if (filters.timeRange) {
-    const classHour = new Date(classData.date).getHours();
-    const { start, end } = TIME_RANGE_MAP[filters.timeRange];
-    if (classHour < start || classHour >= end) return false;
-  }
-
-  // Check level
-  if (filters.level) {
-    if (classData.level !== filters.level) return false;
-  }
-
-  return true;
-}
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -120,7 +17,44 @@ export default async function handler(
       return res.status(400).json({ error: "Missing required field: query" });
     }
 
-    const filters = parseNaturalLanguageQuery(query);
+    // Parse day of week from query
+    const dayNames: Record<string, number> = {
+      monday: 1,
+      tuesday: 2,
+      wednesday: 3,
+      thursday: 4,
+      friday: 5,
+      saturday: 6,
+      sunday: 7,
+    };
+    let filterDay: number | undefined;
+    const dayMatch = query.toLowerCase().match(/\b(monday|tuesday|wednesday|thursday|friday|saturday|sunday)\b/);
+    if (dayMatch) {
+      filterDay = dayNames[dayMatch[1]];
+    }
+
+    // Parse time range from query
+    const timeRangeMap: Record<string, { start: number; end: number }> = {
+      morning: { start: 6, end: 12 },
+      afternoon: { start: 12, end: 17 },
+      evening: { start: 17, end: 21 },
+    };
+    let filterTimeRange: { start: number; end: number } | undefined;
+    if (query.toLowerCase().includes("morning")) {
+      filterTimeRange = { start: 6, end: 12 };
+    } else if (query.toLowerCase().includes("afternoon")) {
+      filterTimeRange = { start: 12, end: 17 };
+    } else if (query.toLowerCase().includes("evening")) {
+      filterTimeRange = { start: 17, end: 21 };
+    }
+
+    // Parse class type from query
+    let filterClassType: string = "all";
+    const lower = query.toLowerCase();
+    if (lower.includes("reformer")) filterClassType = "reformer";
+    else if (lower.includes("mat")) filterClassType = "mat";
+    else if (lower.includes("wunda") || lower.includes("chair")) filterClassType = "wunda_chair";
+    else if (lower.includes("cadillac")) filterClassType = "cadillac";
 
     // Fetch classes from Supabase
     const { data: classes, error } = await supabase
@@ -132,22 +66,27 @@ export default async function handler(
       return res.status(500).json({ error: "Failed to fetch classes" });
     }
 
-    // Filter classes based on natural language query
-    const matchedClasses = classes.filter((c) => matchesFilter(c, filters));
+    // Filter classes based on query parameters
+    let matchedClasses = classes || [];
 
-    // If no matches with filters, try broader search
-    const searchResults = matchedClasses.length > 0
-      ? matchedClasses
-      : classes.filter((c) => {
-          const lowerTitle = (c.type + " " + (c.name || "")).toLowerCase();
-          const lowerQuery = query.toLowerCase();
-          return lowerTitle.includes(lowerQuery) ||
-            lowerQuery.includes("class") ||
-            lowerQuery.includes("pilates");
-        });
+    if (filterClassType !== "all") {
+      matchedClasses = matchedClasses.filter((c: any) => c.type === filterClassType);
+    }
+    if (filterDay !== undefined) {
+      matchedClasses = matchedClasses.filter((c: any) => {
+        const classDay = new Date(c.date).getDay();
+        return classDay === 0 ? 7 : classDay === filterDay;
+      });
+    }
+    if (filterTimeRange) {
+      matchedClasses = matchedClasses.filter((c: any) => {
+        const classHour = new Date(c.date).getHours();
+        return classHour >= filterTimeRange.start && classHour < filterTimeRange.end;
+      });
+    }
 
     // Format results for UI
-    const formattedResults = searchResults.map((c: any) => ({
+    const formattedResults = (matchedClasses || []).map((c: any) => ({
       id: c.id,
       type: c.type,
       level: c.level,
@@ -162,15 +101,12 @@ export default async function handler(
 
     return res.status(200).json({
       query,
-      filters,
       totalResults: formattedResults.length,
       results: formattedResults,
     });
 
   } catch (error) {
     console.error("Booking search API error:", error);
-    return res.status(500).json({
-      error: "Internal server error during booking search",
-    });
+    return res.status(500).json({ error: "Internal server error during booking search" });
   }
 }

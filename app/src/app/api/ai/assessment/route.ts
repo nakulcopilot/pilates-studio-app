@@ -1,15 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { SupabaseClient } from "@supabase/supabase-js";
-import { isAIEnabled, callAI, generateWithFallback } from "@/lib/ai";
-
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: "2mb",
-    },
-  },
-};
+import { supabase } from "@/lib/supabase";
+import { isAIEnabled } from "@/lib/ai";
 
 export default async function handler(
   req: NextApiRequest,
@@ -29,7 +21,6 @@ export default async function handler(
     }
 
     // Check if AI is enabled
-    const supabase = (await import("@/lib/supabase")).getSupabaseServerClient();
     const { data: settings } = await supabase
       .from("studio_settings")
       .select("*")
@@ -45,26 +36,19 @@ export default async function handler(
     }
 
     // Call AI assessment via edge function
-    const systemPrompt = `You are an AI Pilates Assessment Assistant for "Pilates with Neelam". 
-    Given the user's assessment responses, classify their Pilates level and recommend appropriate classes.
-    
-    Respond with a JSON object containing:
-    - "level": "beginner", "intermediate", or "advanced"
-    - "recommendedClasses": array of class type strings (e.g., ["reformer", "mat", "wunda-chair"])
-    - "focusAreas": array of strings indicating focus areas (e.g., ["core", "flexibility", "balance"])
-    - "assessmentSummary": brief 2-3 sentence summary of the assessment
-    
-    Keep the response concise and focused on Pilates level assessment only. Do not provide medical advice.`;
+    const { data, error } = await supabase.functions.invoke("ai-proxy", {
+      body: {
+        messages: [
+          { role: "system", content: "You are an AI Pilates Assessment Assistant for Pilates with Neelam. Given the user's assessment responses, classify their Pilates level and recommend appropriate classes. Respond with JSON: {level: 'beginner'|'intermediate'|'advanced', recommendedClasses: [string], focusAreas: [string], assessmentSummary: string}" },
+          { role: "user", content: `User assessment responses: ${JSON.stringify(responses)}` },
+        ],
+      },
+    });
+    if (error) return res.status(200).json({ mode: "fallback", level: classifyLevelHeuristic(responses), recommendedClasses: getRecommendationsHeuristic(responses), message: "AI failed - using fallback" });
 
-    const userPrompt = `User assessment responses: ${JSON.stringify(responses)}.
-
-    Classify the user's Pilates level (beginner/intermediate/advanced) and recommend appropriate class types and focus areas based on their responses.`;
-
-    const aiResponse = await callAI(supabase, systemPrompt, userPrompt);
-
-    if (aiResponse) {
+    if (data?.content) {
       try {
-        const parsed = JSON.parse(aiResponse);
+        const parsed = JSON.parse(data.content);
         return res.status(200).json({
           mode: "ai",
           level: parsed.level || classifyLevelHeuristic(responses),
@@ -73,7 +57,7 @@ export default async function handler(
           assessmentSummary: parsed.assessmentSummary || "",
         });
       } catch {
-        // If AI response is not valid JSON, fall through to heuristic
+        // Invalid JSON from AI, fall through to heuristic
       }
     }
 
@@ -87,23 +71,18 @@ export default async function handler(
 
   } catch (error) {
     console.error("AI Assessment API error:", error);
-    return res.status(500).json({
-      error: "Internal server error during AI assessment",
-    });
+    return res.status(500).json({ error: "Internal server error during AI assessment" });
   }
 }
 
 function classifyLevelHeuristic(responses: any[]): "beginner" | "intermediate" | "advanced" {
-  const beginnerKeywords = ["new", "first", "starting", "never", "beginner", "0", "1", "2"];
-  const advancedKeywords = ["expert", "advanced", "pro", "years", "5", "10", "15", "strong", "flexible"];
-
   const responsesText = responses
     .map((r) => String(r?.answer ?? "").toLowerCase())
     .join(" ");
-
+  const beginnerKeywords = ["new", "first", "starting", "never", "beginner", "0", "1", "2"];
+  const advancedKeywords = ["expert", "advanced", "pro", "years", "5", "10", "15", "strong", "flexible"];
   const beginnerCount = beginnerKeywords.filter((k) => responsesText.includes(k.toLowerCase())).length;
   const advancedCount = advancedKeywords.filter((k) => responsesText.includes(k.toLowerCase())).length;
-
   if (advancedCount > beginnerCount) return "advanced";
   if (beginnerCount > 0) return "beginner";
   return "intermediate";
@@ -112,7 +91,6 @@ function classifyLevelHeuristic(responses: any[]): "beginner" | "intermediate" |
 function getRecommendationsHeuristic(responses: any[]): string[] {
   const level = classifyLevelHeuristic(responses);
   const recommendations: string[] = [];
-
   if (level === "beginner") {
     recommendations.push("mat", "reformer-basics", "wunda-chair-intro");
   } else if (level === "intermediate") {
@@ -120,6 +98,5 @@ function getRecommendationsHeuristic(responses: any[]): string[] {
   } else {
     recommendations.push("advanced-reformer", "mat-advanced", "chair-advanced");
   }
-
   return recommendations;
 }
