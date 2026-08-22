@@ -93,15 +93,36 @@ export default function FirstVisitJourney() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    // First-visit detection must run post-hydration to avoid SSR mismatch.
-    try {
-      const seen = window.localStorage.getItem(STORAGE_KEY);
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setOpen(!seen);
-    } catch {
-      // Storage unavailable — default to not showing.
+    // Explicit entry point: /#begin-journey always opens the journey,
+    // even for returning visitors who have seen it before.
+    const openFromHash = () => {
+      if (window.location.hash === "#begin-journey") {
+        try {
+          window.localStorage.removeItem(STORAGE_KEY);
+        } catch {
+          // Ignore storage failures.
+        }
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setOpen(true);
+      }
+    };
+
+    openFromHash();
+
+    // Otherwise, auto-open once for genuine first-time visitors only.
+    if (!open) {
+      try {
+        const seen = window.localStorage.getItem(STORAGE_KEY);
+        setOpen(!seen);
+      } catch {
+        // Storage unavailable — default to not showing.
+      }
     }
     setReady(true);
+
+    window.addEventListener("hashchange", openFromHash);
+    return () => window.removeEventListener("hashchange", openFromHash);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const close = useCallback((markDone = true) => {
