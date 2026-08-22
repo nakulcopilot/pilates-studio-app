@@ -22,9 +22,13 @@ import {
   IconCheckSquare,
   IconEdit,
   IconTrash,
+  IconSparkles,
 } from "@/components/icons";
 import { LiveStudentPanel } from "./live-student-panel";
 import { LiveTimer } from "./live-timer";
+import { InteractiveAvatar } from "@/components/InteractiveAvatar";
+import { useScreenShare } from "@/lib/use-screen-share";
+import { useVoiceInteraction } from "@/lib/use-voice-interaction";
 export function InstructorDashboardView({
   data,
   instructorId,
@@ -952,19 +956,6 @@ export function InstructorInsightsView({
     </div>
   );
 }
-
-"use client";
-
-import { useState } from "react";
-import InteractiveAvatar from "@/components/InteractiveAvatar";
-import { useScreenShare } from "@/lib/use-screen-share";
-import { useVoiceInteraction } from "@/lib/use-voice-interaction";
-import type { SupabaseClient } from "@supabase/supabase-js";
-import type { DashData } from "@/lib/data";
-import { IconClock, IconSparkles } from "@/components/icons";
-import { Badge } from "./ui";
-import { LiveStudentPanel } from "./live-student-panel";
-import { LiveTimer } from "./live-timer";
 
 export function LiveClassConsole({
   classId,

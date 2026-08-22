@@ -1,17 +1,18 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import { generateWithFallback } from "@/lib/ai";
+import { createClient } from "@/lib/supabase/browser";
 
 export interface AssessmentQuestion {
   id: string;
   text: string;
-  options: string[];
+  options?: string[];
   numeric?: boolean;
   min?: number;
   max?: number;
+  placeholder?: string;
 }
 
 export interface AssessmentResult {
@@ -68,75 +69,26 @@ export default function AssessmentModal({
   onComplete: (result: AssessmentResult) => void;
   onClose: () => void;
 }) {
-  const [step, setStep] = useState(0);
-  const [answers, setAnswers] = useState<Record<string, string | number>>({});
-  const timerRef = useRef<number | null>(null);
-  const [timer, setTimer] = useState(120);
   const router = useRouter();
 
-  useEffect(() => {
-    let minutes = 2;
-    let seconds = 0;
-    setTimer(120);
+  // Create Supabase client
+  const supabase = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  );
 
-    timerRef.current = setInterval(() => {
-      setTimer((prev) => {
-        if (prev <= 0) {
-          clearInterval(timerRef.current!);
-          submitAssessment();
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(timerRef.current!);
-  }, []);
+  const [step, setStep] = useState(0);
+  const [answers, setAnswers] = useState<Record<string, string | number>>({});
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [timer, setTimer] = useState(120);
 
   const handleAnswer = (questionId: string, answer: string | number) => {
     setAnswers((prev) => ({ ...prev, [questionId]: answer }));
   };
 
-  const submitAssessment = async () => {
-    clearInterval(timerRef.current!);
-
-    const level = classifyLevel(answers);
-    const focusAreas = determineFocusAreas(answers);
-    const recommendedClasses = getRecommendations(level, focusAreas);
-    const summary = generateAssessmentSummary(level, focusAreas);
-
-    const result: AssessmentResult = {
-      level,
-      focusAreas,
-      recommendedClasses,
-      assessmentSummary: summary,
-    };
-
-    // Call AI assessment API
-    try {
-      const { error } = await supabase
-        .from("ai_assessment_results")
-        .insert({
-          user_id: (await import("@/app/(auth)").getCurrentUser()?.id) || "temp",
-          responses: answers,
-          level,
-          focus_areas: focusAreas,
-          recommended_classes: recommendedClasses,
-          created_at: new Date().toISOString(),
-        });
-
-      if (error) console.error("DB insert error:", error);
-    } catch (err) {
-      console.error("Assessment save error:", err);
-    }
-
-    onComplete(result);
-    router.push("/booking-recommendations");
-  };
-
   const classifyLevel = (answers: Record<string, string | number>): "beginner" | "intermediate" | "advanced" => {
-    const q1 = answers.q1 || "";
-    const q4 = answers.q4 || "";
+    const q1 = String(answers.q1 ?? "");
+    const q4 = String(answers.q4 ?? "");
     const q6 = Number(answers.q6) || 0;
 
     const isAdvanced = q1.includes("advanced") || q6 >= 8;
@@ -149,8 +101,9 @@ export default function AssessmentModal({
 
   const determineFocusAreas = (answers: Record<string, string | number>): string[] => {
     const areas: string[] = [];
-    const q2 = answers.q2 || "";
-    const q5 = answers.q5 || "";
+    const q2 = String(answers.q2 ?? "");
+    const q4 = String(answers.q4 ?? "");
+    const q5 = String(answers.q5 ?? "");
 
     if (q2.includes("flexibility") || q5 === "Mat only") {
       areas.push("flexibility");
@@ -213,6 +166,68 @@ export default function AssessmentModal({
     const focusStr = focusAreas.join(" and ");
     return `You're classified as ${levelLabels[level]}. Your focus areas are: ${focusStr}. Based on your responses, we recommend classes matching your level and goals.`;
   };
+
+  const submitAssessment = async () => {
+    clearInterval(timerRef.current!);
+
+    const level = classifyLevel(answers);
+    const focusAreas = determineFocusAreas(answers);
+    const recommendedClasses = getRecommendations(level, focusAreas);
+    const summary = generateAssessmentSummary(level, focusAreas);
+
+    const result: AssessmentResult = {
+      level,
+      focusAreas,
+      recommendedClasses,
+      assessmentSummary: summary,
+    };
+
+    // Call AI assessment API
+    try {
+      const { error } = await supabase
+        .from("ai_assessment_results")
+        .insert({
+          user_id: (await import("@/app/(auth)").getCurrentUser()?.id) || "temp",
+          responses: answers,
+          level,
+          focus_areas: focusAreas,
+          recommended_classes: recommendedClasses,
+          created_at: new Date().toISOString(),
+        });
+
+      if (error) console.error("DB insert error:", error);
+    } catch (err) {
+      console.error("Assessment save error:", err);
+    }
+
+    onComplete(result);
+    router.push("/booking-recommendations");
+  };
+
+  useEffect(() => {
+    if (step === 0) {
+      timerRef.current = setInterval(() => {
+        setTimer((prev) => {
+          if (prev <= 0) {
+            clearInterval(timerRef.current!);
+            submitAssessment();
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    } else if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+    return () => {
+      if (timerRef.current) {
+        clearInterval(timerRef.current);
+        timerRef.current = null;
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step]);
 
   const startAIAnalysis = async () => {
     // Call the assessment API
@@ -324,7 +339,7 @@ export default function AssessmentModal({
               onClick={submitAssessment}
               className="w-full bg-green-600 text-white font-medium padding rounded hover:bg-green-700 transition-colors"
             >
-              Time's up - Complete Assessment
+              Time&apos;s up - Complete Assessment
             </button>
           )}
           <button

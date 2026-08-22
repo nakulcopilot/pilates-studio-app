@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { SupabaseClient } from "@supabase/supabase-js";
 import type { DashData } from "@/lib/data";
 import type { StudioClass, Student } from "@/lib/types";
@@ -47,13 +47,6 @@ export function InstructorCopilotPanel({
   const [suggestions, setSuggestions] = useState<CopilotSuggestion[]>([]);
   const [loading, setLoading] = useState(false);
   const [aiOn, setAIOn] = useState(false);
-  const classRef = useRef(classId);
-
-  classRef.current = classId;
-
-  useEffect(() => {
-    loadStudentSummaries();
-  }, [data, supabase, classId]);
 
   const loadStudentSummaries = async () => {
     setLoading(true);
@@ -132,6 +125,12 @@ export function InstructorCopilotPanel({
     setLoading(false);
   };
 
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadStudentSummaries();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, supabase, classId]);
+
   const generateSuggestions = async () => {
     if (!aiOn) {
       setSuggestions(generateHeuristicSuggestions());
@@ -162,7 +161,7 @@ export function InstructorCopilotPanel({
     
     Keep it concise and practical. Focus on safe, effective programming.`;
 
-    const userPrompt = `Class ID: ${classRef.current}. Student data: ${JSON.stringify(studentData)}.
+    const userPrompt = `Class ID: ${classId}. Student data: ${JSON.stringify(studentData)}.
 
     Suggest class structure and exercise recommendations.`;
 
@@ -239,22 +238,45 @@ export function InstructorCopilotPanel({
     return suggestions;
   };
 
-  const handleSuggestion = (suggestion: CopilotSuggestion) => {
-    // Instructor can accept or modify suggestion
-    // This would integrate with the class planning UI
-    console.log("Suggestion handled:", suggestion.title);
+  const [modifiedSuggestions, setModifiedSuggestions] = useState<CopilotSuggestion[]>([]);
+
+const handleSuggestion = (suggestion: CopilotSuggestion) => {
+    const alreadyModified = modifiedSuggestions.find(
+      (s) => s.title === suggestion.title && s.type === suggestion.type
+    );
+    if (alreadyModified) {
+      setModifiedSuggestions((prev) =>
+        prev.filter((s) => s.title !== suggestion.title || s.type !== suggestion.type)
+      );
+    } else {
+      setModifiedSuggestions((prev) => [...prev, suggestion]);
+    }
   };
 
   const renderSuggestion = (s: CopilotSuggestion) => {
+    const isModified = modifiedSuggestions.some(
+      (ms) => ms.title === s.title && ms.type === s.type
+    );
+    const displayTitle = isModified ? `${s.title} (modified)` : s.title;
+    const displayDescription = isModified
+      ? `${s.description} (instructor modified)`
+      : s.description;
+
     if (s.type === "class-structure") {
       return (
         <div
           key={s.title}
           className="rounded-lg border border-[#2a2420] px-3 py-2 mb-3"
         >
-          <h4 className="font-medium text-[#f0e6dd] mb-1">{s.title}</h4>
-          <p className="text-sm text-[#e5ddd4]">{s.description}</p>
+          <h4 className="font-medium text-[#f0e6dd] mb-1">{displayTitle}</h4>
+          <p className="text-sm text-[#e5ddd4]">{displayDescription}</p>
           <Badge tone="purple">AI generated</Badge>
+          <button
+            onClick={() => handleSuggestion(s)}
+            className="ml-2 text-xs text-[#b8a99c] hover:text-[#f0e6dd] underline"
+          >
+            {isModified ? "Undo override" : "Override"}
+          </button>
         </div>
       );
     }
@@ -264,12 +286,21 @@ export function InstructorCopilotPanel({
         key={s.title}
         className="rounded-lg border border-[#2a2420] px-3 py-2 mb-3"
       >
-        <h4 className="font-medium text-[#f0e6dd] mb-1">{s.title}</h4>
-        <p className="text-sm text-[#e5ddd4]">{s.description}</p>
+        <h4 className="font-medium text-[#f0e6dd] mb-1">{displayTitle}</h4>
+        <p className="text-sm text-[#e5ddd4]">{displayDescription}</p>
         <span className="text-xs text-[#b8a99c]">Confidence: {Math.round(
           s.confidence * 100,
         )}%</span>
         <Badge tone="purple">AI generated</Badge>
+        {isModified && (
+          <span className="text-xs text-green-500 ml-2">Modified by instructor</span>
+        )}
+        <button
+          onClick={() => handleSuggestion(s)}
+          className="ml-2 text-xs text-[#b8a99c] hover:text-[#f0e6dd] underline"
+        >
+          {isModified ? "Undo override" : "Override"}
+        </button>
       </div>
     );
   };
@@ -346,16 +377,38 @@ export function InstructorCopilotPanel({
 
           {suggestions.map((suggestion) => renderSuggestion(suggestion))}
 
-          {/* Instructor override action */}
+          {/* Instructor override actions */}
           <div className="mt-4 p-3 bg-[#1a1611] rounded border border-[#2a2420]">
             <p className="text-xs text-[#85776c] mb-2">
               Instructor can override or modify any AI suggestion
             </p>
-            <button
-              className="w-full text-sm text-[#85776c] hover:text-[#f0e6dd] underline"
-            >
-              View all suggestions as list
-            </button>
+            {modifiedSuggestions.length > 0 ? (
+              <>
+                <p className="text-xs text-green-500 mb-2">
+                  {modifiedSuggestions.length} suggestion(s) modified
+                </p>
+                <button
+                  onClick={() => setModifiedSuggestions([])}
+                  className="w-full text-sm text-[#85776c] hover:text-[#f0e6dd] mb-2 underline"
+                >
+                  Clear all modifications
+                </button>
+                <button
+                  onClick={() => {
+                    // Save modified suggestions and reset
+                    setModifiedSuggestions([]);
+                    console.log("Modified suggestions saved:", modifiedSuggestions);
+                  }}
+                  className="w-full text-sm text-green-600 hover:text-green-800 mb-2 underline"
+                >
+                  Save modifications
+                </button>
+              </>
+            ) : (
+              <p className="text-xs text-[#85776c]">
+                Use the Override button on any suggestion above to modify it.
+              </p>
+            )}
           </div>
         </>
       )}

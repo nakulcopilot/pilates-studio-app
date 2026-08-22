@@ -1,7 +1,15 @@
 import { NextResponse } from "next/server";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@supabase/supabase-js";
 import { isAIEnabled } from "@/lib/ai";
+
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: "2mb",
+    },
+  },
+};
 
 export default async function handler(
   req: NextApiRequest,
@@ -21,12 +29,12 @@ export default async function handler(
     }
 
     // Check if AI is enabled
-    const { data: settings } = await supabase
-      .from("studio_settings")
-      .select("*")
-      .single();
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    );
 
-    if (!isAIEnabled(settings)) {
+    if (!isAIEnabled(await import("@/lib/settings").settings)) {
       return res.status(200).json({
         mode: "heuristic",
         level: classifyLevelHeuristic(responses),
@@ -55,6 +63,10 @@ export default async function handler(
           recommendedClasses: parsed.recommendedClasses || getRecommendationsHeuristic(responses),
           focusAreas: parsed.focusAreas || [],
           assessmentSummary: parsed.assessmentSummary || "",
+          aiAssisted: true,
+          aiRecommendationSource: "AI Assessment",
+          disclaimer:
+            "AI-generated assessment recommendations. Consult with instructor for personalized advice and modifications.",
         });
       } catch {
         // Invalid JSON from AI, fall through to heuristic
@@ -75,7 +87,12 @@ export default async function handler(
   }
 }
 
-function classifyLevelHeuristic(responses: any[]): "beginner" | "intermediate" | "advanced" {
+interface AssessmentResponse {
+  questionId?: string;
+  answer?: string | number;
+  unit?: string;
+}
+function classifyLevelHeuristic(responses: AssessmentResponse[]): "beginner" | "intermediate" | "advanced" {
   const responsesText = responses
     .map((r) => String(r?.answer ?? "").toLowerCase())
     .join(" ");
@@ -88,7 +105,7 @@ function classifyLevelHeuristic(responses: any[]): "beginner" | "intermediate" |
   return "intermediate";
 }
 
-function getRecommendationsHeuristic(responses: any[]): string[] {
+function getRecommendationsHeuristic(responses: AssessmentResponse[]): string[] {
   const level = classifyLevelHeuristic(responses);
   const recommendations: string[] = [];
   if (level === "beginner") {

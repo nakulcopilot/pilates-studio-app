@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import InteractiveAvatar from "@/components/InteractiveAvatar";
+import { InteractiveAvatar } from "@/components/InteractiveAvatar";
 import { useVoiceInteraction } from "@/lib/use-voice-interaction";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { DashData } from "@/lib/data";

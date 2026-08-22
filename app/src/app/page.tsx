@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { IconArrowRight, IconChart, IconShield, IconSparkles } from "@/components/icons";
+import FirstVisitJourney from "@/components/journey/FirstVisitJourney";
 
 function BrandMark({ size = 40 }: { size?: number }) {
   return (
@@ -42,7 +43,7 @@ export default function LandingPage() {
           Thoughtfully guided pilates for every body. Small classes, personal
           attention, and a practice that grows with you.
         </p>
-        <div className="flex flex-wrap gap-3 mt-9">
+        <div className="flex flex-wrap gap-3 mt-9" id="begin-journey">
           <Link
             href="/login"
             className="inline-flex items-center gap-2 bg-gradient-to-br from-[#c9975a] to-[#9a7338] text-white font-bold text-sm rounded-full px-7 py-3.5 shadow-xl shadow-[#c9975a]/30 hover:shadow-2xl hover:-translate-y-0.5 transition"
@@ -65,6 +66,7 @@ export default function LandingPage() {
           ))}
         </div>
       </main>
+      <FirstVisitJourney />
     </div>
   );
 }

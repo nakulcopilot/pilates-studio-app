@@ -1,7 +1,18 @@
 import { NextResponse } from "next/server";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@supabase/supabase-js";
 
+interface ClassRow {
+  id: string;
+  type: string;
+  level: string;
+  date: string;
+  available_spots: number;
+  max_students: number;
+  price: number | null;
+  instructor: string | null;
+  studio: string | null;
+}
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -16,6 +27,12 @@ export default async function handler(
     if (!query || typeof query !== "string") {
       return res.status(400).json({ error: "Missing required field: query" });
     }
+
+    // Create Supabase client
+    const supabase = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    );
 
     // Parse day of week from query
     const dayNames: Record<string, number> = {
@@ -40,21 +57,33 @@ export default async function handler(
       evening: { start: 17, end: 21 },
     };
     let filterTimeRange: { start: number; end: number } | undefined;
-    if (query.toLowerCase().includes("morning")) {
-      filterTimeRange = { start: 6, end: 12 };
-    } else if (query.toLowerCase().includes("afternoon")) {
-      filterTimeRange = { start: 12, end: 17 };
-    } else if (query.toLowerCase().includes("evening")) {
-      filterTimeRange = { start: 17, end: 21 };
+    // Check each time range keyword - use the first match found
+    const timeKeywords = ["morning", "afternoon", "evening"];
+    for (const kw of timeKeywords) {
+      if (query.toLowerCase().includes(kw)) {
+        filterTimeRange = timeRangeMap[kw];
+        break; // Use first match only
+      }
     }
 
     // Parse class type from query
     let filterClassType: string = "all";
     const lower = query.toLowerCase();
-    if (lower.includes("reformer")) filterClassType = "reformer";
-    else if (lower.includes("mat")) filterClassType = "mat";
-    else if (lower.includes("wunda") || lower.includes("chair")) filterClassType = "wunda_chair";
-    else if (lower.includes("cadillac")) filterClassType = "cadillac";
+    // Priority order for class type matching
+    const typePatterns = [
+      { pattern: /reformer/i, type: "reformer" },
+      { pattern: /mat/i, type: "mat" },
+      { pattern: /wunda chair/i, type: "wunda_chair" },
+      { pattern: /cadillac/i, type: "cadillac" },
+      { pattern: /trapeze/i, type: "trapeze" },
+      { pattern: /barrel/i, type: "barrel" },
+    ];
+    for (const { pattern, type } of typePatterns) {
+      if (pattern.test(lower)) {
+        filterClassType = type;
+        break; // Use first match only
+      }
+    }
 
     // Fetch classes from Supabase
     const { data: classes, error } = await supabase
@@ -70,23 +99,23 @@ export default async function handler(
     let matchedClasses = classes || [];
 
     if (filterClassType !== "all") {
-      matchedClasses = matchedClasses.filter((c: any) => c.type === filterClassType);
+      matchedClasses = matchedClasses.filter((c: ClassRow) => c.type === filterClassType);
     }
     if (filterDay !== undefined) {
-      matchedClasses = matchedClasses.filter((c: any) => {
+      matchedClasses = matchedClasses.filter((c: ClassRow) => {
         const classDay = new Date(c.date).getDay();
         return classDay === 0 ? 7 : classDay === filterDay;
       });
     }
     if (filterTimeRange) {
-      matchedClasses = matchedClasses.filter((c: any) => {
+      matchedClasses = matchedClasses.filter((c: ClassRow) => {
         const classHour = new Date(c.date).getHours();
         return classHour >= filterTimeRange.start && classHour < filterTimeRange.end;
       });
     }
 
     // Format results for UI
-    const formattedResults = (matchedClasses || []).map((c: any) => ({
+    const formattedResults = (matchedClasses || []).map((c: ClassRow) => ({
       id: c.id,
       type: c.type,
       level: c.level,
@@ -103,6 +132,10 @@ export default async function handler(
       query,
       totalResults: formattedResults.length,
       results: formattedResults,
+      aiAssisted: true,
+      aiQuery: query,
+      disclaimer:
+        "AI-assisted class recommendations. Please verify class details and consult with instructor for personalized advice.",
     });
 
   } catch (error) {
