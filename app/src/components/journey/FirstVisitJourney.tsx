@@ -2,9 +2,10 @@
 
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { IconArrowRight, IconChart, IconShield, IconSparkles } from "@/components/icons";
+import { IconArrowRight, IconChart, IconInstagram, IconShield, IconSparkles } from "@/components/icons";
 
 const STORAGE_KEY = "pwn_first_visit_journey_v1";
+const INSTAGRAM_URL = "https://www.instagram.com/pilateswithneelam";
 
 interface JourneyStep {
   eyebrow: string;
@@ -54,8 +55,30 @@ function StepVisual({ kind }: { kind: JourneyStep["visual"] }) {
     return (
       <div className="fj-visual fj-neelam">
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src="/neelam/neelam-hero.jpg" alt="Neelam" className="fj-photo" />
+        <img
+          src="/neelam/neelam-portrait.jpg"
+          alt=""
+          aria-hidden
+          className="fj-photo-backdrop"
+        />
         <span className="fj-photo-glow" />
+        <div className="fj-portrait-frame">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/neelam/neelam-portrait.jpg" alt="Neelam, your instructor" className="fj-photo" />
+        </div>
+        <div className="fj-instructor-badge">
+          <span className="fj-instructor-name">Neelam</span>
+          <a
+            href={INSTAGRAM_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="fj-ig-link"
+            aria-label="Neelam on Instagram"
+          >
+            <IconInstagram size={13} />
+            @pilateswithneelam
+          </a>
+        </div>
       </div>
     );
   }

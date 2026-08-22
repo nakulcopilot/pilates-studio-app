@@ -1,10 +1,19 @@
 import Link from "next/link";
-import { IconArrowRight, IconChart, IconShield, IconSparkles } from "@/components/icons";
+import {
+  IconArrowRight,
+  IconChart,
+  IconInstagram,
+  IconShield,
+  IconSparkles,
+} from "@/components/icons";
 import FirstVisitJourney from "@/components/journey/FirstVisitJourney";
+
+const INSTAGRAM_URL = "https://www.instagram.com/pilateswithneelam";
 
 function BrandMark({ size = 40 }: { size?: number }) {
   return (
     <span className="logo-mark" style={{ width: size, height: size }}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img src="/branding/logo-gold.png" alt="Pilates With Neelam" className="brand-logo-img" />
     </span>
   );
@@ -12,60 +21,141 @@ function BrandMark({ size = 40 }: { size?: number }) {
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen flex flex-col landing-hero">
-      <header className="flex items-center justify-between px-6 py-5 max-w-6xl w-full mx-auto">
-        <div className="flex items-center gap-3">
+    <div className="lp-shell">
+      <header className="lp-header">
+        <Link href="/" className="lp-brand" aria-label="Pilates With Neelam home">
           <BrandMark />
           <span className="brand-wordmark text-white text-lg">
             <span className="pw">Pilates With</span>
             <span className="neelam">Neelam</span>
           </span>
-        </div>
-        <Link
-          href="/login"
-          className="text-sm font-semibold text-white/85 hover:text-white bg-white/10 hover:bg-white/20 border border-white/15 rounded-full px-5 py-2 transition"
-        >
-          Sign in
         </Link>
+        <nav className="lp-nav" aria-label="Primary">
+          <a href="#instructor">Instructor</a>
+          <a href="#how">How it works</a>
+          <Link href="/login" className="lp-signin">
+            Sign in
+          </Link>
+        </nav>
       </header>
 
-      <main className="flex-1 flex flex-col items-center justify-center text-center px-6 py-16">
-        <div className="brand-emblem mb-7">
-          <img src="/branding/logo-gold.png" alt="Pilates With Neelam" className="brand-logo-img" />
-        </div>
-        <p className="text-[#e8c4a8] font-semibold tracking-[0.22em] uppercase text-xs mb-4">
-          Private studio · Mat &amp; Reformer
-        </p>
-        <h1 className="text-4xl sm:text-6xl font-semibold text-white leading-[1.05] tracking-tight max-w-3xl">
-          Pilates With <span className="italic text-[#e8c4a8]">Neelam</span>
-        </h1>
-        <p className="mt-5 text-white/70 max-w-xl text-base leading-relaxed">
-          Thoughtfully guided pilates for every body. Small classes, personal
-          attention, and a practice that grows with you.
-        </p>
-        <div className="flex flex-wrap gap-3 mt-9" id="begin-journey">
-          <Link
-            href="/login"
-            className="inline-flex items-center gap-2 bg-gradient-to-br from-[#c9975a] to-[#9a7338] text-white font-bold text-sm rounded-full px-7 py-3.5 shadow-xl shadow-[#c9975a]/30 hover:shadow-2xl hover:-translate-y-0.5 transition"
-          >
-            Enter your studio <IconArrowRight size={16} />
-          </Link>
-        </div>
-        <div className="flex flex-wrap justify-center gap-3 mt-12">
-          {[
-            [IconSparkles, "Personalized cues"],
-            [IconChart, "Progress tracking"],
-            [IconShield, "Private & secure"],
-          ].map(([Icon, label]) => (
-            <div
-              key={label as string}
-              className="bg-white/8 border border-white/12 rounded-full px-5 py-3 flex items-center gap-2 text-sm font-semibold text-white/90 backdrop-blur"
-            >
-              <Icon /> {label as string}
+      <main className="lp-main">
+        <section className="lp-grid">
+          <div className="lp-copy">
+            <p className="lp-eyebrow">
+              <IconSparkles size={13} /> Private studio · Mat &amp; Reformer
+            </p>
+            <h1 className="lp-h1">
+              Your <span className="lp-grad-gold">first class</span> starts with a{" "}
+              <span className="lp-grad-cool">2&#8209;minute assessment</span>.
+            </h1>
+            <p className="lp-lede">
+              Thoughtfully guided pilates for every body. Answer a few questions and
+              we&rsquo;ll match you to the right class — so Neelam knows exactly how to cue
+              you before you arrive.
+            </p>
+            <div className="lp-ctas" id="begin-journey">
+              <Link href="/assessment?from=home" className="lp-cta-primary">
+                <IconSparkles size={16} /> Begin assessment
+              </Link>
             </div>
-          ))}
-        </div>
+            <div className="lp-chips">
+              {[
+                [IconSparkles, "Personalized cues"],
+                [IconChart, "Progress tracking"],
+                [IconShield, "Private & secure"],
+              ].map(([Icon, label]) => (
+                <span key={label as string} className="lp-chip">
+                  <Icon size={16} /> {label as string}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <aside className="lp-card-wrap" id="instructor">
+            <article className="lp-card">
+              <div className="lp-card-photo">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/neelam/neelam-portrait.jpg"
+                  alt="Neelam, your pilates instructor"
+                  className="lp-card-img"
+                />
+                <div className="lp-card-photo-fade" />
+                <div className="lp-card-id">
+                  <a
+                    href={INSTAGRAM_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="lp-ig"
+                    aria-label="Neelam on Instagram"
+                  >
+                    <IconInstagram size={13} /> @pilateswithneelam
+                  </a>
+                  <span className="lp-card-name">Neelam</span>
+                </div>
+              </div>
+              <div className="lp-card-body">
+                <h2 className="lp-card-title">
+                  Welcome! Your <span className="lp-grad-gold">first class</span> starts
+                  with a <span className="lp-grad-cool">2&#8209;minute assessment</span>.
+                </h2>
+                <p className="lp-card-sub">Guided by Neelam, personally</p>
+                <p className="lp-card-text">
+                  Small groups, private sessions and cues tailored to how you move today —
+                  never one-size-fits-all instruction.
+                </p>
+                <div className="lp-card-actions">
+                  <Link href="/assessment?from=hero-card" className="lp-cta-primary lp-cta-sm">
+                    Begin Now
+                  </Link>
+                  <Link href="/login" className="lp-cta-ghost lp-cta-sm">
+                    Skip
+                  </Link>
+                </div>
+              </div>
+            </article>
+          </aside>
+        </section>
+
+        <section className="lp-how" id="how" aria-labelledby="how-title">
+          <p className="lp-eyebrow lp-eyebrow-center">
+            <IconSparkles size={13} /> How it works
+          </p>
+          <h2 className="lp-h2" id="how-title">
+            Three steps to your <span className="lp-grad-gold">first class</span>
+          </h2>
+          <div className="fj-flow lp-flow">
+            {[
+              { icon: IconSparkles, label: "Quick Assessment", note: "2 minutes" },
+              { icon: IconChart, label: "Class match", note: "Personalized" },
+              { icon: IconArrowRight, label: "Book & move", note: "Anytime" },
+            ].map(({ icon: Icon, label, note }, i) => (
+              <div className="fj-flow-node" key={label} style={{ animationDelay: `${i * 0.15}s` }}>
+                <span className="fj-flow-icon">
+                  <Icon size={18} />
+                </span>
+                <span className="fj-flow-label">{label}</span>
+                <span className="fj-flow-note">{note}</span>
+                {i < 2 && <span className="fj-flow-link" aria-hidden />}
+              </div>
+            ))}
+          </div>
+        </section>
       </main>
+
+      <footer className="lp-footer">
+        <span>© {new Date().getFullYear()} Pilates With Neelam</span>
+        <a
+          href={INSTAGRAM_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="lp-footer-ig"
+        >
+          <IconInstagram size={14} /> Follow the practice
+        </a>
+      </footer>
+
       <FirstVisitJourney />
     </div>
   );
