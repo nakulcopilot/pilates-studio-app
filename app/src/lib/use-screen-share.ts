@@ -1,14 +1,16 @@
+import * as React from "react";
+
 export function useScreenShare() {
   const [stream, setStream] = React.useState<MediaStream | null>(null);
   const [isSharing, setIsSharing] = React.useState(false);
 
   const start = async () => {
     try {
-      const screenStream = await navigator.mediaDevices.getUserMedia({
-        video: {
-          cursor: "always",
-          displaySurface: "share-screen",
-        },
+      const media = navigator.mediaDevices as MediaDevices & {
+        getDisplayMedia?: (constraints: DisplayMediaStreamOptions) => Promise<MediaStream>;
+      };
+      const screenStream = await media.getDisplayMedia({
+        video: true,
         audio: false,
       });
       setStream(screenStream);

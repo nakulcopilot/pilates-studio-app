@@ -1011,7 +1011,8 @@ export function LiveClassConsole({
 
   const handleEnd = () => {
     pause();
-    onEnd();
+    reset();
+    if (isSharing) stopShare();
   };
 
   return (

@@ -72,10 +72,7 @@ export default function AssessmentModal({
   const router = useRouter();
 
   // Create Supabase client
-  const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-  );
+  const supabase = createClient();
 
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string | number>>({});
@@ -184,10 +181,11 @@ export default function AssessmentModal({
 
     // Call AI assessment API
     try {
+      const { data: authData } = await supabase.auth.getUser();
       const { error } = await supabase
         .from("ai_assessment_results")
         .insert({
-          user_id: (await import("@/app/(auth)").getCurrentUser()?.id) || "temp",
+          user_id: authData?.user?.id || "temp",
           responses: answers,
           level,
           focus_areas: focusAreas,
@@ -302,7 +300,7 @@ export default function AssessmentModal({
             />
           ) : (
             <div className="space-y-2">
-              {question.options.map((option) => (
+              {(question.options ?? []).map((option) => (
                 <label
                   key={option}
                   className={`flex items-center padding border rounded cursor-pointer ${

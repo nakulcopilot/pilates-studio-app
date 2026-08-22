@@ -1,41 +1,49 @@
-import { NextResponse } from "next/server";
-import type { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { isAIEnabled } from "@/lib/ai";
+import type { StudioSettings } from "@/lib/types";
 
-export const config = {
-  api: {
-    bodyParser: {
-      sizeLimit: "2mb",
-    },
-  },
-};
+interface AssessmentResponse {
+  questionId?: string;
+  answer?: string | number;
+  unit?: string;
+}
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
+export async function POST(req: NextRequest) {
+  let body: { userId?: string; responses?: AssessmentResponse[] } | null = null;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+  }
+
+  const { userId, responses } = body ?? {};
+  if (!userId || !responses || !Array.isArray(responses)) {
+    return NextResponse.json(
+      { error: "Missing required fields: userId, responses" },
+      { status: 400 },
+    );
   }
 
   try {
-    const { userId, responses } = req.body;
-
-    if (!userId || !responses || !Array.isArray(responses)) {
-      return res
-        .status(400)
-        .json({ error: "Missing required fields: userId, responses" });
-    }
-
-    // Check if AI is enabled
     const supabase = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     );
 
-    if (!isAIEnabled(await import("@/lib/settings").settings)) {
-      return res.status(200).json({
+    // Load studio AI settings (single row, id = 1).
+    const { data: row } = await supabase
+      .from("studio_settings")
+      .select("data")
+      .eq("id", 1)
+      .maybeSingle();
+
+    const settings = row
+      ? ({ id: 1, data: row.data } as unknown as StudioSettings)
+      : null;
+
+    if (!isAIEnabled(settings)) {
+      return NextResponse.json({
         mode: "heuristic",
         level: classifyLevelHeuristic(responses),
         recommendedClasses: getRecommendationsHeuristic(responses),
@@ -52,12 +60,20 @@ export default async function handler(
         ],
       },
     });
-    if (error) return res.status(200).json({ mode: "fallback", level: classifyLevelHeuristic(responses), recommendedClasses: getRecommendationsHeuristic(responses), message: "AI failed - using fallback" });
+
+    if (error) {
+      return NextResponse.json({
+        mode: "fallback",
+        level: classifyLevelHeuristic(responses),
+        recommendedClasses: getRecommendationsHeuristic(responses),
+        message: "AI failed - using fallback",
+      });
+    }
 
     if (data?.content) {
       try {
         const parsed = JSON.parse(data.content);
-        return res.status(200).json({
+        return NextResponse.json({
           mode: "ai",
           level: parsed.level || classifyLevelHeuristic(responses),
           recommendedClasses: parsed.recommendedClasses || getRecommendationsHeuristic(responses),
@@ -74,24 +90,21 @@ export default async function handler(
     }
 
     // Fallback to heuristic classification
-    return res.status(200).json({
+    return NextResponse.json({
       mode: "fallback",
       level: classifyLevelHeuristic(responses),
       recommendedClasses: getRecommendationsHeuristic(responses),
       message: "AI failed - using fallback heuristic classification",
     });
-
   } catch (error) {
     console.error("AI Assessment API error:", error);
-    return res.status(500).json({ error: "Internal server error during AI assessment" });
+    return NextResponse.json(
+      { error: "Internal server error during AI assessment" },
+      { status: 500 },
+    );
   }
 }
 
-interface AssessmentResponse {
-  questionId?: string;
-  answer?: string | number;
-  unit?: string;
-}
 function classifyLevelHeuristic(responses: AssessmentResponse[]): "beginner" | "intermediate" | "advanced" {
   const responsesText = responses
     .map((r) => String(r?.answer ?? "").toLowerCase())

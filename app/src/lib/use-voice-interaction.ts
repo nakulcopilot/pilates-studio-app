@@ -1,21 +1,56 @@
+import * as React from "react";
+
+interface SpeechAlternativeLike {
+  transcript: string;
+  confidence: number;
+}
+
+interface SpeechResultLike {
+  isFinal: boolean;
+  length: number;
+  [index: number]: SpeechAlternativeLike;
+}
+
+interface SpeechEventLike {
+  resultIndex: number;
+  results: { length: number; [index: number]: SpeechResultLike };
+}
+
+interface SpeechRecognitionLike {
+  continuous: boolean;
+  interimResults: boolean;
+  lang: string;
+  onstart: (() => void) | null;
+  onresult: ((event: SpeechEventLike) => void) | null;
+  onerror: ((event: { error: string }) => void) | null;
+  onend: (() => void) | null;
+  start: () => void;
+  stop: () => void;
+}
+
+type SpeechRecognitionCtor = new () => SpeechRecognitionLike;
+
+declare global {
+  interface Window {
+    webkitSpeechRecognition?: SpeechRecognitionCtor;
+  }
+}
+
 export function useVoiceInteraction() {
   const [isListening, setIsListening] = React.useState(false);
   const [transcript, setTranscript] = React.useState("");
   const [isSpeaking, setIsSpeaking] = React.useState(false);
 
-  const recognition = React.useRef<
-    webkitSpeechRecognition | null
-  >(null);
+  const recognition = React.useRef<SpeechRecognitionLike | null>(null);
 
-  const setupRecognition = () => {
-    if ("webkitSpeechRecognition" in window) {
-      const recognition = new webkitSpeechRecognition();
-      recognition.continuous = true;
-      recognition.interimResults = true;
-      recognition.lang = "en-US";
-      return recognition;
-    }
-    return null;
+  const setupRecognition = (): SpeechRecognitionLike | null => {
+    const Ctor = window.webkitSpeechRecognition;
+    if (!Ctor) return null;
+    const recog = new Ctor();
+    recog.continuous = true;
+    recog.interimResults = true;
+    recog.lang = "en-US";
+    return recog;
   };
 
   const startListening = () => {
@@ -24,16 +59,16 @@ export function useVoiceInteraction() {
       console.warn("Speech recognition not supported");
       return;
     }
+    recognition.current = recog;
     recog.onstart = () => setIsListening(true);
-    recog.onresult = (
-      event: { results: { isFinal: boolean; [index: number]: { transcript: string } } }
-    ) => {
+    recog.onresult = (event: SpeechEventLike) => {
       const interimTranscripts: string[] = [];
       for (let i = event.resultIndex; i < event.results.length; i++) {
-        if (event.results[i].isFinal) {
-          setTranscript((prev: string) => prev + event.results[i][0].transcript + " ");
-        } else {
-          interimTranscripts.push(event.results[i][0].transcript);
+        const result = event.results[i];
+        if (result?.isFinal) {
+          setTranscript((prev: string) => prev + result[0].transcript + " ");
+        } else if (result) {
+          interimTranscripts.push(result[0].transcript);
         }
       }
       if (interimTranscripts.length > 0) {
@@ -45,10 +80,7 @@ export function useVoiceInteraction() {
       setIsListening(false);
     };
     recog.onend = () => {
-      if (isListening) {
-        setIsListening(false);
-        setTimeout(startListening, 100);
-      }
+      setIsListening(false);
     };
     recog.start();
   };
@@ -61,7 +93,7 @@ export function useVoiceInteraction() {
 
   const speak = React.useCallback(
     (text: string, voiceName?: string) => {
-      if ("speechSynthesis" in window && "speechSynthesis" in window) {
+      if ("speechSynthesis" in window) {
         const utterance = new SpeechSynthesisUtterance(text);
         utterance.rate = 1;
         utterance.pitch = 1;

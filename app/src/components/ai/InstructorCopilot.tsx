@@ -12,13 +12,13 @@ import {
   buildStudentCues,
   smartAISuggestion,
 } from "@/lib/ai";
-import { Badge, LevelTag, SectionTitle } from "./ui";
+import { Badge, LevelTag, SectionTitle } from "../dash/ui";
 import { IconSparkles } from "@/components/icons";
 
 export interface StudentSummary {
   studentId: string;
   name: string;
-  level: "beginner" | "intermediate" | "advanced";
+  level: "beginner" | "intermediate" | "expert";
   attendancePct: number;
   lastAttendance: string | null;
   goals: string[];
@@ -77,11 +77,11 @@ export function InstructorCopilotPanel({
       const total = studentAttendance.length;
       const attendancePct = total > 0 ? Math.round((attended / total) * 100) : 0;
 
-      // Get last attendance date
+      // Get most recent attendance (updated_at, newest first)
       const lastAttendance = studentAttendance
         .filter((a) => a.status === "present")
-        .sort((a, b) => (new Date(a.date).getTime() - new Date(b.date).getTime()))[0]
-        ?.date || null;
+        .sort((a, b) => b.updated_at.localeCompare(a.updated_at))[0]
+        ?.updated_at || null;
 
       // Get goals from milestones
       const studentMilestones = data.milestones.filter(
@@ -89,9 +89,9 @@ export function InstructorCopilotPanel({
       );
       const goals = studentMilestones.map((m) => m.title);
 
-      // Get focus areas from injuries
+      // Get focus areas from active injuries
       const studentInjuries = data.injuries.filter(
-        (i) => i.student_id === studentId && !i.resolved,
+        (i) => i.student_id === studentId && i.status !== "recovered",
       );
       const focusAreas = studentInjuries.length
         ? ["modifications"]
@@ -170,7 +170,7 @@ export function InstructorCopilotPanel({
       data.settings,
       systemPrompt,
       userPrompt,
-      generateHeuristicSuggestions(),
+      JSON.stringify({ exercises: generateHeuristicSuggestions(), notes: [] }),
     );
 
     if (aiResponse) {
