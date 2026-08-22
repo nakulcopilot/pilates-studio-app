@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/browser";
 
 export interface AssessmentQuestion {
@@ -23,6 +24,12 @@ export interface AssessmentResult {
 }
 
 export const ASSESSMENT_QUESTIONS: AssessmentQuestion[] = [
+  {
+    id: "q0",
+    text: "First things first — what should we call you?",
+    input: "text",
+    placeholder: "Your name",
+  },
   {
     id: "q1",
     text: "How would you describe your Pilates experience?",
@@ -109,7 +116,10 @@ type IconName =
   | "pin"
   | "phone"
   | "message"
-  | "bellOff";
+  | "bellOff"
+  | "users"
+  | "home"
+  | "calendarX";
 
 const ICON_PATHS: Record<IconName, string[]> = {
   sprout: ["M12 21v-8", "M12 13C12 9.7 9.7 7.4 6.2 7.4c0 3.3 2.3 5.6 5.8 5.6z", "M12 11.4c0-3 2.2-5.1 5.4-5.1 0 3-2.2 5.1-5.4 5.1z"],
@@ -140,6 +150,9 @@ const ICON_PATHS: Record<IconName, string[]> = {
   phone: ["M7 3.5h3l1.5 4-2 1.5a12 12 0 0 0 5.5 5.5l1.5-2 4 1.5v3A2 2 0 0 1 18.4 19 15.4 15.4 0 0 1 5 5.6 2 2 0 0 1 7 3.5z"],
   message: ["M4 5.5h16a1.5 1.5 0 0 1 1.5 1.5v8a1.5 1.5 0 0 1-1.5 1.5H12l-4.5 4v-4H4A1.5 1.5 0 0 1 2.5 15V7A1.5 1.5 0 0 1 4 5.5z", "M7.5 10.5h9"],
   bellOff: ["M6 9a6 6 0 0 1 9.3-5M18 10.5V13l1.5 3H8", "M4 4l16 16", "M10 19a2 2 0 0 0 4 0"],
+  users: ["M9.5 11a4.2 4.2 0 1 0-4.2-4.2A4.2 4.2 0 0 0 9.5 11z", "M2.8 20c0-3.7 3-6.2 6.7-6.2s6.7,2.5,6.7,6.2", "M16.4 11.4a3.6 3.6 0 0 0 0-7.1", "M17.6 14.2c2.2.7 3.7 2.5 3.7 5.1"],
+  home: ["M4 11.5 12 4l8 7.5", "M6 10v9.5h12V10", "M10 19.5v-5h4v5"],
+  calendarX: ["M5 5.5h14a1.5 1.5 0 0 1 1.5 1.5v12A1.5 1.5 0 0 1 19 20.5H5A1.5 1.5 0 0 1 3.5 19V7A1.5 1.5 0 0 1 5 5.5z", "M3.5 10h17", "M8 3v4M16 3v4", "M9.8 13.3l4.4 4.4M14.2 13.3l-4.4 4.4"],
 };
 
 function OptionIcon({ name }: { name: IconName }) {
@@ -348,7 +361,6 @@ function PhoneField({
 /* Journey-completion guarantees: persistence must never block progress. */
 const PERSIST_TIMEOUT_MS = 6000; // give up saving after 6s
 const MIN_ANALYZING_MS = 900; // keep the reveal moment intentional
-const NAV_FALLBACK_MS = 2500; // hard-navigate if router.push didn't fire
 
 function withTimeout(task: Promise<void>, ms: number): Promise<void> {
   return new Promise<void>((resolve) => {
@@ -366,6 +378,57 @@ function withTimeout(task: Promise<void>, ms: number): Promise<void> {
   });
 }
 
+/* ---------- Demo sessions (post-assessment results) ---------- */
+
+interface DemoSession {
+  id: string;
+  date: string;
+  time: string;
+  duration: number;
+  max_students: number;
+  enrolled: string[];
+}
+
+type DemoStatus = "loading" | "ready";
+type RegistrationOutcome = "confirmed" | "requested" | "full";
+
+const DEMOS_TIMEOUT_MS = 5000;
+const REGISTER_TIMEOUT_MS = 8000;
+
+function withTimeoutValue<T>(task: Promise<T>, ms: number, fallback: T): Promise<T> {
+  return new Promise<T>((resolve) => {
+    const timer = setTimeout(() => resolve(fallback), ms);
+    task.then(
+      (value) => {
+        clearTimeout(timer);
+        resolve(value);
+      },
+      () => {
+        clearTimeout(timer);
+        resolve(fallback);
+      }
+    );
+  });
+}
+
+function formatDemoDate(iso: string): { day: string; dayNum: string; month: string } {
+  const d = new Date(`${iso}T00:00:00`);
+  if (Number.isNaN(d.getTime())) return { day: "", dayNum: "", month: "" };
+  return {
+    day: d.toLocaleDateString("en-IN", { weekday: "short" }),
+    dayNum: String(d.getDate()),
+    month: d.toLocaleDateString("en-IN", { month: "short" }),
+  };
+}
+
+function formatDemoTime(time: string): string {
+  const [h, m] = time.split(":").map(Number);
+  if (Number.isNaN(h)) return time;
+  const suffix = h >= 12 ? "PM" : "AM";
+  const hour12 = h % 12 === 0 ? 12 : h % 12;
+  return `${hour12}:${String(m ?? 0).padStart(2, "0")} ${suffix}`;
+}
+
 export default function AssessmentModal({
   onComplete,
   onClose,
@@ -373,6 +436,8 @@ export default function AssessmentModal({
   onComplete: (result: AssessmentResult) => void;
   onClose: () => void;
 }) {
+  const router = useRouter();
+
   /* Supabase is optional at runtime: a missing/misconfigured env must never
      crash the journey. Persistence failures are logged and skipped. */
   const [supabase] = useState(() => {
@@ -386,11 +451,19 @@ export default function AssessmentModal({
 
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string | number>>({});
-  const [phase, setPhase] = useState<"questions" | "analyzing">("questions");
+  const [phase, setPhase] = useState<"questions" | "analyzing" | "results">("questions");
   const [companionIndex, setCompanionIndex] = useState(0);
   const [analyzingIndex, setAnalyzingIndex] = useState(0);
   const advanceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const submittedRef = useRef(false);
+  const studentIdRef = useRef<string | null>(null);
+
+  /* Post-assessment demo sessions */
+  const [demos, setDemos] = useState<DemoSession[]>([]);
+  const [demoStatus, setDemoStatus] = useState<DemoStatus>("loading");
+  const [registeringId, setRegisteringId] = useState<string | null>(null);
+  const [registrations, setRegistrations] = useState<Record<string, RegistrationOutcome>>({});
+  const [resultSummary, setResultSummary] = useState<AssessmentResult | null>(null);
 
   const question = ASSESSMENT_QUESTIONS[step];
   const answeredCount = Object.keys(answers).length;
@@ -595,28 +668,139 @@ export default function AssessmentModal({
           })(),
           PERSIST_TIMEOUT_MS
         ),
+        // Create/update the visitor's student record (authenticated users),
+        // so they can self-enroll in a demo session right on the results screen.
+        withTimeout(provisionStudent(level), PERSIST_TIMEOUT_MS),
         new Promise((resolve) => setTimeout(resolve, MIN_ANALYZING_MS)),
       ]);
     } catch (err) {
       console.error("Assessment save error:", err);
     }
 
-    // Navigation is owned by the host page via onComplete.
+    // Navigation is owned by the results screen inside this component.
     try {
       onComplete(result);
     } catch (err) {
       console.error("Assessment completion handler failed:", err);
     }
 
-    // Safety net: if the host router fails to move us off /assessment,
-    // force a hard navigation so the journey always completes.
-    setTimeout(() => {
-      if (!submittedRef.current) return;
-      if (typeof window !== "undefined" && window.location.pathname === "/assessment") {
-        // eslint-disable-next-line @next/next/no-location-assign-relative-destination -- deliberate last-resort fallback
-        window.location.assign("/booking-search");
+    setResultSummary(result);
+    setPhase("results");
+    loadDemos();
+  };
+
+  /* ---------- Post-assessment demo sessions ---------- */
+
+  const provisionStudent = async (level: "beginner" | "intermediate" | "advanced") => {
+    if (!supabase) return;
+    try {
+      const { data: authData } = await supabase.auth.getUser();
+      if (!authData?.user) return; // guests stay in request-mode on the roster
+      const { data, error } = await supabase.rpc("provision_student_from_assessment", {
+        p_name: String(answers.q0 ?? "").trim(),
+        p_phone: normalizePhone(String(answers.q9 ?? "")) || null,
+        p_level: level,
+      });
+      if (error) {
+        console.error("Student provisioning failed:", error);
+        return;
       }
-    }, NAV_FALLBACK_MS);
+      if (typeof data === "string" && data) studentIdRef.current = data;
+    } catch (err) {
+      console.error("Student provisioning failed:", err);
+    }
+  };
+
+  const loadDemos = async () => {
+    setDemoStatus("loading");
+    const load = (async (): Promise<DemoSession[]> => {
+      if (!supabase) return [];
+      const today = new Date().toISOString().slice(0, 10);
+      const { data, error } = await supabase
+        .from("demo_sessions")
+        .select("id, date, time, duration, max_students, enrolled")
+        .gte("date", today)
+        .order("date", { ascending: true })
+        .limit(6);
+      if (error) throw error;
+      return (data ?? []) as DemoSession[];
+    })();
+    // A failed/hung load resolves to an empty list → graceful "no demos" state.
+    const upcoming = await withTimeoutValue(load, DEMOS_TIMEOUT_MS, [] as DemoSession[]);
+    setDemos(upcoming);
+    setDemoStatus("ready");
+  };
+
+  const resolveRegistration = async (demo: DemoSession): Promise<RegistrationOutcome> => {
+    if (!supabase) return "requested";
+    let studentId: string | null = studentIdRef.current;
+    try {
+      if (!studentId) {
+        const { data: authData } = await supabase.auth.getUser();
+        const uid = authData?.user?.id ?? null;
+
+        if (uid) {
+          // Provision on demand in case the completion-time call failed.
+          await provisionStudent(classifyLevel(answers));
+          studentId = studentIdRef.current;
+        }
+        if (!studentId && uid) {
+          const { data: linked } = await supabase
+            .from("students")
+            .select("id")
+            .eq("profile_user_id", uid)
+            .maybeSingle();
+          studentId = linked?.id ?? null;
+        }
+      }
+      if (!studentId) {
+        // Guest fallback: match the captured WhatsApp number against the roster.
+        const digits = normalizePhone(String(answers.q9 ?? ""));
+        if (digits.length === 10) {
+          const { data: roster } = await supabase.from("students").select("id, phone").limit(200);
+          const hit = (roster ?? []).find(
+            (s) => normalizePhone(String(s.phone ?? "")) === digits
+          );
+          studentId = hit?.id ?? null;
+        }
+      }
+      if (studentId) {
+        const { data: code, error } = await supabase.rpc("enroll_in_demo", {
+          p_demo_id: demo.id,
+          p_student_id: studentId,
+        });
+        if (!error) {
+          if (code === "enrolled" || code === "already_enrolled") return "confirmed";
+          if (code === "full") return "full";
+        }
+      }
+    } catch (err) {
+      console.error("Registration failed:", err);
+    }
+    // Guests / unlinked accounts: record the request so staff can follow up.
+    try {
+      localStorage.setItem(
+        "asx_demo_request",
+        JSON.stringify({
+          demoId: demo.id,
+          date: demo.date,
+          time: demo.time,
+          phone: answers.q9 ?? null,
+          location: answers.q8 ?? null,
+          consent: answers.q10 === "Yes, share my plan & class updates",
+          at: new Date().toISOString(),
+        })
+      );
+    } catch {}
+    return "requested";
+  };
+
+  const registerForDemo = async (demo: DemoSession) => {
+    if (registeringId || registrations[demo.id] !== undefined) return;
+    setRegisteringId(demo.id);
+    const outcome = await withTimeoutValue(resolveRegistration(demo), REGISTER_TIMEOUT_MS, "requested");
+    setRegistrations((prev) => ({ ...prev, [demo.id]: outcome }));
+    setRegisteringId(null);
   };
 
   /* ---------- Analyzing overlay ---------- */
@@ -646,6 +830,136 @@ export default function AssessmentModal({
             {ANALYZING_MESSAGES[analyzingIndex]}
           </p>
         </div>
+      </div>
+    );
+  }
+
+  /* ---------- Results: recommended demo classes ---------- */
+
+  if (phase === "results") {
+    return (
+      <div className="asx-shell">
+        <div className="asx-backdrop" aria-hidden="true">
+          <div className="orb orb-a" />
+          <div className="orb orb-b" />
+          <div className="orb orb-c" />
+          <div className="auth-grain" />
+        </div>
+        <main className="asx-main">
+          <section className="asx-card asx-results" aria-label="Assessment results">
+            {/* Success header */}
+            <div className="asx-success-head">
+              <div className="asx-success-badge">
+                <svg viewBox="0 0 52 52" width="52" height="52" aria-hidden="true">
+                  <circle className="asx-check-circle" cx="26" cy="26" r="23" fill="none" />
+                  <path
+                    className="asx-check-mark"
+                    d="M15 27.5l7.5 7.5L37.5 19"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </div>
+              <h2 className="asx-results-title">
+                {String(answers.q0 ?? "").trim()
+                  ? `You're all set, ${String(answers.q0).trim()}!`
+                  : "Your perfect class is ready"}
+              </h2>
+              <p className="asx-results-sub">
+                {resultSummary?.assessmentSummary}
+              </p>
+            </div>
+
+            {/* Demo sessions */}
+            <p className="asx-results-label">Free demo sessions</p>
+
+            {demoStatus === "loading" ? (
+              <div className="asx-demo-list" aria-hidden="true">
+                <div className="asx-skeleton" style={{ height: "86px" }} />
+                <div className="asx-skeleton" style={{ height: "86px", animationDelay: "120ms" }} />
+              </div>
+            ) : demos.length === 0 ? (
+              <div className="asx-empty-state">
+                <span className="asx-empty-icon">
+                  <OptionIcon name="calendarX" />
+                </span>
+                <p className="asx-empty-title">No demo classes right now</p>
+                <p className="asx-empty-body">
+                  We&apos;re scheduling the next free sessions. We&apos;ll get back to you on
+                  WhatsApp with your personal invite — keep an eye out.
+                </p>
+              </div>
+            ) : (
+              <div className="asx-demo-list">
+                {demos.map((demo) => {
+                  const spots = Math.max(demo.max_students - (demo.enrolled?.length ?? 0), 0);
+                  const isFull = spots === 0;
+                  const outcome = registrations[demo.id];
+                  const busy = registeringId === demo.id;
+                  return (
+                    <article key={demo.id} className={`asx-demo-card${outcome === "confirmed" ? " confirmed" : ""}`}>
+                      <div className="asx-demo-date" aria-hidden="true">
+                        <strong>{formatDemoDate(demo.date).dayNum || "·"}</strong>
+                        <span>{formatDemoDate(demo.date).month}</span>
+                        <em>{formatDemoDate(demo.date).day}</em>
+                      </div>
+                      <div className="asx-demo-info">
+                        <p className="asx-demo-time">{formatDemoTime(demo.time)}</p>
+                        <p className="asx-demo-meta">{demo.duration} min · Free intro session</p>
+                      </div>
+                      {outcome === "confirmed" ? (
+                        <span className="asx-registered-pill">
+                          <OptionIcon name="shieldCheck" />
+                          You&apos;re in
+                        </span>
+                      ) : (
+                        <div className="asx-demo-side">
+                          <span className={`asx-spots${spots <= 1 && !isFull ? " low" : ""}`}>
+                            {isFull ? "Full" : `${spots} spot${spots === 1 ? "" : "s"} left`}
+                          </span>
+                          <button
+                            type="button"
+                            className={`asx-register-btn${isFull ? " disabled" : ""}`}
+                            disabled={busy || isFull || outcome !== undefined}
+                            onClick={() => registerForDemo(demo)}
+                          >
+                            {busy
+                              ? "Reserving…"
+                              : outcome === "requested"
+                                ? "Requested ✓"
+                                : outcome === "full"
+                                  ? "Full"
+                                  : "Register"}
+                          </button>
+                        </div>
+                      )}
+                    </article>
+                  );
+                })}
+              </div>
+            )}
+
+            {demos.length > 0 && demoStatus === "ready" && (
+              <p className="asx-results-note">
+                Your WhatsApp number ({String(answers.q9 ?? "")}) keeps your spot confirmed.
+              </p>
+            )}
+
+            {/* Exit actions */}
+            <footer className="asx-footer">
+              <button type="button" className="asx-cta" onClick={() => router.push("/")}>
+                <span className="asx-cta-shine" aria-hidden="true" />
+                Back to Main Menu
+              </button>
+              <div className="asx-footer-row center">
+                <span className="asx-hint">You can also simply close this page.</span>
+              </div>
+            </footer>
+          </section>
+        </main>
       </div>
     );
   }
@@ -731,6 +1045,23 @@ export default function AssessmentModal({
                 value={answers[question.id] as string | undefined}
                 onChange={(v) => handleAnswer(question.id, v)}
               />
+            ) : question.input === "text" ? (
+              <div className="asx-input-block">
+                <div className="asx-input-shell">
+                  <span className="asx-input-icon">
+                    <OptionIcon name="sparkles" />
+                  </span>
+                  <input
+                    type="text"
+                    className="asx-input-field"
+                    value={(answers[question.id] as string) ?? ""}
+                    placeholder={question.placeholder ?? ""}
+                    autoComplete="given-name"
+                    onChange={(e) => handleAnswer(question.id, e.target.value)}
+                  />
+                </div>
+                <p className="asx-input-note">We&apos;ll personalise your plan with your name.</p>
+              </div>
             ) : question.numeric ? (
               <div className="asx-slider-block">
                 <div className="asx-slider-readout">

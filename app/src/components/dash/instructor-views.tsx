@@ -813,6 +813,41 @@ export function InstructorDemoView({
   const [enrolling, setEnrolling] = useState(false);
   const [message, setMessage] = useState("");
 
+  // New demo session form
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const defaultDate = tomorrow.toISOString().slice(0, 10);
+  const [form, setForm] = useState({
+    date: defaultDate,
+    time: "17:00",
+    duration: 45,
+    max_students: 5,
+  });
+  const [creating, setCreating] = useState(false);
+  const upd = (patch: Partial<typeof form>) => setForm((f) => ({ ...f, ...patch }));
+
+  const createDemo = async () => {
+    if (!form.date || !form.time || creating) return;
+    setCreating(true);
+    setMessage("");
+    const id = `d_${Date.now().toString(36)}`;
+    const { error } = await supabase.from("demo_sessions").insert({
+      id,
+      date: form.date,
+      time: form.time,
+      duration: Number(form.duration) || 45,
+      max_students: Number(form.max_students) || 5,
+      enrolled: [],
+    });
+    if (error) {
+      setCreating(false);
+      setMessage(`Failed to create session: ${error.message}`);
+      return;
+    }
+    setMessage("✓ Demo session created");
+    setTimeout(() => window.location.reload(), 900);
+  };
+
   const enroll = async (studentId: string) => {
     if (!enrollId) return;
     setEnrolling(true);
@@ -834,6 +869,67 @@ export function InstructorDemoView({
   return (
     <div className="space-y-6">
       <SectionTitle>Demo Sessions</SectionTitle>
+
+      <div className="card">
+        <div className="mb-4 text-sm font-semibold tracking-wide text-[#b8a99c] uppercase">
+          Create new demo class
+        </div>
+        <div className="flex flex-wrap items-end gap-3">
+          <label className="text-xs text-[#85776c]">
+            Date
+            <input
+              type="date"
+              className="input !mt-1 !py-2"
+              min={defaultDate}
+              value={form.date}
+              onChange={(e) => upd({ date: e.target.value })}
+            />
+          </label>
+          <label className="text-xs text-[#85776c]">
+            Start time
+            <input
+              type="time"
+              className="input !mt-1 !py-2"
+              value={form.time}
+              onChange={(e) => upd({ time: e.target.value })}
+            />
+          </label>
+          <label className="text-xs text-[#85776c]">
+            Duration (min)
+            <input
+              type="number"
+              min={15}
+              step={15}
+              className="input !mt-1 !w-28 !py-2"
+              value={form.duration}
+              onChange={(e) => upd({ duration: Number(e.target.value) })}
+            />
+          </label>
+          <label className="text-xs text-[#85776c]">
+            Seats
+            <input
+              type="number"
+              min={1}
+              max={20}
+              className="input !mt-1 !w-24 !py-2"
+              value={form.max_students}
+              onChange={(e) => upd({ max_students: Number(e.target.value) })}
+            />
+          </label>
+          <button
+            className="btn btn-primary"
+            disabled={creating || !form.date || !form.time}
+            onClick={createDemo}
+          >
+            {creating ? "Creating…" : "Create Demo Session"}
+          </button>
+        </div>
+        <p className="mt-3 text-xs text-[#6f6157]">
+          New sessions appear instantly for visitors completing the assessment and in the
+          student dashboard.
+        </p>
+      </div>
+
       {data.demos.length === 0 ? (
         <EmptyState message="No demo sessions scheduled." />
       ) : (

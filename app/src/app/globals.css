@@ -2275,6 +2275,320 @@ h3,
   animation: asxFadeSlide 0.45s ease both;
 }
 
+/* --- Results screen (demo classes) --- */
+
+.asx-card.asx-results {
+  width: min(640px, 100%);
+  text-align: center;
+}
+
+.asx-success-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.asx-success-badge {
+  display: grid;
+  place-items: center;
+  color: #a8d8b5;
+  margin-bottom: 0.35rem;
+}
+
+.asx-success-badge svg {
+  filter: drop-shadow(0 6px 22px rgba(127, 191, 154, 0.4));
+}
+
+.asx-check-circle {
+  stroke: rgba(168, 216, 181, 0.45);
+  stroke-width: 2;
+  stroke-dasharray: 145;
+  stroke-dashoffset: 145;
+  transform: rotate(-90deg);
+  transform-origin: center;
+  animation: asxDrawCircle 0.7s cubic-bezier(0.65, 0, 0.35, 1) 0.15s forwards;
+}
+
+.asx-check-mark {
+  stroke-dasharray: 34;
+  stroke-dashoffset: 34;
+  animation: asxDrawCheck 0.45s cubic-bezier(0.65, 0, 0.35, 1) 0.75s forwards;
+}
+
+@keyframes asxDrawCircle {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes asxDrawCheck {
+  to { stroke-dashoffset: 0; }
+}
+
+.asx-results-title {
+  margin: 0;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 1.85rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.15;
+  color: var(--text);
+}
+
+.asx-results-sub {
+  margin: 0 auto;
+  max-width: 46ch;
+  font-size: 0.86rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.asx-results-label {
+  margin: 1.5rem 0 0.8rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.asx-results-note {
+  margin: 0.9rem 0 0;
+  font-size: 0.74rem;
+  line-height: 1.5;
+  color: var(--text-dim);
+}
+
+/* Demo session cards */
+
+.asx-demo-list {
+  display: grid;
+  gap: 0.65rem;
+  text-align: left;
+}
+
+.asx-skeleton {
+  border-radius: 17px;
+  background: linear-gradient(
+    100deg,
+    rgba(255, 255, 255, 0.04) 40%,
+    rgba(232, 196, 168, 0.09) 50%,
+    rgba(255, 255, 255, 0.04) 60%
+  );
+  background-size: 200% 100%;
+  animation: asxShimmer 1.4s ease-in-out infinite;
+}
+
+@keyframes asxShimmer {
+  from { background-position: 120% 0; }
+  to   { background-position: -80% 0; }
+}
+
+.asx-demo-card {
+  display: flex;
+  align-items: center;
+  gap: 0.95rem;
+  padding: 0.8rem 0.95rem;
+  border-radius: 17px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  transition:
+    transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.22s ease,
+    background 0.22s ease,
+    box-shadow 0.22s ease;
+  animation: asxOptionRise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.asx-demo-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(212, 162, 89, 0.5);
+  background: rgba(212, 162, 89, 0.06);
+  box-shadow: 0 12px 32px -14px rgba(212, 162, 89, 0.38);
+}
+
+.asx-demo-card.confirmed {
+  border-color: rgba(168, 216, 181, 0.45);
+  background: linear-gradient(135deg, rgba(127, 191, 154, 0.12), rgba(127, 191, 154, 0.04));
+}
+
+.asx-demo-date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 60px;
+  flex: none;
+  border-radius: 14px;
+  background: rgba(212, 162, 89, 0.12);
+  border: 1px solid rgba(232, 196, 168, 0.28);
+  line-height: 1.05;
+}
+
+.asx-demo-date strong {
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #e8c4a8;
+}
+
+.asx-demo-date span {
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #d9c6ae;
+}
+
+.asx-demo-date em {
+  font-style: normal;
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.asx-demo-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.asx-demo-time {
+  margin: 0 0 0.15rem;
+  font-weight: 700;
+  font-size: 0.98rem;
+  color: var(--text);
+}
+
+.asx-demo-meta {
+  margin: 0;
+  font-size: 0.76rem;
+  color: var(--text-dim);
+}
+
+.asx-demo-side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.45rem;
+  flex: none;
+}
+
+.asx-spots {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #e8c4a8;
+  background: rgba(212, 162, 89, 0.14);
+  border: 1px solid rgba(232, 196, 168, 0.25);
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+}
+
+.asx-spots.low {
+  color: #f0c9a3;
+  background: rgba(224, 138, 90, 0.16);
+  border-color: rgba(224, 138, 90, 0.4);
+}
+
+.asx-register-btn {
+  border: none;
+  border-radius: 999px;
+  padding: 0.55rem 1.05rem;
+  font-family: inherit;
+  font-size: 0.82rem;
+  font-weight: 800;
+  cursor: pointer;
+  color: #241b10;
+  background: linear-gradient(135deg, #eec687, #c9975a 55%, #a8782f);
+  box-shadow: 0 10px 26px -10px rgba(212, 162, 89, 0.6);
+  transition: transform 0.18s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.asx-register-btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 30px -10px rgba(212, 162, 89, 0.75);
+}
+
+.asx-register-btn:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.asx-register-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.asx-registered-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.95rem;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: #a8d8b5;
+  background: rgba(127, 191, 154, 0.14);
+  border: 1px solid rgba(168, 216, 181, 0.4);
+  animation: asxFadeSlide 0.35s ease both;
+}
+
+.asx-registered-pill svg {
+  width: 15px;
+  height: 15px;
+}
+
+/* Empty state — no demo classes available */
+
+.asx-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1.6rem 1.4rem;
+  border-radius: 17px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px dashed rgba(232, 196, 168, 0.22);
+  text-align: center;
+  animation: asxOptionRise 0.5s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.asx-empty-icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 16px;
+  color: var(--text-dim);
+  background: rgba(232, 196, 168, 0.07);
+  border: 1px solid rgba(232, 196, 168, 0.16);
+}
+
+.asx-empty-title {
+  margin: 0.2rem 0 0;
+  font-family: "Cormorant Garamond", Georgia, serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.asx-empty-body {
+  margin: 0;
+  max-width: 42ch;
+  font-size: 0.84rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+/* Footer centered hint on results */
+
+.asx-footer-row.center {
+  justify-content: center;
+}
+
 /* --- Responsive + motion preferences --- */
 
 @media (max-width: 520px) {
@@ -2330,12 +2644,20 @@ h3,
   .asx-cta,
   .asx-cta-shine,
   .asx-ring-pulse,
-  .asx-analyzing-core {
+  .asx-analyzing-core,
+  .asx-skeleton,
+  .asx-check-circle,
+  .asx-check-mark {
     animation: none !important;
   }
 
   .asx-ring-pulse {
     opacity: 0.35;
+  }
+
+  .asx-check-circle,
+  .asx-check-mark {
+    stroke-dashoffset: 0 !important;
   }
 }
 

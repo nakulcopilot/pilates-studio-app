@@ -1,17 +1,14 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import AssessmentModal, {
-  type AssessmentResult,
-} from "@/components/ai/AssessmentModal";
+import AssessmentModal from "@/components/ai/AssessmentModal";
 
 export default function AssessmentPage() {
   const router = useRouter();
 
-  const onComplete = (result: AssessmentResult) => {
-    // Assessment results are persisted by the modal; continue the journey.
-    router.push("/booking-search");
-  };
+  // The assessment component owns the full journey, including the
+  // post-completion demo class results screen. The host page stays mounted.
+  const onComplete = () => {};
 
   const onClose = () => {
     router.push("/");
